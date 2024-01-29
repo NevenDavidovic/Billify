@@ -1,0 +1,74 @@
+@import "style.less";
+
+.home-view {
+  width: 100%;
+
+  background: @primary-color;
+  padding: 150px 0;
+  .container {
+    display: flex;
+    align-items: center;
+    gap: 150px;
+    .left-item-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      gap: 50px;
+      color: white;
+      h1 {
+        font-size: 40px;
+      }
+      p {
+        font-size: 24px;
+      }
+      .btn-white {
+        max-width: max-content;
+        width: max-content;
+        padding: 8px 15px;
+      }
+    }
+    .right-item-cards {
+      flex: 1;
+      display: flex;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+
+      .grid-item-1,
+      .grid-item-2 {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        flex: 1;
+      }
+      .grid-item-2 {
+        margin-top: 50px;
+      }
+
+      .item-card {
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+        padding: 60px 25px;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+        &:hover {
+          box-shadow: 0 0 20px 0 #d9e2ec;
+        }
+        img {
+          width: 60px;
+        }
+        h2 {
+          font-size: 20px;
+          padding: 0;
+        }
+        p {
+          font-size: 16px;
+          line-height: 2;
+        }
+      }
+    }
+  }
+}
