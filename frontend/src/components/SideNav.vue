@@ -59,4 +59,45 @@ export default {
 };
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.side-navbar {
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  padding: 50px 15px 50px 0;
+  .side-item {
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 5px 16px 7px;
+    img {
+      width: 25px;
+    }
+    &:hover {
+      background-color: white;
+      color: #3d4c4d;
+      border-radius: 4px;
+    }
+    a {
+      text-decoration: none;
+      color: #3d4c4d;
+    }
+  }
+  .upper-part,
+  .lower-part {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    text-align: left;
+    button {
+      font-size: 16px;
+      font-weight: 600;
+      color: #3d4c4d;
+      margin-top: 15px;
+      padding: 6px 25px 6px;
+    }
+  }
+}
+</style>
