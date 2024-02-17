@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import OrganizationView from "@/views/OrganizationView.vue";
+import BarcodeGenerator from "@/views/BarcodeGenerator.vue";
 
 const routes = [
   {
@@ -12,6 +13,12 @@ const routes = [
     path: "/organization",
     name: "organization",
     component: OrganizationView,
+  },
+  {
+    path: "/barcode-generator",
+    name: "BarcodeGenerator",
+    component: BarcodeGenerator,
+    props: (route) => ({ user: route.query.user }),
   },
 ];
 
