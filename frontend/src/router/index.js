@@ -20,6 +20,11 @@ const routes = [
     component: BarcodeGenerator,
     props: (route) => ({ user: route.query.user }),
   },
+  {
+    path: "/receiver",
+    name: "receiver",
+    component: ReceiversView,
+  },
 ];
 
 const router = createRouter({
