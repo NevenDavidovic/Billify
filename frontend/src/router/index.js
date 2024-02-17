@@ -9,8 +9,8 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/organizations",
-    name: "organizations",
+    path: "/organization",
+    name: "organization",
     component: OrganizationView,
   },
 ];
