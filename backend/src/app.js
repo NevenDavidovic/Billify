@@ -142,4 +142,112 @@ app.get("/", (req, res) => {
   });
 });
 
+//Receivers Routes
+
+// Endpoint to save receiver data
+app.post("/save-receiver", (req, res) => {
+  const {
+    imePrezime,
+    adresaStanovanja,
+    gradPostanskiBroj,
+    eMail,
+    iznos,
+    datumUnosaPrimatelja,
+    opisPlacanja,
+    model_placanja,
+    poziv_na_primatelja,
+  } = req.body;
+  console.log("request body", req.body); // Log the request body
+  // Perform database query to insert the form data into the table
+  db.query(
+    "INSERT INTO primatelji_uplatnice (ime_prezime, ulica, grad, e_mail, iznos,datum_unosa_primatelja,opis_placanja,model_placanja,poziv_na_primatelja) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+    [
+      imePrezime,
+      adresaStanovanja,
+      gradPostanskiBroj,
+      eMail,
+      iznos,
+      datumUnosaPrimatelja,
+      opisPlacanja,
+      model_placanja,
+      poziv_na_primatelja,
+    ],
+    (err, result) => {
+      if (err) {
+        console.log("Error saving receiver data:", err);
+        return res.status(500).json({ error: err.message });
+      }
+      console.log("Receiver data saved successfully");
+      res.status(200).json({ message: "Receiver data saved successfully" });
+    }
+  );
+});
+
+//DELETE ALL
+
+app.delete("/delete-all-receivers", (req, res) => {
+  // Perform a query to delete all rows from the table
+  db.query("DELETE FROM primatelji_uplatnice", (err, result) => {
+    if (err) {
+      console.log("Error deleting receivers data:", err);
+      return res.status(500).json({ error: err.message });
+    }
+    console.log("All receivers data deleted successfully");
+    res
+      .status(200)
+      .json({ message: "All receivers data deleted successfully" });
+  });
+});
+
+//XML/Excell data manipulation
+
+app.post("/save-receivers", (req, res) => {
+  const receiverData = req.body;
+
+  // Create an array to store the promises of each insert operation
+  const insertPromises = receiverData.map((receiver) => {
+    return new Promise((resolve, reject) => {
+      // Perform individual insert query for each record
+      db.query(
+        `
+        INSERT INTO primatelji_uplatnice (
+          ime_prezime, ulica, grad, e_mail, iznos,
+          datum_unosa_primatelja, opis_placanja, model_placanja, poziv_na_primatelja
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `,
+        [
+          receiver.platiteljNaziv,
+          receiver.platiteljAdresa,
+          receiver.platiteljMjesto,
+          null, // eMail (You mentioned it should be null in your example)
+          receiver.iznos,
+          new Date(), // datumUnosaPrimatelja
+          receiver.opisPlacanja,
+          null, // model_placanja (You mentioned it should be null in your example)
+          receiver.pozivNaBrojPrimatelja,
+        ],
+        (err, result) => {
+          if (err) {
+            console.log("Error saving receiver data:", err);
+            reject(err);
+          } else {
+            console.log("Receiver data saved successfully");
+            resolve(result);
+          }
+        }
+      );
+    });
+  });
+
+  // Wait for all promises to resolve (all insert operations to complete)
+  Promise.all(insertPromises)
+    .then(() => {
+      res.status(200).json({ message: "Receivers data saved successfully" });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
+});
+
 app.listen(process.env.PORT || 8081);
