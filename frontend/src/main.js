@@ -4,6 +4,8 @@ import router from "./router";
 import store from "./store";
 //Stilovi
 import "./assets/less/home.less";
+import "./assets/less/receivers.less";
+import "./assets/less/style.less";
 
 const app = createApp(App);
 

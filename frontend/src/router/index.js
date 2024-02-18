@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import OrganizationView from "@/views/OrganizationView.vue";
 import BarcodeGenerator from "@/views/BarcodeGenerator.vue";
+import ReceiversView from "@/views/ReceiversView.vue";
 
 const routes = [
   {

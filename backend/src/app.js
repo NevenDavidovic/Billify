@@ -250,4 +250,47 @@ app.post("/save-receivers", (req, res) => {
     });
 });
 
+//update receiver
+
+app.put("/update-receiver/:id", (req, res) => {
+  const receiverId = req.params.id;
+  const {
+    ime_prezime,
+    ulica,
+    grad,
+    e_mail,
+    iznos,
+    datum_unosa_primatelja,
+    opis_placanja,
+    model_placanja,
+    poziv_na_primatelja,
+  } = req.body;
+
+  // Perform database query to update the receiver data
+  db.query(
+    "UPDATE primatelji_uplatnice SET ime_prezime=$1, ulica=$2, grad=$3, e_mail=$4, iznos=$5, datum_unosa_primatelja=$6, opis_placanja=$7, model_placanja=$8, poziv_na_primatelja=$9 WHERE id=$10",
+    [
+      ime_prezime,
+      ulica,
+      grad,
+      e_mail,
+      iznos,
+      datum_unosa_primatelja,
+      opis_placanja,
+      model_placanja,
+      poziv_na_primatelja,
+      receiverId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.log("Error updating receiver data:", err);
+        // Send a more informative error response to the client
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+      console.log("Receiver data updated successfully");
+      res.status(200).json({ message: "Receiver data updated successfully" });
+    }
+  );
+});
+
 app.listen(process.env.PORT || 8081);
