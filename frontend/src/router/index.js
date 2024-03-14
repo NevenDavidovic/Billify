@@ -4,6 +4,7 @@ import OrganizationView from "@/views/OrganizationView.vue";
 import BarcodeGenerator from "@/views/BarcodeGenerator.vue";
 import ReceiversView from "@/views/ReceiversView.vue";
 import StatsView from "@/views/StatsView.vue";
+import PaymentView from "@/views/PaymentView.vue";
 const routes = [
   {
     path: "/",
@@ -25,6 +26,11 @@ const routes = [
     path: "/receiver",
     name: "receiver",
     component: ReceiversView,
+  },
+  {
+    path: "/payment-slip-generator",
+    name: "PaymentView",
+    component: PaymentView,
   },
   {
     path: "/statistics",

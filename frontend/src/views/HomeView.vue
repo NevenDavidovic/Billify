@@ -1,6 +1,5 @@
 <template>
   <div class="main-div home-view">
-    <div id="particles-js"></div>
     <section class="container">
       <div class="left-item-text">
         <h1>Generiraj barkod uplatnicu za nacionalna plaćanja</h1>
@@ -79,10 +78,17 @@
         </div>
       </div>
     </section>
+
+    <!-- Payment Slip Generator -->
+
+    <section class="payment-slip-img">
+      <PaymentSlip />
+    </section>
   </div>
 </template>
 
 <script>
+import PaymentSlip from "@/components/PaymentSlip.vue";
 export default {
   data() {
     return {
@@ -92,7 +98,9 @@ export default {
   created() {},
 
   mounted() {},
-  components: {},
+  components: {
+    PaymentSlip,
+  },
   methods: {},
 };
 </script>
