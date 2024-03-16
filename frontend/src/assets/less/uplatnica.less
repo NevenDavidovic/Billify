@@ -1,0 +1,123 @@
+.uplatnica-form-img {
+  border: 2px solid rgb(255, 255, 255);
+  width: 931px;
+  height: 380px;
+  background-size: cover;
+  background-image: url("../images/uplatnica.jpg");
+  margin: 2em auto;
+  position: relative;
+
+  .platitelj {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    max-width: 200px;
+    left: 31px;
+    top: 44px;
+    input {
+      height: 20px;
+      border: 0px solid rgb(162, 107, 107);
+    }
+  }
+  .iban-primatelja {
+    position: absolute;
+    top: 121px;
+    left: 335px;
+    border: 0 solid transparent;
+    background-color: transparent;
+    font-size: 12px;
+    letter-spacing: 8px;
+    max-width: 312px;
+    width: 100%;
+  }
+  .iznos {
+    left: 452px;
+    position: absolute;
+    top: 24px;
+    background: transparent;
+    font-size: 18px;
+    letter-spacing: 0px;
+    border: 0 solid;
+    max-width: 200px;
+    text-align: end;
+    letter-spacing: 3px;
+  }
+  .valuta {
+    width: 50px;
+    height: 27px;
+    top: 26px;
+    position: absolute;
+    left: 334px;
+    border: 0 solid;
+    background: transparent;
+  }
+
+  .primatelj {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    max-width: 200px;
+    left: 31px;
+    top: 170px;
+    input {
+      height: 20px;
+      border: 0px solid rgb(162, 107, 107);
+    }
+  }
+  .model-placanja {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: "";
+    position: absolute;
+    top: 150px;
+    background: transparent;
+    left: 232px;
+    letter-spacing: 7px;
+    width: 57px;
+    height: 27px;
+    border: 0 solid;
+  }
+
+  .opis-placanja {
+    width: 249px;
+    position: absolute;
+    background: transparent;
+    top: 178px;
+    left: 384px;
+    height: 17px;
+    border: 0 solid;
+  }
+  .poziv-na-broj-primatelja {
+    height: 27px;
+    width: 200px;
+    position: absolute;
+    top: 148px;
+    left: 323px;
+    border: 0 solid;
+    background: transparent;
+  }
+
+  .sifra-namjene {
+    height: 27px;
+    position: absolute;
+    top: 187px;
+    left: 232px;
+    border: 0 solid;
+    background: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: "";
+  }
+
+  .generated-barcode {
+    position: absolute;
+    width: 250px;
+    left: 30px;
+    bottom: 33px;
+    img {
+      width: 100%;
+    }
+  }
+}

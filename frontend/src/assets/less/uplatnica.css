@@ -1,0 +1,118 @@
+.uplatnica-form-img {
+  border: 2px solid #ffffff;
+  width: 931px;
+  height: 380px;
+  background-size: cover;
+  background-image: url("../images/uplatnica.jpg");
+  margin: 2em auto;
+  position: relative;
+}
+.uplatnica-form-img .platitelj {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  max-width: 200px;
+  left: 31px;
+  top: 44px;
+}
+.uplatnica-form-img .platitelj input {
+  height: 20px;
+  border: 0px solid #a26b6b;
+}
+.uplatnica-form-img .iban-primatelja {
+  position: absolute;
+  top: 121px;
+  left: 335px;
+  border: 0 solid transparent;
+  background-color: transparent;
+  font-size: 12px;
+  letter-spacing: 8px;
+  max-width: 312px;
+  width: 100%;
+}
+.uplatnica-form-img .iznos {
+  left: 452px;
+  position: absolute;
+  top: 24px;
+  background: transparent;
+  font-size: 18px;
+  letter-spacing: 0px;
+  border: 0 solid;
+  max-width: 200px;
+  text-align: end;
+  letter-spacing: 3px;
+}
+.uplatnica-form-img .valuta {
+  width: 50px;
+  height: 27px;
+  top: 26px;
+  position: absolute;
+  left: 334px;
+  border: 0 solid;
+  background: transparent;
+}
+.uplatnica-form-img .primatelj {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  max-width: 200px;
+  left: 31px;
+  top: 170px;
+}
+.uplatnica-form-img .primatelj input {
+  height: 20px;
+  border: 0px solid #a26b6b;
+}
+.uplatnica-form-img .model-placanja {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: "";
+  position: absolute;
+  top: 150px;
+  background: transparent;
+  left: 232px;
+  letter-spacing: 7px;
+  width: 57px;
+  height: 27px;
+  border: 0 solid;
+}
+.uplatnica-form-img .opis-placanja {
+  width: 249px;
+  position: absolute;
+  background: transparent;
+  top: 178px;
+  left: 384px;
+  height: 17px;
+  border: 0 solid;
+}
+.uplatnica-form-img .poziv-na-broj-primatelja {
+  height: 27px;
+  width: 200px;
+  position: absolute;
+  top: 148px;
+  left: 323px;
+  border: 0 solid;
+  background: transparent;
+}
+.uplatnica-form-img .sifra-namjene {
+  height: 27px;
+  position: absolute;
+  top: 187px;
+  left: 232px;
+  border: 0 solid;
+  background: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: "";
+}
+.uplatnica-form-img .generated-barcode {
+  position: absolute;
+  width: 250px;
+  left: 30px;
+  bottom: 33px;
+}
+.uplatnica-form-img .generated-barcode img {
+  width: 100%;
+}

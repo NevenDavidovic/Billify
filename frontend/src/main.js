@@ -6,6 +6,7 @@ import store from "./store";
 import "./assets/less/home.less";
 import "./assets/less/receivers.less";
 import "./assets/less/style.less";
+import "./assets/less/uplatnica.less";
 
 const app = createApp(App);
 
