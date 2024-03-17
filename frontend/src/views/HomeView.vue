@@ -82,7 +82,6 @@
 </template>
 
 <script>
-import PaymentSlip from "@/components/PaymentSlip.vue";
 export default {
   data() {
     return {
@@ -92,9 +91,7 @@ export default {
   created() {},
 
   mounted() {},
-  components: {
-    PaymentSlip,
-  },
+  components: {},
   methods: {},
 };
 </script>
