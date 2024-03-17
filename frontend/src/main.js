@@ -7,6 +7,7 @@ import "./assets/less/home.less";
 import "./assets/less/receivers.less";
 import "./assets/less/style.less";
 import "./assets/less/uplatnica.less";
+import "./assets/less/login.less";
 
 const app = createApp(App);
 

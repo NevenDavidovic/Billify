@@ -5,6 +5,9 @@ import BarcodeGenerator from "@/views/BarcodeGenerator.vue";
 import ReceiversView from "@/views/ReceiversView.vue";
 import StatsView from "@/views/StatsView.vue";
 import PaymentView from "@/views/PaymentView.vue";
+import LoginForm from "@/views/LoginForm.vue";
+import SignupForm from "@/views/SignupForm.vue";
+
 const routes = [
   {
     path: "/",
@@ -36,6 +39,16 @@ const routes = [
     path: "/statistics",
     name: "statistics",
     component: StatsView,
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: LoginForm,
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: SignupForm,
   },
 ];
 

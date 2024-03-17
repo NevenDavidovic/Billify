@@ -1,0 +1,80 @@
+.login-container {
+  background: linear-gradient(45deg, black, #ff8900);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  text-align: left;
+
+  .login-form {
+    max-width: 500px;
+    min-width: 35%;
+    margin: auto;
+    background-color: white;
+    border-radius: 24px;
+    border: 1px solid #db9f58;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 40px;
+
+    h2 {
+      font-weight: 600;
+    }
+    p {
+      font-weight: 500;
+      margin-bottom: 1em;
+      color: gray;
+    }
+    label {
+      font-weight: 400;
+      text-align: left;
+      font-size: 16px;
+      color: gray;
+    }
+    input {
+      height: 40px;
+      border-radius: 4px;
+      border: 1px solid #db9f58;
+      padding-left: 15px;
+    }
+    button {
+      margin-top: 1em;
+      margin-bottom: 1em;
+      cursor: pointer;
+      width: 100%;
+      padding: 12px 16px;
+      background-color: #db9f58;
+      color: white;
+      border: 0px solid white;
+      border-radius: 4px;
+    }
+    .or-el {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      span {
+        width: 90%;
+        height: 1px;
+        border-top: 1px solid #db9f58;
+        margin-top: 1px;
+      }
+    }
+    .register-msg {
+      margin-top: 1em;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      gap: 5px;
+      .txt-msg-gold {
+        a {
+          color: #db9f58;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
