@@ -2,8 +2,7 @@
 
 .home-view {
   width: 100%;
-
-  background: @primary-color;
+  background: linear-gradient(45deg, black, #ff8900);
   padding: 150px 0;
   .container {
     display: flex;
@@ -25,7 +24,23 @@
       .btn-white {
         max-width: max-content;
         width: max-content;
-        padding: 8px 15px;
+        padding: 8px 15px 5px 15px;
+        svg {
+          margin-bottom: 8px;
+        }
+        &:not:hover {
+          svg {
+            transition: rotate 1s ease-in-out;
+          }
+        }
+        &:hover {
+          background-color: #111827;
+          transition: all 1s ease-in-out;
+          svg {
+            rotate: 90deg;
+            transition: all 0.5s ease-in-out;
+          }
+        }
       }
     }
     .right-item-cards {
@@ -41,8 +56,27 @@
         gap: 24px;
         flex: 1;
       }
+      .grid-item-1 {
+        .first-item {
+          animation: transitionFirst 1s ease-in-out;
+          transition: all 1s ease-in-out;
+        }
+        .second-item {
+          animation: transitionSecond 1s ease-in-out;
+          transition: all 1s ease-in-out;
+        }
+      }
       .grid-item-2 {
         margin-top: 50px;
+
+        .third-item {
+          animation: 1s transitionThird ease-in-out;
+          transition: all 1s ease-in-out;
+        }
+        .fourth-item {
+          animation: 1s transitionFourth ease-in-out;
+          transition: all 1s ease-in-out;
+        }
       }
 
       .item-card {
@@ -52,9 +86,11 @@
         gap: 30px;
         align-items: center;
         padding: 60px 25px;
-        border-radius: 8px;
+        border-radius: 25px;
         transition: all 0.3s ease-in-out;
         &:hover {
+          transform: scale(105%, 105%);
+          transition: all 0.3s ease-in-out;
           box-shadow: 0 0 20px 0 #d9e2ec;
         }
         img {
@@ -70,5 +106,112 @@
         }
       }
     }
+  }
+
+  .claim-end {
+    margin-top: 40px;
+    padding: 50px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    h2 {
+      color: white;
+      font-size: 40px;
+      max-width: 600px;
+      margin: auto;
+      font-weight: 600;
+      span {
+        background: -webkit-linear-gradient(#eee, #000000);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+
+    p {
+      color: white;
+      font-size: 28px;
+      color: gray;
+    }
+
+    .two-btn {
+      padding-top: 2em;
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      justify-items: center;
+
+      a:first-child {
+        padding-top: 5px;
+        text-decoration: none;
+        background: rgb(17, 24, 39);
+        color: white;
+        padding: 10px 30px;
+        border-radius: 8px;
+        font-size: 18px;
+        &:not:hover {
+          transition: all 1s ease-in-out;
+        }
+        &:hover {
+          background: rgb(27, 40, 69);
+          transition: all 1s ease-in-out;
+          box-shadow: 0 0 20px 0 #d9e2ec;
+        }
+      }
+
+      a:nth-child(2) {
+        color: white;
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+//Keyframe animations for the homepage
+
+@keyframes transitionFirst {
+  0% {
+    transform: translate(-100px, -100px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes transitionSecond {
+  0% {
+    transform: translate(-100px, 110px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes transitionThird {
+  0% {
+    transform: translate(100px, -100px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes transitionFourth {
+  0% {
+    transform: translate(100px, 110px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background: linear-gradient(to bottom, white, rgb(4, 4, 21));
+  }
+
+  100% {
+    background-color: rgb(4, 4, 21);
   }
 }

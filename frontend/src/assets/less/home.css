@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 body {
-  background-color: #db9f58;
+  background-color: linear-gradient(45deg, black, #ff8900);
   color: #3d4c4d;
 }
 .about {
@@ -318,7 +318,7 @@ ul {
 }
 .home-view {
   width: 100%;
-  background: #db9f58;
+  background: linear-gradient(45deg, black, #ff8900);
   padding: 150px 0;
 }
 .home-view .container {
@@ -343,7 +343,21 @@ ul {
 .home-view .container .left-item-text .btn-white {
   max-width: max-content;
   width: max-content;
-  padding: 8px 15px;
+  padding: 8px 15px 5px 15px;
+}
+.home-view .container .left-item-text .btn-white svg {
+  margin-bottom: 8px;
+}
+.home-view .container .left-item-text .btn-white:not:hover svg {
+  transition: rotate 1s ease-in-out;
+}
+.home-view .container .left-item-text .btn-white:hover {
+  background-color: #111827;
+  transition: all 1s ease-in-out;
+}
+.home-view .container .left-item-text .btn-white:hover svg {
+  rotate: 90deg;
+  transition: all 0.5s ease-in-out;
 }
 .home-view .container .right-item-cards {
   flex: 1;
@@ -358,8 +372,24 @@ ul {
   gap: 24px;
   flex: 1;
 }
+.home-view .container .right-item-cards .grid-item-1 .first-item {
+  animation: transitionFirst 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}
+.home-view .container .right-item-cards .grid-item-1 .second-item {
+  animation: transitionSecond 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}
 .home-view .container .right-item-cards .grid-item-2 {
   margin-top: 50px;
+}
+.home-view .container .right-item-cards .grid-item-2 .third-item {
+  animation: 1s transitionThird ease-in-out;
+  transition: all 1s ease-in-out;
+}
+.home-view .container .right-item-cards .grid-item-2 .fourth-item {
+  animation: 1s transitionFourth ease-in-out;
+  transition: all 1s ease-in-out;
 }
 .home-view .container .right-item-cards .item-card {
   background-color: white;
@@ -368,10 +398,12 @@ ul {
   gap: 30px;
   align-items: center;
   padding: 60px 25px;
-  border-radius: 8px;
+  border-radius: 25px;
   transition: all 0.3s ease-in-out;
 }
 .home-view .container .right-item-cards .item-card:hover {
+  transform: scale(105%, 105%);
+  transition: all 0.3s ease-in-out;
   box-shadow: 0 0 20px 0 #d9e2ec;
 }
 .home-view .container .right-item-cards .item-card img {
@@ -384,4 +416,98 @@ ul {
 .home-view .container .right-item-cards .item-card p {
   font-size: 16px;
   line-height: 2;
+}
+.home-view .claim-end {
+  margin-top: 40px;
+  padding: 50px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+.home-view .claim-end h2 {
+  color: white;
+  font-size: 40px;
+  max-width: 600px;
+  margin: auto;
+  font-weight: 600;
+}
+.home-view .claim-end h2 span {
+  background: -webkit-linear-gradient(#eee, #000000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.home-view .claim-end p {
+  color: white;
+  font-size: 28px;
+  color: gray;
+}
+.home-view .claim-end .two-btn {
+  padding-top: 2em;
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+}
+.home-view .claim-end .two-btn a:first-child {
+  padding-top: 5px;
+  text-decoration: none;
+  background: #111827;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 8px;
+  font-size: 18px;
+}
+.home-view .claim-end .two-btn a:first-child:not:hover {
+  transition: all 1s ease-in-out;
+}
+.home-view .claim-end .two-btn a:first-child:hover {
+  background: #1b2845;
+  transition: all 1s ease-in-out;
+  box-shadow: 0 0 20px 0 #d9e2ec;
+}
+.home-view .claim-end .two-btn a:nth-child(2) {
+  color: white;
+  font-size: 18px;
+}
+@keyframes transitionFirst {
+  0% {
+    transform: translate(-100px, -100px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+@keyframes transitionSecond {
+  0% {
+    transform: translate(-100px, 110px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+@keyframes transitionThird {
+  0% {
+    transform: translate(100px, -100px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+@keyframes transitionFourth {
+  0% {
+    transform: translate(100px, 110px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+@keyframes gradientAnimation {
+  0% {
+    background: linear-gradient(to bottom, white, #040415);
+  }
+  100% {
+    background-color: #040415;
+  }
 }
