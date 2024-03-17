@@ -78,12 +78,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Payment Slip Generator -->
-
-    <section class="payment-slip-img">
-      <PaymentSlip />
-    </section>
   </div>
 </template>
 

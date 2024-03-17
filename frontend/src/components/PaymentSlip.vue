@@ -481,8 +481,8 @@ export default {
       const element = document.getElementById("izvoz-uplatnice"); // Replace with your element ID
       const options = {
         filename: this.paymentParams.imePlatitelja + ".pdf",
-        image: { type: "jpeg", quality: 0.98 }, // Image options (if needed)
-        html2canvas: { scale: 2 }, // html2canvas options (if needed)
+        image: { type: "png", quality: 1.0 }, // Image options (if needed)
+        html2canvas: { scale: 1 }, // html2canvas options (if needed)
         jsPDF: { unit: "mm", format: "a4", orientation: "landscape" }, // jsPDF options (if needed)
       };
 
