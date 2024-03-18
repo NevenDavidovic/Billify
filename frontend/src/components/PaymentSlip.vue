@@ -370,13 +370,13 @@
         <option value="LIFI">Životno osiguranje</option>
       </select>
 
-      <input
+      <textarea
         class="opis-placanja"
         type="text"
         name=""
         id=""
         v-model="paymentParams.opisPlacanja"
-      />
+      ></textarea>
       <div class="last-item generated-barcode" id="barcode">
         <div v-if="barcodeImage">
           <img :src="barcodeImage" alt="Generated Barcode" />
@@ -467,13 +467,13 @@
         style="padding-bottom: 10px; height: 33px"
       />
 
-      <input
+      <textarea
         class="opis-placanja-desno"
         type="text"
         name=""
         id=""
         v-model="paymentParams.opisPlacanja"
-      />
+      ></textarea>
     </div>
 
     <div class="func-buttons">

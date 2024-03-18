@@ -5,7 +5,10 @@
         <SideNav />
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 1em; width: 100%">
+      <div
+        class="main-ps"
+        style="display: flex; flex-direction: column; gap: 1em; width: 100%"
+      >
         <br />
         <div v-for="user in users" :key="user.id">
           <PaymentSlip :userData="user" />
@@ -43,4 +46,12 @@ export default {
   },
 };
 </script>
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.main-ps {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  width: 100%;
+  background: white;
+}
+</style>

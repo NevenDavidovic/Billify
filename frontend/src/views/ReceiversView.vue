@@ -495,7 +495,9 @@ export default {
             row.querySelector("platiteljAdresa").textContent;
           const platiteljMjesto =
             row.querySelector("platiteljMjesto").textContent;
-          const iznos = row.querySelector("iznos").textContent;
+          const iznos = parseFloat(
+            row.querySelector("iznos").textContent.replace(",", ".")
+          );
           const pozivNaBrojPrimatelja = row.querySelector(
             "pozivNaBrojPrimatelja"
           ).textContent;

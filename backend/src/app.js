@@ -193,10 +193,20 @@ app.post("/save-organization", (req, res) => {
     slika,
   } = req.body; // Assuming these are the fields from your form
 
+  const slikaUrl = slika ? slika : "https://i.stack.imgur.com/l60Hf.png";
   // Perform database query to insert the form data
   db.query(
     "INSERT INTO organizacija (naziv, ulica,grad, e_mail,iban,datum_unosa_organizacije, status, slika ) VALUES ($1, $2, $3, $4, $5, $6, $7,$8)",
-    [naziv, ulica, grad, e_mail, iban, datum_unosa_organizacije, status, slika],
+    [
+      naziv,
+      ulica,
+      grad,
+      e_mail,
+      iban,
+      datum_unosa_organizacije,
+      status,
+      slikaUrl,
+    ],
     (err, result) => {
       if (err) {
         console.log("Error saving data:", err);
