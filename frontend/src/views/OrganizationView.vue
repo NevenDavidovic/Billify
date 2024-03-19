@@ -550,9 +550,34 @@ export default {
 
   .organization-item {
     border-radius: 14px;
+    transition: all 1s ease-in-out;
 
     max-width: 300px;
     height: 300px;
+    &not:hover {
+      transition: height 1s ease-in-out;
+      .upper-part-item {
+        transition: all 1s ease-in-out;
+        img {
+          transition: all 1s ease-in-out;
+        }
+      }
+    }
+    &:hover {
+      .upper-part-item {
+        img {
+          height: 241px;
+          transition: 1s ease-in-out;
+          opacity: 1;
+          border-bottom: 2px solid white;
+        }
+      }
+
+      .lower-part-item {
+        color: white;
+      }
+    }
+
     .upper-part-item {
       width: 300px;
       height: 150px;
@@ -573,6 +598,7 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      z-index: 100;
       .two-buttons {
         display: flex;
         gap: 10px;
