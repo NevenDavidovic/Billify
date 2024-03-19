@@ -159,7 +159,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #db9f58;
+  background: linear-gradient(45deg, black, #ff8900);
   transform-origin: bottom center;
   transition: transform 600ms cubic-bezier(0.48, 0, 0.12, 1);
   transform: skewY(9.3deg) scaleY(0);
