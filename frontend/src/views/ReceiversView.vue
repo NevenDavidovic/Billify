@@ -4,16 +4,23 @@
       <div class="aside">
         <SideNav />
       </div>
-
+      <br />
       <div class="about">
-        <div class="about-body"></div>
+        <div class="about-body">
+          <div class="search-wrapper">
+            <div class="container-search">
+              <input
+                type="text"
+                v-model="searchField"
+                @input="searchReceivers"
+              />
+              <div class="search"></div>
+            </div>
+          </div>
+        </div>
+        <br />
         <h1>Popis primatelja</h1>
-        <form action="" class="search-bar">
-          <input type="search" name="search" pattern=".*\S.*" required />
-          <button class="search-btn" type="submit">
-            <span>Search</span>
-          </button>
-        </form>
+        <br />
 
         <div class="about-body-child">
           <div class="three-buttons-data">
@@ -349,6 +356,7 @@ export default {
       uploadedFile: null,
       receiverData: [],
       isEditModal: true,
+      searchField: "",
 
       formData: {
         imePrezime: "",
@@ -381,6 +389,28 @@ export default {
   },
 
   methods: {
+    searchReceivers() {
+      // Filter primateljiData based on the searchField value
+      if (this.searchField.trim() === "") {
+        // If search field is empty, return all receivers
+        this.fetchDataPrimatelji();
+      } else {
+        // Filter primateljiData based on the searchField value
+        this.primateljiData = this.primateljiData.filter((receiver) => {
+          // Assuming you want to search based on ime_prezime, ulica, and grad fields
+          return (
+            receiver.ime_prezime
+              .toLowerCase()
+              .includes(this.searchField.toLowerCase()) ||
+            receiver.ulica
+              .toLowerCase()
+              .includes(this.searchField.toLowerCase()) ||
+            receiver.grad.toLowerCase().includes(this.searchField.toLowerCase())
+          );
+        });
+      }
+    },
+
     editReceiverData(id) {
       const filteredRow = this.primateljiData.find((row) => row.id === id);
       this.editData.id = id;
@@ -576,6 +606,7 @@ export default {
       try {
         const response1 = await axios.get("http://localhost:8081/receiver");
         this.primateljiData = response1.data.data;
+        console.log(response1);
       } catch (error) {
         console.log(error);
       } finally {
