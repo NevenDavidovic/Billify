@@ -424,10 +424,6 @@ export default {
       this.editData.model_placanja = filteredRow.model_placanja;
       this.editData.poziv_na_primatelja = filteredRow.poziv_na_primatelja;
 
-      // for (let key in this.editData) {
-      //   this.editData[key] = filteredRow[key];
-      // }
-
       this.openEditModal();
     },
 
@@ -444,7 +440,6 @@ export default {
         poziv_na_primatelja: this.editData.poziv_na_primatelja,
       };
 
-      // Make a PUT request to the backend endpoint to update the receiver data
       axios
         .put(`http://localhost:8081/update-receiver/${id}`, editedReceiverData)
         .then((response) => {
@@ -456,20 +451,15 @@ export default {
         .catch((error) => {
           console.error("Error updating receiver data:", error);
 
-          // Extract relevant information from the error object
           const errorMessage = error.response
             ? error.response.data.error
             : "Unknown error";
 
-          // Show an alert with the error message
           alert("Error updating receiver data: " + errorMessage);
-
-          // Handle errors accordingly
         });
     },
 
     generateBarcodeForAll() {
-      // Dispatch the entire array of receivers to the store
       this.$store.dispatch("saveUsers", this.primateljiData);
       this.$router.push({ name: "PaymentView" });
     },
@@ -533,7 +523,6 @@ export default {
           ).textContent;
           const opisPlacanja = row.querySelector("opisPlacanja").textContent;
 
-          // Append each row's data to the receiverData array
           this.receiverData.push({
             platiteljNaziv,
             platiteljAdresa,
@@ -544,10 +533,8 @@ export default {
           });
         });
 
-        // Optionally, you can log the entire receiverData array
         console.log("Receiver Data:", this.receiverData);
 
-        // Send data to the backend
         this.sendDataToBackend(this.receiverData);
       };
 
@@ -562,15 +549,13 @@ export default {
         console.log("Data sent to the backend:", response.data);
         alert("Data sent to backend!!");
         if (response.data.message) {
-          // Display a success message to the user
           alert(response.data.message);
-          // Optionally, perform any other actions after successful storage
         }
         this.closeModal();
       } catch (error) {
         console.error("Error sending data to the backend:", error);
         console.log("Full response:", error.response);
-        alert("Error sending data to the backend:", error); // Log the full response for more details
+        alert("Error sending data to the backend:", error);
       }
       this.fetchDataPrimatelji();
     },
@@ -582,7 +567,7 @@ export default {
           .then((response) => {
             console.log("Receiver deleted:", response.data);
             alert("Receiver deleted");
-            this.fetchDataPrimatelji(); // Update your data after deletion
+            this.fetchDataPrimatelji();
           })
           .catch((error) => {
             console.error("Error deleting receiver:", error);
@@ -610,7 +595,6 @@ export default {
       } catch (error) {
         console.log(error);
       } finally {
-        // Use the finally block to execute code after try/catch
         this.isLoading = false;
       }
     },
@@ -627,17 +611,14 @@ export default {
         this.closeModal();
         this.resetFormData();
         alert("Uspjeh");
-        // Optionally, perform any necessary actions after data is saved
 
-        // Add a log statement to check if fetchDataPrimatelji() is called
         console.log("Calling fetchDataPrimatelji...");
-        await this.fetchDataPrimatelji(); // Move inside the try block
+        await this.fetchDataPrimatelji();
         console.log("fetchDataPrimatelji completed.");
       } catch (error) {
         console.error("Error saving data:", error);
         console.log(this.formData);
         alert("ERROR", error);
-        // Handle errors accordingly
       }
     },
     closeModal() {
@@ -653,7 +634,6 @@ export default {
       this.isEditModal = false;
     },
     resetFormData() {
-      // Define the logic to reset your form data here
       for (let key in this.formData) {
         this.formData[key] = "";
       }
@@ -664,6 +644,18 @@ export default {
 
 <style>
 @media print {
+  .generiraj-barkod,
+  .uplatnica-form-img {
+    page-break-after: always;
+  }
+  .generiraj-barkod,
+  .uplatnica-form-img {
+    page-break-inside: avoid;
+  }
+
+  @page {
+    size: landscape;
+  }
   .btn-black {
     visibility: hidden;
   }
@@ -673,6 +665,15 @@ export default {
   }
   .header-class-navbar {
     display: none;
+  }
+  body {
+    background: white;
+  }
+  .window-print-all {
+    visibility: hidden;
+  }
+  .button-57 {
+    visibility: hidden;
   }
 }
 </style>

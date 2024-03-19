@@ -8,7 +8,7 @@ The Payment Slip Generator
 to do:
 
 -SEARCH in payment slips-DONE
--download the payment slips
+-download the payment slip-DONE
 -download all slips
 -opcija one of
 -slanje uplatnica

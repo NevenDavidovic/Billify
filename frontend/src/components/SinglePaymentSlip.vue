@@ -481,11 +481,15 @@
         Generiraj Barkod
       </button>
       <button @click="generatePDF" class="btn-black btn-preuzmi">
-        Preuzmi Uplatnicu
+        Preuzmi PDF Uplatnice
       </button>
 
       <button @click="sendEmailWithAttachment" class="btn-black btn-preuzmi">
         Pošalji uplatnicu
+      </button>
+
+      <button @click="windowPrint" class="btn-black btn-preuzmi">
+        Window Print
       </button>
     </div>
   </div>
@@ -549,6 +553,10 @@ export default {
     this.adjustPaymentParams();
   },
   methods: {
+    windowPrint() {
+      window.print();
+    },
+
     resetUserData() {
       this.$store.dispatch("resetUserData");
     },
