@@ -557,7 +557,11 @@ export default {
     },
 
     adjustPaymentParams() {
-      if (this.userData) {
+      // Apply adjustments to paymentParams based on userData
+      const user = this.$store.state.userData;
+      this.resetUserData();
+
+      if (this.userData && this.userData.length > 1) {
         // Example mapping, modify as needed
         this.paymentParams.imePlatitelja = this.userData.ime_prezime;
         this.paymentParams.adresaPlatitelja = this.userData.ulica;
@@ -569,6 +573,22 @@ export default {
         setTimeout(() => {
           this.generateBarcode();
         }, 100);
+      } else {
+        if (user) {
+          console.log("thisUSER", user);
+
+          this.paymentParams.imePlatitelja = user.ime_prezime;
+          this.paymentParams.adresaPlatitelja = user.ulica;
+          this.paymentParams.postanskiBrojIMjestoPlatitelja = user.grad;
+          this.paymentParams.iznosTransakcije = user.iznos;
+          this.paymentParams.pozivNaBroj = user.poziv_na_primatelja;
+          this.paymentParams.opisPlacanja = user.opis_placanja;
+
+          // adding a litle timepause
+          setTimeout(() => {
+            this.generateBarcode();
+          }, 100);
+        }
       }
     },
 
@@ -693,14 +713,5 @@ input {
 
 .btn-preuzmi {
   margin-left: 20px;
-}
-
-@media print {
-  .btn-black {
-    visibility: hidden;
-  }
-  aside {
-    visibility: hidden;
-  }
 }
 </style>

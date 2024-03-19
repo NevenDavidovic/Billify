@@ -5,7 +5,7 @@
         <SideNav />
       </div>
       <div class="main-content-barcode">
-        <PaymentSlip />
+        <SinglePaymentSlip />
       </div>
     </div>
   </div>
@@ -13,10 +13,11 @@
 
 <script>
 import SideNav from "@/components/SideNav.vue";
-import PaymentSlip from "@/components/PaymentSlip.vue";
+
 import generateBarcode from "pdf417";
 import axios from "axios";
 import html2pdf from "html2pdf.js";
+import SinglePaymentSlip from "@/components/SinglePaymentSlip.vue";
 
 export default {
   data() {
@@ -52,7 +53,7 @@ export default {
   },
   components: {
     SideNav,
-    PaymentSlip,
+    SinglePaymentSlip,
   },
 
   created() {},

@@ -661,3 +661,18 @@ export default {
   },
 };
 </script>
+
+<style>
+@media print {
+  .btn-black {
+    visibility: hidden;
+  }
+  .aside {
+    visibility: hidden;
+    display: none;
+  }
+  .header-class-navbar {
+    display: none;
+  }
+}
+</style>
