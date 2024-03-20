@@ -7,6 +7,7 @@ import StatsView from "@/views/StatsView.vue";
 import PaymentView from "@/views/PaymentView.vue";
 import LoginForm from "@/views/LoginForm.vue";
 import SignupForm from "@/views/SignupForm.vue";
+import AboutView from "@/views/AboutView.vue";
 
 const routes = [
   {
@@ -49,6 +50,11 @@ const routes = [
     path: "/register",
     name: "register",
     component: SignupForm,
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: AboutView,
   },
 ];
 
