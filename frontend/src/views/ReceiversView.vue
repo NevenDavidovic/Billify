@@ -390,14 +390,10 @@ export default {
 
   methods: {
     searchReceivers() {
-      // Filter primateljiData based on the searchField value
       if (this.searchField.trim() === "") {
-        // If search field is empty, return all receivers
         this.fetchDataPrimatelji();
       } else {
-        // Filter primateljiData based on the searchField value
         this.primateljiData = this.primateljiData.filter((receiver) => {
-          // Assuming you want to search based on ime_prezime, ulica, and grad fields
           return (
             receiver.ime_prezime
               .toLowerCase()

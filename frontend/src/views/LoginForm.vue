@@ -52,14 +52,11 @@ export default {
           password: this.passwordInput,
         });
 
-        // Handle the successful login response
         console.log("User logged in successfully. Email:", response.data.email);
         this.$store.commit("setUserEmail", response.data.email);
         console.log("User ID:", response.data.id);
         console.log("state-login", this.$store.state.userEmail);
-        alert("loggin");
       } catch (error) {
-        // Handle login errors, such as incorrect credentials
         alert("Error during login: " + error.response.data.error);
         console.error("Error during login:", error.response.data);
       }

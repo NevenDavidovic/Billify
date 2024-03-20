@@ -64,23 +64,23 @@ export default {
         this.resetInputFields();
         // Optionally, redirect to a login page or perform other actions
       } catch (error) {
-        // Log the entire error object
-        console.error("Full error object:", error);
+        console.error("Error during registration:", error);
 
-        // Log specific properties if available
         if (error.response) {
-          console.error("Response data:", error.response.data);
-          console.error("Response status:", error.response.status);
-          console.error("Response headers:", error.response.headers);
-        } else if (error.request) {
-          console.error("Request data:", error.request);
+          if (error.response.status === 409) {
+            alert(
+              "Email is already in use. Please use a different email address."
+            );
+          } else {
+            alert(
+              "An error occurred during registration. Please try again later."
+            );
+          }
         } else {
-          console.error("Error message:", error.message);
+          alert(
+            "Failed to connect to the server. Please check your internet connection."
+          );
         }
-
-        alert(
-          "An error occurred during registration. Please check the console for details."
-        );
       }
     },
   },

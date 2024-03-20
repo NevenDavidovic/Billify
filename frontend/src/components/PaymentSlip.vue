@@ -477,7 +477,7 @@
     </div>
 
     <div class="func-buttons">
-      <button @click="generateBarcode" class="btn-black generiraj-barkod">
+      <button @click="generateBarcode" class="btn-black">
         Generiraj Barkod
       </button>
       <button @click="generatePDF" class="btn-black btn-preuzmi">

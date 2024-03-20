@@ -51,17 +51,25 @@ app.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Check if the email is already registered
+    const existingUser = await db.query(
+      "SELECT * FROM korisnik WHERE e_mail = $1",
+      [email]
+    );
+    if (existingUser.rows.length > 0) {
+      return res.status(409).json({ error: "Email is already in use" });
+    }
+
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Use parameterized query to avoid SQL injection
+    // Insert the user into the database
     const queryString = `
       INSERT INTO korisnik (e_mail, password)
       VALUES ($1, $2)
       RETURNING *;
     `;
 
-    // Execute the query with parameters
     const result = await db.query(queryString, [email, hashedPassword]);
 
     res.status(201).json({

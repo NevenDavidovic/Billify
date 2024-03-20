@@ -189,3 +189,7 @@
   word-wrap: break-word;
   word-break: break-all;
 }
+.func-buttons {
+  display: flex;
+  justify-content: center;
+}
