@@ -24,13 +24,13 @@
 
         <div class="about-body-child">
           <div class="three-buttons-data">
-            <button class="btn-black" @click="openModal">
+            <button class="btn-black unos-primatelja" @click="openModal">
               + Unos Primatelja
             </button>
             <button class="btn-black" @click="generateBarcodeForAll">
               Pretvori u uplatnice
             </button>
-            <button class="btn-black" @click="deleteAllReceivers">
+            <button class="btn-black brisi-sve" @click="deleteAllReceivers">
               Briši sve
             </button>
           </div>

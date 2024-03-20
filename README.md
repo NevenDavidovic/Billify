@@ -9,7 +9,7 @@ to do:
 
 -SEARCH in payment slips-DONE
 -download the payment slip-DONE
--download all slips
+-download all slips-DONE
 -opcija one of
 -slanje uplatnica
 

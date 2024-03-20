@@ -334,3 +334,9 @@ input[type="file"]::file-selector-button:hover {
   opacity: 0.5;
   font-weight: bolder;
 }
+.unos-primatelja {
+  background: #009c1f !important;
+}
+.brisi-sve {
+  background: #ff1d1d !important;
+}
