@@ -1,5 +1,5 @@
 <template>
-  <div class="background-primary">
+  <div>
     <div class="generiraj-barkod container">
       <div class="aside">
         <SideNav />
@@ -484,7 +484,7 @@ export default {
     height: fit-content;
     .about-body {
       padding: 3.6em;
-      background-image: linear-gradient(to bottom, #db9f58 50%, white 50%);
+
       display: flex;
       flex-direction: column;
       gap: 1em;

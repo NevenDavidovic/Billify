@@ -4,7 +4,6 @@
   box-sizing: border-box;
 }
 body {
-  background-color: linear-gradient(45deg, black, #ff8900);
   color: #3d4c4d;
 }
 .about {

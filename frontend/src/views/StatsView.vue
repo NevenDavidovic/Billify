@@ -1,5 +1,5 @@
 <template>
-  <div class="background-primary page-statistika">
+  <div class="page-statistika">
     <div class="generiraj-barkod container">
       <div class="aside">
         <SideNav />

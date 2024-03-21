@@ -7,8 +7,6 @@
   width: 100%;
 }
 .generiraj-barkod .about .about-body {
-  padding: 3.6em;
-  background-image: linear-gradient(to bottom, #db9f58 50%, white 50%);
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -223,7 +221,6 @@ input[type="file"]::file-selector-button:hover {
   position: relative;
 }
 .search-wrapper .container-search {
-  position: absolute;
   margin: auto;
   top: 0;
   left: 0;

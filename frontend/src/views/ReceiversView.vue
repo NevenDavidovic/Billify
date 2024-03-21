@@ -1,10 +1,10 @@
 <template>
-  <div class="background-primary">
+  <div>
     <div class="generiraj-barkod container">
       <div class="aside">
         <SideNav />
       </div>
-      <br />
+
       <div class="about">
         <div class="about-body">
           <div class="search-wrapper">
@@ -18,9 +18,6 @@
             </div>
           </div>
         </div>
-        <br />
-        <h1>Popis primatelja</h1>
-        <br />
 
         <div class="about-body-child">
           <div class="three-buttons-data">

@@ -35,6 +35,14 @@
 import axios from "axios";
 
 export default {
+  beforeRouteEnter(to, from, next) {
+    document.body.style.background = "linear-gradient(90deg, #000000, #ff8a00)";
+    next();
+  },
+  beforeRouteUpdate(to, from, next) {
+    document.body.style.background = "linear-gradient(90deg, #000000, #ff8a00)";
+    next();
+  },
   data() {
     return {
       organizacijaData: null,
@@ -87,4 +95,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+body {
+  background: linear-gradient(90deg, #000000, #ff8a00) !important;
+}
+</style>
