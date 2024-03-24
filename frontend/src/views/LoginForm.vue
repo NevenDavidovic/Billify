@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import axios from "axios";
+//import axios from "axios";
 
 export default {
   data() {
@@ -47,18 +47,15 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post("http://localhost:8081/login", {
+        // Dispatch the login action with email and password
+        const redirectRoute = await this.$store.dispatch("login", {
           email: this.emailInput,
           password: this.passwordInput,
         });
-
-        console.log("User logged in successfully. Email:", response.data.email);
-        this.$store.commit("setUserEmail", response.data.email);
-        console.log("User ID:", response.data.id);
-        console.log("state-login", this.$store.state.userEmail);
+        this.$router.push(redirectRoute); // Redirect to the route returned by the login action
       } catch (error) {
-        alert("Error during login: " + error.response.data.error);
-        console.error("Error during login:", error.response.data);
+        // Handle login error
+        console.error("Error during login:", error);
       }
     },
   },

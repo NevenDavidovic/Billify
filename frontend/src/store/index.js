@@ -1,12 +1,13 @@
 import { createStore } from "vuex";
+import axios from "axios";
 
 export default createStore({
   state: {
     imeAplikacije: "Bilify",
     userData: null,
     users: [],
-    loggedUserEmail: null,
-    loggedUserId: null,
+    loggedInUser: null,
+    isLoggedIn: false,
   },
   mutations: {
     setUserData(state, userData) {
@@ -27,6 +28,15 @@ export default createStore({
     resetUserData(state) {
       state.userData = null;
     },
+    setLoggedInUser(state, user) {
+      state.loggedInUser = user;
+      state.isLoggedIn = true;
+    },
+    logout(state) {
+      state.userData = null;
+      state.loggedInUser = null;
+      state.isLoggedIn = false;
+    },
   },
   actions: {
     saveUserData({ commit }, userData) {
@@ -41,9 +51,33 @@ export default createStore({
     resetUserData({ commit }) {
       commit("resetUserData");
     },
+    async login({ commit }, { email, password }) {
+      try {
+        const response = await axios.post("http://localhost:8081/login", {
+          email: email,
+          password: password,
+        });
+        commit("setLoggedInUser", response.data);
+        // Optionally, you can commit mutations to set other user data if needed
+        alert("You have successfully logged in");
+        // Redirect to '/about' after successful login
+        return "/about";
+      } catch (error) {
+        alert("Error during login: " + error.response.data.error);
+        console.error("Error during login:", error.response.data);
+        throw error; // Re-throw the error to handle it in the component
+      }
+    },
+    logout({ commit }) {
+      commit("logout");
+    },
   },
   getters: {
     getUserData: (state) => state.userData,
     getUsers: (state) => state.users,
+    getLoggedInUser: (state) => state.loggedInUser,
+    isLoggedIn: (state) => state.isLoggedIn,
+    getUserEmail: (state) =>
+      state.loggedInUser ? state.loggedInUser.email : null,
   },
 });

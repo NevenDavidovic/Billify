@@ -211,10 +211,17 @@ export default {
       organizacijaData: null,
     };
   },
-  created() {},
 
   mounted() {},
   components: {},
+  computed: {
+    userEmail() {
+      return this.$store.getters.getUserEmail;
+    },
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
+  },
   methods: {},
 };
 </script>

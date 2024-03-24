@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "@/store";
 import HomeView from "../views/HomeView.vue";
 import OrganizationView from "@/views/OrganizationView.vue";
 import BarcodeGenerator from "@/views/BarcodeGenerator.vue";
@@ -19,27 +20,32 @@ const routes = [
     path: "/organization",
     name: "organization",
     component: OrganizationView,
+    meta: { requiresAuth: true },
   },
   {
     path: "/barcode-generator",
     name: "BarcodeGenerator",
     component: BarcodeGenerator,
     props: (route) => ({ user: route.query.user }),
+    meta: { requiresAuth: true },
   },
   {
     path: "/receiver",
     name: "receiver",
     component: ReceiversView,
+    meta: { requiresAuth: true },
   },
   {
     path: "/payment-slip-generator",
     name: "PaymentView",
     component: PaymentView,
+    meta: { requiresAuth: true },
   },
   {
     path: "/statistics",
     name: "statistics",
     component: StatsView,
+    meta: { requiresAuth: true },
   },
   {
     path: "/login",
@@ -55,12 +61,30 @@ const routes = [
     path: "/about",
     name: "about",
     component: AboutView,
+    meta: { requiresAuth: true },
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  // Check if the route requires authentication
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    // Check if the user is logged in
+    if (!store.getters.isLoggedIn) {
+      // If the user is not logged in, redirect to the login page
+      next({ name: "login" });
+    } else {
+      // If the user is logged in, allow navigation to proceed
+      next();
+    }
+  } else {
+    // If the route does not require authentication, allow navigation to proceed
+    next();
+  }
 });
 
 export default router;

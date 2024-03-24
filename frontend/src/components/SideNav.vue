@@ -210,7 +210,7 @@ aside {
   width: 300px;
   padding-left: 20px;
   height: 100vh;
-  background: linear-gradient(90deg, #000000, #ff8a00);
+  background: transparent;
   border-radius: 20px;
   margin-top: 15px;
 }

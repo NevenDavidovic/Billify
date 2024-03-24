@@ -85,6 +85,8 @@ export default {
   gap: 1em;
   width: 100%;
   background: white;
+
+  height: fit-content;
 }
 
 .window-print-all {

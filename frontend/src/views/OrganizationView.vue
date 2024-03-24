@@ -41,10 +41,7 @@
         <h3 class="popis-org-title">Popis organizacija</h3>
 
         <div class="data-organization-inactive">
-          <div v-if="isLoading">
-            <!-- Show loading spinner or message -->
-            Loading...
-          </div>
+          <div v-if="isLoading">Loading...</div>
 
           <div v-for="(item, index) in inactiveOrganization" :key="index">
             <div class="organization-item">
@@ -165,7 +162,6 @@
           </div>
 
           <div v-if="!isLoading && organizacijaData.length === 0">
-            <!-- Show a message when there is no data -->
             No data available
           </div>
         </div>
@@ -268,7 +264,6 @@
       >
         SPREMI
       </button>
-      <!-- Submit button to save changes -->
     </form>
   </div>
 
@@ -281,7 +276,7 @@ import SideNav from "@/components/SideNav.vue";
 
 export default {
   components: {
-    SideNav, // Register the HeaderNavbar component
+    SideNav,
   },
   data() {
     return {
@@ -333,7 +328,7 @@ export default {
           const status1Rows = this.organizacijaData.filter(
             (row) => row.status === 1
           );
-          // aktivna i inaktivne organizacije
+
           this.activeOrganization = status1Rows;
           this.inactiveOrganization = status0Rows;
           console.log("Status 0 Data:", this.status0Data);
@@ -346,7 +341,7 @@ export default {
           this.isLoading = false;
         });
     },
-    // Assuming you have a method like saveEditedItem in your Vue component
+
     saveEditedItem(id) {
       const editedData = {
         naziv: this.editableItem.naziv,
@@ -360,20 +355,17 @@ export default {
       };
       console.log("Editd Data", this.editedData);
       console.log("Id", id);
-      // Make a PUT request to the backend endpoint to update the data
+
       axios
         .put(`http://localhost:8081/update-organization/${id}`, editedData)
         .then((response) => {
           console.log("Data updated:", response.data);
           this.fetchData();
-
-          // Optionally, perform any necessary actions after data is updated
         })
         .catch((error) => {
           console.error("Error updating data:", error);
           alert("ERROR!!", error);
           return;
-          // Handle errors accordingly
         });
 
       this.toogleEditData();

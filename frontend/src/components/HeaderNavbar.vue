@@ -133,11 +133,29 @@
       </div>
 
       <div class="right-side-btn">
-        <router-link to="/login" class="login-btn" id="btnLoggin"
+        {{ userEmail }}
+
+        <router-link
+          to="/login"
+          class="login-btn"
+          id="btnLoggin"
+          v-if="!isLoggedIn"
           >Log In</router-link
         >
-        <router-link class="signup-btn" to="/register" id="btnSignUp"
+        <router-link
+          class="signup-btn"
+          to="/register"
+          id="btnSignUp"
+          v-if="!isLoggedIn"
           >Sign Up</router-link
+        >
+        <router-link
+          class="signup-btn"
+          to="/"
+          id="btnLogOut"
+          v-if="isLoggedIn"
+          @click="logout"
+          >Log out</router-link
         >
       </div>
     </nav>
@@ -149,6 +167,14 @@ export default {
   name: "HeaderNavbar",
   props: {
     msg: String,
+  },
+  computed: {
+    userEmail() {
+      return this.$store.getters.getUserEmail;
+    },
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
   },
   methods: {
     // changeStyle() {
@@ -165,6 +191,11 @@ export default {
     //     console.log(this.$route.path);
     //   }
     // },
+    logout() {
+      // Dispatch the logout action from Vuex store
+      this.$store.dispatch("logout");
+      // Optionally, redirect the user after logout
+    },
   },
   mounted() {
     // this.changeStyle();
@@ -197,6 +228,7 @@ export default {
     .right-side-btn {
       display: flex;
       gap: 1em;
+      align-items: center;
       .signup-btn,
       .login-btn {
         border-radius: 4px;

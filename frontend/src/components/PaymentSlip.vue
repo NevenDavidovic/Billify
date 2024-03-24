@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="payment-slip-container">
     <div class="uplatnica-form-img" id="izvoz-uplatnice">
       <div class="platitelj">
         <input
@@ -641,6 +641,9 @@ export default {
 };
 </script>
 <style scoped lang="less">
+.payment-slip-container {
+  background: white;
+}
 input {
   padding-left: 5px;
 }

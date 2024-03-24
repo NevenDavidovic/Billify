@@ -5,6 +5,7 @@
 }
 body {
   color: #3d4c4d;
+  background: linear-gradient(90deg, black, #ff8900);
 }
 .about {
   height: fit-content;
@@ -19,7 +20,7 @@ body {
   margin: auto;
 }
 .background-primary {
-  background-color: #db9f58;
+  background: linear-gradient(90deg, #000000, #ff8a00);
   color: #3d4c4d;
 }
 .btn-black {

@@ -68,7 +68,8 @@ export default {
         });
 
         console.log("Registration successful:", response.data);
-        alert("Registration successful:", response.data);
+        alert("Registration successful! Please LogIn:", response.data);
+        this.$router.push("/login");
         this.resetInputFields();
         // Optionally, redirect to a login page or perform other actions
       } catch (error) {
