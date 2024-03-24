@@ -12,6 +12,22 @@ app.use(cors());
 
 //Handling registration and login
 const bcrypt = require("bcrypt");
+let loggedInUserId = null;
+
+app.post("/logout", (req, res) => {
+  try {
+    // Reset the loggedInUserId variable to null
+    loggedInUserId = null;
+
+    // Optionally, perform any other cleanup or logout tasks
+
+    // Send a success response
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    console.error("Error during logout:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 app.post("/login", async (req, res) => {
   try {
@@ -34,6 +50,10 @@ app.post("/login", async (req, res) => {
       // If the passwords don't match, return an error
       return res.status(401).json({ error: "Invalid credentials" });
     }
+
+    // Store the user ID in the variable
+    loggedInUserId = result.rows[0].id;
+    console.log(loggedInUserId);
 
     // If everything is okay, return a success message
     res.status(200).json({
@@ -98,7 +118,7 @@ app.post("/save-receiver", (req, res) => {
   console.log("request body", req.body); // Log the request body
   // Perform database query to insert the form data into the table
   db.query(
-    "INSERT INTO primatelji_uplatnice (ime_prezime, ulica, grad, e_mail, iznos,datum_unosa_primatelja,opis_placanja,model_placanja,poziv_na_primatelja) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+    "INSERT INTO primatelji_uplatnice (ime_prezime, ulica, grad, e_mail, iznos,datum_unosa_primatelja,opis_placanja,model_placanja,poziv_na_primatelja,id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)",
     [
       imePrezime,
       adresaStanovanja,
@@ -109,6 +129,7 @@ app.post("/save-receiver", (req, res) => {
       opisPlacanja,
       model_placanja,
       poziv_na_primatelja,
+      loggedInUserId,
     ],
     (err, result) => {
       if (err) {
@@ -124,23 +145,34 @@ app.post("/save-receiver", (req, res) => {
 //DELETE ALL
 
 app.delete("/delete-all-receivers", (req, res) => {
-  // Perform a query to delete all rows from the table
-  db.query("DELETE FROM primatelji_uplatnice", (err, result) => {
-    if (err) {
-      console.log("Error deleting receivers data:", err);
-      return res.status(500).json({ error: err.message });
+  // Use the loggedInUserId global variable to delete data only for the logged-in user
+  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+
+  // Perform a query to delete all rows from the table for the logged-in user
+  db.query(
+    "DELETE FROM primatelji_uplatnice WHERE id_korisnik = $1",
+    [loggedInUserIdCopy], // Use loggedInUserId directly in the query
+    (err, result) => {
+      if (err) {
+        console.log("Error deleting receivers data:", err);
+        return res.status(500).json({ error: err.message });
+      }
+      console.log(
+        "All receivers data deleted successfully for the logged-in user"
+      );
+      res.status(200).json({
+        message:
+          "All receivers data deleted successfully for the logged-in user",
+      });
     }
-    console.log("All receivers data deleted successfully");
-    res
-      .status(200)
-      .json({ message: "All receivers data deleted successfully" });
-  });
+  );
 });
 
 //XML/Excell data manipulation
 
 app.post("/save-receivers", (req, res) => {
   const receiverData = req.body;
+  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
 
   // Create an array to store the promises of each insert operation
   const insertPromises = receiverData.map((receiver) => {
@@ -150,9 +182,9 @@ app.post("/save-receivers", (req, res) => {
         `
         INSERT INTO primatelji_uplatnice (
           ime_prezime, ulica, grad, e_mail, iznos,
-          datum_unosa_primatelja, opis_placanja, model_placanja, poziv_na_primatelja
+          datum_unosa_primatelja, opis_placanja, model_placanja, poziv_na_primatelja, id_korisnik
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         `,
         [
           receiver.platiteljNaziv,
@@ -164,6 +196,7 @@ app.post("/save-receivers", (req, res) => {
           receiver.opisPlacanja,
           null, // model_placanja (You mentioned it should be null in your example)
           receiver.pozivNaBrojPrimatelja,
+          loggedInUserIdCopy,
         ],
         (err, result) => {
           if (err) {
@@ -178,13 +211,15 @@ app.post("/save-receivers", (req, res) => {
     });
   });
 
-  // Wait for all promises to resolve (all insert operations to complete)
+  // Execute all insert promises concurrently
   Promise.all(insertPromises)
-    .then(() => {
-      res.status(200).json({ message: "Receivers data saved successfully" });
+    .then((results) => {
+      console.log("All receiver data saved successfully");
+      res.status(200).json({ message: "All receiver data saved successfully" });
     })
     .catch((error) => {
-      res.status(500).json({ error: error.message });
+      console.log("Error saving receiver data:", error);
+      res.status(500).json({ error: "Error saving receiver data" });
     });
 });
 
@@ -202,9 +237,11 @@ app.post("/save-organization", (req, res) => {
   } = req.body; // Assuming these are the fields from your form
 
   const slikaUrl = slika ? slika : "https://i.stack.imgur.com/l60Hf.png";
+  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+
   // Perform database query to insert the form data
   db.query(
-    "INSERT INTO organizacija (naziv, ulica,grad, e_mail,iban,datum_unosa_organizacije, status, slika ) VALUES ($1, $2, $3, $4, $5, $6, $7,$8)",
+    "INSERT INTO organizacija (naziv, ulica, grad, e_mail, iban, datum_unosa_organizacije, status, slika, id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
     [
       naziv,
       ulica,
@@ -214,14 +251,15 @@ app.post("/save-organization", (req, res) => {
       datum_unosa_organizacije,
       status,
       slikaUrl,
+      loggedInUserIdCopy, // Add loggedInUserId as the last parameter
     ],
     (err, result) => {
       if (err) {
-        console.log("Error saving data:", err);
+        console.log("Error saving organization data:", err);
         return res.status(500).json({ error: err.message });
       }
-      console.log("Data saved successfully");
-      res.status(200).json({ message: "Data saved successfully" });
+      console.log("Organization data saved successfully");
+      res.status(200).json({ message: "Organization data saved successfully" });
     }
   );
 });
@@ -413,28 +451,40 @@ app.get("/api/user/:userId", (req, res) => {
 //HOME
 
 app.get("/", (req, res) => {
-  db.query("SELECT * FROM organizacija", [], (err, result) => {
-    if (err) {
-      console.log("ERROR");
-      return res.status(500).json({ error: err.message });
+  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+
+  db.query(
+    "SELECT * FROM organizacija WHERE id_korisnik = $1",
+    [loggedInUserIdCopy],
+    (err, result) => {
+      if (err) {
+        console.log("ERROR");
+        return res.status(500).json({ error: err.message });
+      }
+      console.log("Successful Connection to organizacija");
+      res.json({ data: result.rows });
     }
-    console.log("Succesful Conection to organizacija");
-    res.json({ data: result.rows });
-  });
+  );
 });
 
 //Endpoint where we retrieve data from "primatelji_uptanice" table
 app.get("/receiver", (req, res) => {
-  db.query("SELECT * FROM primatelji_uplatnice", [], (err, result) => {
-    if (err) {
-      console.log("ERROR");
-      return res.status(500).json({
-        error: err.message,
-      });
+  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+
+  db.query(
+    "SELECT * FROM primatelji_uplatnice WHERE id_korisnik = $1",
+    [loggedInUserIdCopy],
+    (err, result) => {
+      if (err) {
+        console.log("ERROR");
+        return res.status(500).json({
+          error: err.message,
+        });
+      }
+      console.log("Successful connection to the primatelji table");
+      return res.json({ data: result.rows });
     }
-    console.log("succesful connection table -primatelji");
-    return res.json({ data: result.rows });
-  });
+  );
 });
 
 //delete a receiver
@@ -461,20 +511,26 @@ app.delete("/delete-receiver/:id", (req, res) => {
 
 app.get("/statistics", async (req, res) => {
   try {
+    const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+
     // Example: querying multiple tables asynchronously
     const cityNumber = await performQuery(
-      "SELECT grad,COUNT(*) FROM primatelji_uplatnice GROUP BY grad"
+      "SELECT grad, COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1 GROUP BY grad",
+      [loggedInUserIdCopy]
     );
+
     const largestPayers = await performQuery(
-      "SELECT * FROM primatelji_uplatnice ORDER BY iznos DESC LIMIT 3"
+      "SELECT * FROM primatelji_uplatnice WHERE id_korisnik = $1 ORDER BY iznos DESC LIMIT 3",
+      [loggedInUserIdCopy]
     );
 
     const numberOfPayers = await performQuery(
-      "SELECT COUNT(*) FROM primatelji_uplatnice"
+      "SELECT COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1",
+      [loggedInUserIdCopy]
     );
 
     // Sending the aggregated results as a JSON response
-    console.log("Succesful Conection to stats");
+    console.log("Successful Connection to stats");
     return res.json({
       cityNum: cityNumber,
       largestPay: largestPayers,

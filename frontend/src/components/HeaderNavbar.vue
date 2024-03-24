@@ -1,7 +1,7 @@
 <template>
   <div class="header-class-navbar" id="header-nav">
     <nav class="header-navbar-section">
-      <div class="left-side-logo">
+      <div class="left-side-logo" @click="redirectHome">
         <svg
           width="66"
           height="66"
@@ -140,14 +140,14 @@
           class="login-btn"
           id="btnLoggin"
           v-if="!isLoggedIn"
-          >Log In</router-link
+          >Prijavi se</router-link
         >
         <router-link
           class="signup-btn"
           to="/register"
           id="btnSignUp"
           v-if="!isLoggedIn"
-          >Sign Up</router-link
+          >Registriraj se</router-link
         >
         <router-link
           class="signup-btn"
@@ -155,7 +155,7 @@
           id="btnLogOut"
           v-if="isLoggedIn"
           @click="logout"
-          >Log out</router-link
+          >Odjavi se</router-link
         >
       </div>
     </nav>
@@ -163,6 +163,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "HeaderNavbar",
   props: {
@@ -191,10 +193,32 @@ export default {
     //     console.log(this.$route.path);
     //   }
     // },
+    redirectHome() {
+      this.$router.push("/");
+    },
     logout() {
       // Dispatch the logout action from Vuex store
-      this.$store.dispatch("logout");
-      // Optionally, redirect the user after logout
+      this.$store
+        .dispatch("logout")
+        .then(() => {
+          // If logout action succeeds, make a request to the server to reset the variable
+          axios
+            .post("http://localhost:8081/logout")
+            .then((response) => {
+              // Optionally, handle response from the server
+              console.log(response.data);
+            })
+            .catch((error) => {
+              // Handle error from server request
+              console.error("Error during logout:", error);
+            });
+
+          // Optionally, redirect the user after logout
+        })
+        .catch((error) => {
+          // Handle error from Vuex logout action
+          console.error("Error during logout:", error);
+        });
     },
   },
   mounted() {
@@ -224,6 +248,7 @@ export default {
       display: flex;
       gap: 1em;
       align-items: center;
+      cursor: pointer;
     }
     .right-side-btn {
       display: flex;
