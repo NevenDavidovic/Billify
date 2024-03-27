@@ -9,7 +9,7 @@
           za stvaranje uplatnica, uštedjet ćete dragocjeno vrijeme i olakšati
           proces plaćanja.
         </p>
-        <a href="" class="btn-white heroicon"
+        <router-link to="/barcode-generator" class="btn-white heroicon"
           >Generiraj Barkod
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +25,7 @@
               d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
             />
           </svg>
-        </a>
+        </router-link>
       </div>
       <div class="right-item-cards">
         <div class="grid-item-1">
@@ -198,7 +198,15 @@
       </h2>
       <p>Izradite uplatnice u kratkom roku te ubrzajte radni proces.</p>
       <div class="two-btn">
-        <a href="#" class="first">LogIn</a><a href="#" class="second">SignUp</a>
+        <router-link to="/login" class="first" id="btnLoggin" v-if="!isLoggedIn"
+          >Prijavi se</router-link
+        ><router-link
+          class="second"
+          to="/register"
+          id="btnSignUp"
+          v-if="!isLoggedIn"
+          >Registriraj se</router-link
+        >
       </div>
     </div>
   </div>

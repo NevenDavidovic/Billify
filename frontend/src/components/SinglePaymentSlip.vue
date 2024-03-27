@@ -480,17 +480,36 @@
       <button @click="generateBarcode" class="btn-black">
         Generiraj Barkod
       </button>
-      <button @click="generatePDF" class="btn-black btn-preuzmi">
+      <button
+        @click="generatePDF"
+        class="btn-black btn-preuzmi"
+        v-if="barcodeImage"
+      >
         Preuzmi PDF Uplatnice
       </button>
 
-      <button @click="sendEmailWithAttachment" class="btn-black btn-preuzmi">
+      <button
+        @click="sendEmailWithAttachment"
+        class="btn-black btn-preuzmi"
+        v-if="barcodeImage"
+      >
         Pošalji uplatnicu
       </button>
 
-      <button @click="windowPrint" class="btn-black btn-preuzmi">
+      <button
+        @click="windowPrint"
+        class="btn-black btn-preuzmi"
+        v-if="barcodeImage"
+      >
         Window Print
       </button>
+
+      <router-link
+        class="btn-black btn-preuzmi"
+        to="/organization"
+        id="btnSignUp"
+        >Promijeni organizaciju</router-link
+      >
     </div>
   </div>
 </template>

@@ -484,7 +484,7 @@
         Preuzmi Uplatnicu
       </button>
 
-      <button @click="sendEmailWithAttachment" class="btn-black btn-preuzmi">
+      <button @click="generatePDFAndSendEmail" class="btn-black btn-preuzmi">
         Pošalji uplatnicu
       </button>
     </div>
@@ -582,6 +582,39 @@ export default {
       };
 
       html2pdf().from(element).set(options).save();
+    },
+    generatePDFAndSendEmail() {
+      const element = document.getElementById("izvoz-uplatnice");
+      const htmlContent = element.innerHTML; // Extract HTML content
+
+      // Prepare data to send via email
+      const emailData = {
+        email: "nenoronnie@gmail.com", // Replace with recipient's email address
+        htmlContent: htmlContent,
+      };
+
+      console.log("Sending email data:", emailData); // Log email data before sending
+
+      // Send data to server for PDF generation and email sending
+      fetch("http://localhost:8081/send-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailData),
+      })
+        .then((response) => {
+          console.log("Response from server:", response); // Log server response
+          if (response.ok) {
+            alert("Email sent successfully!");
+          } else {
+            alert("Failed to send email.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Failed to send email.");
+        });
     },
 
     generateBarcode() {

@@ -10,6 +10,7 @@ import "./assets/less/receivers.less";
 import "./assets/less/style.less";
 import "./assets/less/uplatnica.less";
 import "./assets/less/login.less";
+import "./assets/css/_media-print.css";
 
 const app = createApp(App);
 

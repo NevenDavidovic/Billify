@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const db = require("./db");
+const puppeteer = require("puppeteer");
+const nodemailer = require("nodemailer");
 
 const app = express();
 app.use(morgan("combined"));
@@ -499,45 +501,63 @@ app.get("/statistics", async (req, res) => {
   }
 });
 
-app.post("/send-email", async (req, res) => {
-  const { fileId } = req.body;
+// Route to generate PDF and send via email
+app.post("/send-pdf", async (req, res) => {
+  console.log("Received request to send PDF");
 
-  // Read the PDF file content
-  const pdfAttachment = fs.readFileSync(`path/to/${fileId}.pdf`);
+  const { email, htmlContent } = req.body;
+  console.log("Email:", email);
+  console.log("HTML Content:", htmlContent);
 
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "nenoronnie@gmail.com",
+      pass: "yfsr qzjt gcjn rkee",
+    },
+  });
+
+  const browser = await puppeteer.launch();
+  console.log("Browser launched");
+
+  const page = await browser.newPage();
+  console.log("New page created");
+
+  await page.setContent(htmlContent); // Set the received HTML content
+  console.log("HTML content set on page");
+
+  const pdfBuffer = await page.pdf();
+  console.log("PDF generated");
+
+  // Sending email with PDF attachment
   const mailOptions = {
-    from: "your-email@example.com", // Replace with your sender email address
-    to: "recipient@example.com", // Replace with the recipient email address
-    subject: "Subject of the Email",
-    text: "Body of the Email",
+    from: "neven4380@live.com",
+    to: email,
+    subject: "PDF Attachment",
+    text: "Please find attached PDF.",
     attachments: [
       {
-        filename: "exported-document.pdf",
-        content: pdfAttachment,
-        encoding: "base64",
+        filename: "attachment.pdf",
+        content: pdfBuffer,
       },
     ],
   };
 
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent:", info.response);
-    res.status(200).send("Email sent successfully");
-  } catch (error) {
-    console.error("Error sending email:", error);
-    res.status(500).send("Error sending email");
-  }
-});
-
-function performQuery(sql) {
-  return new Promise((resolve, reject) => {
-    db.query(sql, [], (err, result) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(result.rows);
-    });
+  console.log("Sending email...");
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error sending email:", error);
+      res.status(500).send("Error sending email.");
+    } else {
+      console.log("Email sent: ", info.response);
+      res.status(200).send("Email sent successfully.");
+    }
   });
-}
+
+  await browser.close();
+  console.log("Browser closed");
+});
 
 app.listen(process.env.PORT || 8081);

@@ -634,39 +634,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@media print {
-  .generiraj-barkod,
-  .uplatnica-form-img {
-    page-break-after: always;
-  }
-  .generiraj-barkod,
-  .uplatnica-form-img {
-    page-break-inside: avoid;
-  }
-
-  @page {
-    size: landscape;
-  }
-  .btn-black {
-    visibility: hidden;
-  }
-  .aside {
-    visibility: hidden;
-    display: none;
-  }
-  .header-class-navbar {
-    display: none;
-  }
-  body {
-    background: white;
-  }
-  .window-print-all {
-    visibility: hidden;
-  }
-  .button-57 {
-    visibility: hidden;
-  }
-}
-</style>
