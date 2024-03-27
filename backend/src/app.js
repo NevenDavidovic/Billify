@@ -515,7 +515,7 @@ app.post("/send-pdf", async (req, res) => {
     secure: true,
     auth: {
       user: "nenoronnie@gmail.com",
-      pass: "yfsr qzjt gcjn rkee",
+      pass: "enter_your_app_gmail_code",
     },
   });
 
