@@ -511,23 +511,35 @@ app.delete("/delete-receiver/:id", (req, res) => {
 
 app.get("/statistics", async (req, res) => {
   try {
-    const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+    const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is set in the request
+    console.log("loggedInUserId:", loggedInUserId);
 
     // Example: querying multiple tables asynchronously
-    const cityNumber = await performQuery(
-      "SELECT grad, COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1 GROUP BY grad",
-      [loggedInUserIdCopy]
-    );
+    const cityNumberQuery =
+      "SELECT grad, COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1 GROUP BY grad";
+    const largestPayersQuery =
+      "SELECT * FROM primatelji_uplatnice WHERE id_korisnik = $1 ORDER BY iznos DESC LIMIT 3";
+    const numberOfPayersQuery =
+      "SELECT COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1";
 
-    const largestPayers = await performQuery(
-      "SELECT * FROM primatelji_uplatnice WHERE id_korisnik = $1 ORDER BY iznos DESC LIMIT 3",
-      [loggedInUserIdCopy]
-    );
+    const cityNumberResult = await db.query(cityNumberQuery, [
+      loggedInUserIdCopy,
+    ]);
+    console.log("cityNumberResult:", cityNumberResult.rows);
 
-    const numberOfPayers = await performQuery(
-      "SELECT COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1",
-      [loggedInUserIdCopy]
-    );
+    const largestPayersResult = await db.query(largestPayersQuery, [
+      loggedInUserIdCopy,
+    ]);
+    console.log("largestPayersResult:", largestPayersResult.rows);
+
+    const numberOfPayersResult = await db.query(numberOfPayersQuery, [
+      loggedInUserIdCopy,
+    ]);
+    console.log("numberOfPayersResult:", numberOfPayersResult.rows);
+
+    const cityNumber = cityNumberResult.rows;
+    const largestPayers = largestPayersResult.rows;
+    const numberOfPayers = numberOfPayersResult.rows;
 
     // Sending the aggregated results as a JSON response
     console.log("Successful Connection to stats");
