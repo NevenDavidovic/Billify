@@ -1,4 +1,3 @@
-// console.log("hello");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -10,18 +9,13 @@ app.use(morgan("combined"));
 app.use(bodyParser.json());
 app.use(cors());
 
-//Handling registration and login
 const bcrypt = require("bcrypt");
 let loggedInUserId = null;
 
 app.post("/logout", (req, res) => {
   try {
-    // Reset the loggedInUserId variable to null
     loggedInUserId = null;
 
-    // Optionally, perform any other cleanup or logout tasks
-
-    // Send a success response
     res.status(200).json({ message: "User logged out successfully" });
   } catch (error) {
     console.error("Error during logout:", error);
@@ -33,29 +27,23 @@ app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if the email exists in the database
     const result = await db.query("SELECT * FROM korisnik WHERE e_mail = $1", [
       email,
     ]);
 
     if (result.rows.length === 0) {
-      // If the email is not found, return an error
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    // Compare the hashed password from the database with the provided password
     const match = await bcrypt.compare(password, result.rows[0].password);
 
     if (!match) {
-      // If the passwords don't match, return an error
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    // Store the user ID in the variable
     loggedInUserId = result.rows[0].id;
     console.log(loggedInUserId);
 
-    // If everything is okay, return a success message
     res.status(200).json({
       message: "User logged in successfully",
       email,
@@ -71,7 +59,6 @@ app.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if the email is already registered
     const existingUser = await db.query(
       "SELECT * FROM korisnik WHERE e_mail = $1",
       [email]
@@ -80,10 +67,8 @@ app.post("/register", async (req, res) => {
       return res.status(409).json({ error: "Email is already in use" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert the user into the database
     const queryString = `
       INSERT INTO korisnik (e_mail, password)
       VALUES ($1, $2)
@@ -102,7 +87,6 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// Endpoint to save receiver data
 app.post("/save-receiver", (req, res) => {
   const {
     imePrezime,
@@ -115,8 +99,8 @@ app.post("/save-receiver", (req, res) => {
     model_placanja,
     poziv_na_primatelja,
   } = req.body;
-  console.log("request body", req.body); // Log the request body
-  // Perform database query to insert the form data into the table
+  console.log("request body", req.body);
+
   db.query(
     "INSERT INTO primatelji_uplatnice (ime_prezime, ulica, grad, e_mail, iznos,datum_unosa_primatelja,opis_placanja,model_placanja,poziv_na_primatelja,id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)",
     [
@@ -142,13 +126,9 @@ app.post("/save-receiver", (req, res) => {
   );
 });
 
-//DELETE ALL
-
 app.delete("/delete-all-receivers", (req, res) => {
-  // Use the loggedInUserId global variable to delete data only for the logged-in user
-  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+  const loggedInUserIdCopy = loggedInUserId;
 
-  // Perform a query to delete all rows from the table for the logged-in user
   db.query(
     "DELETE FROM primatelji_uplatnice WHERE id_korisnik = $1",
     [loggedInUserIdCopy], // Use loggedInUserId directly in the query
@@ -168,16 +148,12 @@ app.delete("/delete-all-receivers", (req, res) => {
   );
 });
 
-//XML/Excell data manipulation
-
 app.post("/save-receivers", (req, res) => {
   const receiverData = req.body;
-  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+  const loggedInUserIdCopy = loggedInUserId;
 
-  // Create an array to store the promises of each insert operation
   const insertPromises = receiverData.map((receiver) => {
     return new Promise((resolve, reject) => {
-      // Perform individual insert query for each record
       db.query(
         `
         INSERT INTO primatelji_uplatnice (
@@ -190,11 +166,11 @@ app.post("/save-receivers", (req, res) => {
           receiver.platiteljNaziv,
           receiver.platiteljAdresa,
           receiver.platiteljMjesto,
-          null, // eMail (You mentioned it should be null in your example)
+          null,
           receiver.iznos,
-          new Date(), // datumUnosaPrimatelja
+          new Date(),
           receiver.opisPlacanja,
-          null, // model_placanja (You mentioned it should be null in your example)
+          null,
           receiver.pozivNaBrojPrimatelja,
           loggedInUserIdCopy,
         ],
@@ -211,7 +187,6 @@ app.post("/save-receivers", (req, res) => {
     });
   });
 
-  // Execute all insert promises concurrently
   Promise.all(insertPromises)
     .then((results) => {
       console.log("All receiver data saved successfully");
@@ -223,7 +198,6 @@ app.post("/save-receivers", (req, res) => {
     });
 });
 
-// SAVING ORGANIZATION DATA TO TABLE
 app.post("/save-organization", (req, res) => {
   const {
     naziv,
@@ -234,12 +208,11 @@ app.post("/save-organization", (req, res) => {
     datum_unosa_organizacije,
     status,
     slika,
-  } = req.body; // Assuming these are the fields from your form
+  } = req.body;
 
   const slikaUrl = slika ? slika : "https://i.stack.imgur.com/l60Hf.png";
-  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+  const loggedInUserIdCopy = loggedInUserId;
 
-  // Perform database query to insert the form data
   db.query(
     "INSERT INTO organizacija (naziv, ulica, grad, e_mail, iban, datum_unosa_organizacije, status, slika, id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
     [
@@ -251,7 +224,7 @@ app.post("/save-organization", (req, res) => {
       datum_unosa_organizacije,
       status,
       slikaUrl,
-      loggedInUserIdCopy, // Add loggedInUserId as the last parameter
+      loggedInUserIdCopy,
     ],
     (err, result) => {
       if (err) {
@@ -263,8 +236,6 @@ app.post("/save-organization", (req, res) => {
     }
   );
 });
-
-//update receiver
 
 app.put("/update-receiver/:id", (req, res) => {
   const receiverId = req.params.id;
@@ -280,7 +251,6 @@ app.put("/update-receiver/:id", (req, res) => {
     poziv_na_primatelja,
   } = req.body;
 
-  // Perform database query to update the receiver data
   db.query(
     "UPDATE primatelji_uplatnice SET ime_prezime=$1, ulica=$2, grad=$3, e_mail=$4, iznos=$5, datum_unosa_primatelja=$6, opis_placanja=$7, model_placanja=$8, poziv_na_primatelja=$9 WHERE id=$10",
     [
@@ -298,7 +268,7 @@ app.put("/update-receiver/:id", (req, res) => {
     (err, result) => {
       if (err) {
         console.log("Error updating receiver data:", err);
-        // Send a more informative error response to the client
+
         return res.status(500).json({ error: "Internal Server Error" });
       }
       console.log("Receiver data updated successfully");
@@ -307,7 +277,6 @@ app.put("/update-receiver/:id", (req, res) => {
   );
 });
 
-// Update organization data in the table
 app.put("/update-organization/:id", (req, res) => {
   const organizationId = req.params.id;
   const {
@@ -321,7 +290,6 @@ app.put("/update-organization/:id", (req, res) => {
     slika,
   } = req.body;
 
-  // Perform database query to update the organization data
   db.query(
     "UPDATE organizacija SET naziv=$1, ulica=$2, grad=$3, e_mail=$4, iban=$5, datum_unosa_organizacije=$6, status=$7, slika=$8 WHERE id=$9",
     [
@@ -348,11 +316,9 @@ app.put("/update-organization/:id", (req, res) => {
   );
 });
 
-// Update organization status endpoint
 app.put("/update-organization-status/:id", (req, res) => {
   const organizationId = req.params.id;
 
-  // Set the clicked organization as active (status 1)
   db.query(
     "UPDATE organizacija SET status = 1 WHERE id = $1",
     [organizationId],
@@ -363,7 +329,6 @@ app.put("/update-organization-status/:id", (req, res) => {
       }
       console.log("Organization status updated successfully");
 
-      // Set other organizations as inactive (status 0)
       db.query(
         "UPDATE organizacija SET status = 0 WHERE id != $1",
         [organizationId],
@@ -382,13 +347,9 @@ app.put("/update-organization-status/:id", (req, res) => {
   );
 });
 
-// deleting organization item
-
-// Define a DELETE endpoint to remove an organization by its ID
 app.delete("/delete-organization/:id", (req, res) => {
   const organizationId = req.params.id;
 
-  // Perform database query to delete the organization by ID
   db.query(
     "DELETE FROM organizacija WHERE id = $1",
     [organizationId],
@@ -403,14 +364,9 @@ app.delete("/delete-organization/:id", (req, res) => {
   );
 });
 
-//Retrieve Selected User
-
-// Express.js backend route
 app.get("/api/user/:userId", (req, res) => {
   const userId = req.params.userId;
 
-  // Perform a database query to fetch user data based on userId
-  // Example: Assuming you have a "users" table
   db.query("SELECT * FROM users WHERE id = $1", [userId], (err, result) => {
     if (err) {
       console.log("Error fetching user data:", err);
@@ -426,13 +382,9 @@ app.get("/api/user/:userId", (req, res) => {
   });
 });
 
-// Endpoint to retrieve data from the "organizacija" table
-
 app.get("/api/user/:userId", (req, res) => {
   const userId = req.params.userId;
 
-  // Perform a database query to fetch user data based on userId
-  // Example: Assuming you have a "users" table
   db.query("SELECT * FROM users WHERE id = $1", [userId], (err, result) => {
     if (err) {
       console.log("Error fetching user data:", err);
@@ -451,7 +403,7 @@ app.get("/api/user/:userId", (req, res) => {
 //HOME
 
 app.get("/", (req, res) => {
-  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+  const loggedInUserIdCopy = loggedInUserId;
 
   db.query(
     "SELECT * FROM organizacija WHERE id_korisnik = $1",
@@ -467,9 +419,8 @@ app.get("/", (req, res) => {
   );
 });
 
-//Endpoint where we retrieve data from "primatelji_uptanice" table
 app.get("/receiver", (req, res) => {
-  const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is the global variable
+  const loggedInUserIdCopy = loggedInUserId;
 
   db.query(
     "SELECT * FROM primatelji_uplatnice WHERE id_korisnik = $1",
@@ -487,12 +438,9 @@ app.get("/receiver", (req, res) => {
   );
 });
 
-//delete a receiver
-
 app.delete("/delete-receiver/:id", (req, res) => {
   const receiverId = req.params.id;
 
-  // Perform a database query to delete the receiver by ID
   db.query(
     "DELETE FROM primatelji_uplatnice WHERE id = $1",
     [receiverId],
@@ -507,14 +455,11 @@ app.delete("/delete-receiver/:id", (req, res) => {
   );
 });
 
-//Endpoint for statistics
-
 app.get("/statistics", async (req, res) => {
   try {
-    const loggedInUserIdCopy = loggedInUserId; // Assuming loggedInUserId is set in the request
+    const loggedInUserIdCopy = loggedInUserId;
     console.log("loggedInUserId:", loggedInUserId);
 
-    // Example: querying multiple tables asynchronously
     const cityNumberQuery =
       "SELECT grad, COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1 GROUP BY grad";
     const largestPayersQuery =
