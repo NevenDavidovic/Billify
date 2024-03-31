@@ -1,10 +1,10 @@
 # Billify
 
 ## TO DO:
--Slanje elektroničkom poštom
--više templatea za slanje
--checkboxes for printing chosen ones
--provjera unosa
+- Slanje elektroničkom poštom
+- više templatea za slanje
+- checkboxes for printing chosen ones
+- provjera unosa
 
 
 
