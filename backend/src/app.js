@@ -5,11 +5,17 @@ const morgan = require("morgan");
 const db = require("./db");
 const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
+const multer = require("multer");
+const fs = require("fs");
 
 const app = express();
 app.use(morgan("combined"));
 app.use(bodyParser.json());
 app.use(cors());
+// Multer configuration
+const upload = multer({
+  storage: multer.memoryStorage(), // Store files in memory
+});
 
 const bcrypt = require("bcrypt");
 let loggedInUserId = null;
@@ -502,62 +508,52 @@ app.get("/statistics", async (req, res) => {
 });
 
 // Route to generate PDF and send via email
+// Backend code
 app.post("/send-pdf", async (req, res) => {
-  console.log("Received request to send PDF");
+  try {
+    console.log("Received request to send PDF");
 
-  const { email, htmlContent } = req.body;
-  console.log("Email:", email);
-  console.log("HTML Content:", htmlContent);
+    // Access the uploaded PDF file
+    const pdfFile = req.files.pdf;
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "nenoronnie@gmail.com",
-      pass: "enter_your_app_gmail_code",
-    },
-  });
+    const { email } = req.body;
+    console.log("Email:", email);
 
-  const browser = await puppeteer.launch();
-  console.log("Browser launched");
-
-  const page = await browser.newPage();
-  console.log("New page created");
-
-  await page.setContent(htmlContent); // Set the received HTML content
-  console.log("HTML content set on page");
-
-  const pdfBuffer = await page.pdf();
-  console.log("PDF generated");
-
-  // Sending email with PDF attachment
-  const mailOptions = {
-    from: "neven4380@live.com",
-    to: email,
-    subject: "PDF Attachment",
-    text: "Please find attached PDF.",
-    attachments: [
-      {
-        filename: "attachment.pdf",
-        content: pdfBuffer,
+    // Create transporter for sending email
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "nenoronnie@gmail.com", // Replace with your email address
+        pass: "yfsr qzjt gcjn rkee", // Replace with your email password
       },
-    ],
-  };
+    });
 
-  console.log("Sending email...");
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log("Error sending email:", error);
-      res.status(500).send("Error sending email.");
-    } else {
-      console.log("Email sent: ", info.response);
-      res.status(200).send("Email sent successfully.");
-    }
-  });
+    // Prepare email options
+    const mailOptions = {
+      from: "nenoronnie@gmail.com",
+      to: email,
+      subject: "Payment Slip PDF",
+      text: "Please find attached payment slip PDF.",
+      attachments: [
+        {
+          filename: pdfFile.name,
+          content: pdfFile.data, // PDF file data
+        },
+      ],
+    };
 
-  await browser.close();
-  console.log("Browser closed");
+    // Send email
+    console.log("Sending email...");
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log("Email sent:", info.response);
+    res.status(200).send("Email sent successfully.");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).send("Error sending email.");
+  }
 });
 
 app.listen(process.env.PORT || 8081);

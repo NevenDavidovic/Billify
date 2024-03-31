@@ -164,7 +164,7 @@
 
           <div v-if="!isLoading && primateljiData.length === 0">
             <!-- Show a message when there is no data -->
-            No data available
+            Nema podataka za prikazati
           </div>
         </div>
       </div>

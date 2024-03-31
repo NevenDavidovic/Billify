@@ -532,11 +532,6 @@ export default {
       organizacijaData: [],
       activeOrganization: [],
       inactiveOrganization: [],
-      emailjsData: {
-        publicKey: "5aYFp7gE3YWEEiT5w",
-        serviceID: "service_1p2urc8",
-        templateID: "template_5xmusaq",
-      },
     };
   },
   components: {},
@@ -585,38 +580,48 @@ export default {
     },
     generatePDFAndSendEmail() {
       const element = document.getElementById("izvoz-uplatnice");
-      const htmlContent = element.innerHTML; // Extract HTML content
 
-      // Prepare data to send via email
-      const emailData = {
-        email: "nenoronnie@gmail.com", // Replace with recipient's email address
-        htmlContent: htmlContent,
-      };
+      // Generate PDF
+      html2pdf()
+        .from(element)
+        .set({
+          filename: this.paymentParams.imePlatitelja + ".pdf",
+          html2canvas: { scale: 1 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+        })
+        .toPdf() // Generate PDF but don't save it locally
+        .outputPdf("blob") // Specify output as a Blob object
+        .then((pdfBlob) => {
+          // Prepare data to send via email
+          const formData = new FormData();
+          formData.append(
+            "pdf",
+            pdfBlob,
+            this.paymentParams.imePlatitelja + ".pdf"
+          );
 
-      console.log("Sending email data:", emailData); // Log email data before sending
-
-      // Send data to server for PDF generation and email sending
-      fetch("http://localhost:8081/send-pdf", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(emailData),
-      })
-        .then((response) => {
-          console.log("Response from server:", response); // Log server response
-          if (response.ok) {
-            alert("Email sent successfully!");
-          } else {
-            alert("Failed to send email.");
-          }
+          // Send data to server for email sending
+          fetch("http://localhost:8081/send-pdf", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => {
+              console.log("Response from server:", response); // Log server response
+              if (response.ok) {
+                alert("Email sent successfully!");
+              } else {
+                alert("Failed to send email.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("Failed to send email.");
+            });
         })
         .catch((error) => {
-          console.error("Error:", error);
-          alert("Failed to send email.");
+          console.error("Error generating PDF:", error); // Log any errors that occur during PDF generation
         });
     },
-
     generateBarcode() {
       this.concatenateStrings();
 
