@@ -1,6 +1,6 @@
 # Billify
 
-TO DO:
+## TO DO:
 -Slanje elektroničkom poštom
 -više templatea za slanje
 -checkboxes for printing chosen ones
@@ -8,7 +8,7 @@ TO DO:
 
 
 
-#Screenshots of the APP
+## Screenshots of the APP
 
 
 ![image](https://github.com/NevenDavidovic/Billify/assets/57957655/68487e47-910f-413e-9c5a-e6eb6e392d00)
