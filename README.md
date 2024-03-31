@@ -5,6 +5,7 @@
 - više templatea za slanje
 - checkboxes for printing chosen ones
 - provjera unosa
+- dotjeraj backend(rasporedi module/možda neki orm)
 
 
 
