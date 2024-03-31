@@ -1,12 +1,18 @@
 <template>
   <div class="">
-    <div>
-      Društvo Naša djeca Poreč ˙* Trg kneza Branimira 2, 52 440 Poreč * Tel.
-      +385 91 113 3334 * E-mail: dnd.porec1996@gmail.com www.dnd-porec.hr *
-      Facebook stranica: Društvo Naša djeca Poreč * IBAN: HR 5823800061110007659
-      * OIB: 71605996085
+    <div class="above-info" style="padding: 20px" id="logo-org">
+      <div
+        class="right-item"
+        v-for="(item, index) in activeOrganization"
+        :key="index"
+      >
+        <img width="150" :src="item.slika" alt="" />
+      </div>
+      {{ paymentParams.imePrimatelja }} ˙* {{ paymentParams.adresaPrimatelja }},
+      {{ paymentParams.postanskiBrojIMjestoPrimatelja }}* IBAN:{{
+        paymentParams.ibanPrimatelja
+      }}
     </div>
-
     <div class="uplatnica-form-img" id="izvoz-uplatnice">
       <div class="platitelj">
         <input

@@ -1,5 +1,19 @@
 <template>
   <div class="payment-slip-container">
+    <div class="above-info">
+      <div
+        class="right-item"
+        v-for="(item, index) in activeOrganization"
+        :key="index"
+      >
+        <img :src="item.slika" alt="" id="logo-org" width="150" />
+      </div>
+      {{ paymentParams.imePrimatelja }} ˙* {{ paymentParams.adresaPrimatelja }},
+      {{ paymentParams.postanskiBrojIMjestoPrimatelja }}* IBAN:{{
+        paymentParams.ibanPrimatelja
+      }}
+    </div>
+
     <div class="uplatnica-form-img" id="izvoz-uplatnice">
       <div class="platitelj">
         <input
@@ -579,49 +593,107 @@ export default {
       html2pdf().from(element).set(options).save();
     },
     generatePDFAndSendEmail() {
-      const element = document.getElementById("izvoz-uplatnice");
+      const barcodeElement = document.getElementById("barcode");
+      const logoOrganization = document.getElementById("logo-org");
+      // Extract HTML content
 
-      // Generate PDF
-      html2pdf()
-        .from(element)
-        .set({
-          filename: this.paymentParams.imePlatitelja + ".pdf",
-          html2canvas: { scale: 1 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
-        })
-        .toPdf() // Generate PDF but don't save it locally
-        .outputPdf("blob") // Specify output as a Blob object
-        .then((pdfBlob) => {
-          // Prepare data to send via email
-          const formData = new FormData();
-          formData.append(
-            "pdf",
-            pdfBlob,
-            this.paymentParams.imePlatitelja + ".pdf"
-          );
+      let imePrimatelja = this.paymentParams.imePrimatelja;
+      let imePlatitelja = this.paymentParams.imePlatitelja;
+      let adresaPlatitelja = this.paymentParams.adresaPlatitelja;
+      let adresaPrimatelja = this.paymentParams.adresaPrimatelja;
+      let iznosTransakcije = this.paymentParams.iznosTransakcije;
+      let postanskiBrojIMjestoPrimatelja =
+        this.paymentParams.postanskiBrojIMjestoPrimatelja;
+      let postanskiBrojIMjestoPlatitelja =
+        this.paymentParams.postanskiBrojIMjestoPlatitelja;
+      let ibanPrimatelja = this.paymentParams.ibanPrimatelja;
+      let modelPlacanja = this.paymentParams.modelPlacanja;
+      let pozivNaBroj = this.paymentParams.pozivNaBroj;
+      let sifraNamjene = this.paymentParams.sifraNamjene;
 
-          // Send data to server for email sending
-          fetch("http://localhost:8081/send-pdf", {
-            method: "POST",
-            body: formData,
-          })
-            .then((response) => {
-              console.log("Response from server:", response); // Log server response
-              if (response.ok) {
-                alert("Email sent successfully!");
-              } else {
-                alert("Failed to send email.");
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              alert("Failed to send email.");
-            });
+      let opisPlacanja = this.paymentParams.opisPlacanja;
+
+      const htmlContent = `
+
+      <table width="500" style="border: 5px solid #002D62; padding: 20px; background-color: #FFF; margin: auto; border-radius: 10px;">
+  <tr style="margin: 2em 0;">
+    <th width="100" align="left">
+      <div style="padding: 10px;">
+        ${logoOrganization.outerHTML}
+      </div>
+    </th>
+    <th align="left" width="300" style="color: #002D62;">
+      <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">${imePrimatelja}</p>
+      <p style="font-size: 16px; margin-bottom: 5px;">${adresaPrimatelja}, ${postanskiBrojIMjestoPrimatelja}</p>
+      <p style="font-size: 16px; margin-bottom: 5px;">IBAN: ${ibanPrimatelja}</p>
+    </th>
+  </tr>
+
+  <tr height="32"></tr>
+
+  <tr>
+    <td colspan="2" >
+      <div >
+        <h2>Informacije o plaćanju </h2>   
+        <p style="font-size: 16px; margin-bottom: 5px;"><b>IME I PREZIME:</b> ${imePlatitelja}</p>
+        <p style="font-size: 16px; margin-bottom: 5px;"><b>ADRESA:</b> ${adresaPlatitelja}, ${postanskiBrojIMjestoPlatitelja}</p>
+        <p style="font-size: 16px; margin-bottom: 5px;"><b>ŠIFRA NAMJENE:</b> ${sifraNamjene}</p>
+        <p style="font-size: 16px; margin-bottom: 5px;"><b>MODEL I POZIV NA BROJ:</b> ${modelPlacanja}${pozivNaBroj}</p>
+        <p style="font-size: 16px; margin-bottom: 5px;"><b>OPIS PLAĆANJA:</b> ${opisPlacanja}</p>
+        <p style="font-size: 16px; margin-bottom: 5px;"><b>IZNOS ZA PLATITI:</b> ${iznosTransakcije} EUR</p>
+        
+        <br/>
+        <div style="margin-top: 20px;">
+          ${barcodeElement.outerHTML}
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr height="32"></tr>
+
+ 
+
+  <tr>
+    <td colspan="2" style="font-size: 16px; color: #002D62; padding: 10px;">Automatski generirana uplatnica! Molimo Vas provjerite sve podatke.</td>
+  </tr>
+</table>
+
+
+	
+        
+
+`;
+
+      // Prepare data to send via email
+      const emailData = {
+        email: "nenoronnie@gmail.com", // Replace with recipient's email address
+        htmlContent: htmlContent,
+      };
+
+      console.log("Sending email data:", emailData); // Log email data before sending
+
+      // Send data to server for PDF generation and email sending
+      fetch("http://localhost:8081/send-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailData),
+      })
+        .then((response) => {
+          console.log("Response from server:", response); // Log server response
+          if (response.ok) {
+            alert("Email sent successfully!");
+          } else {
+            alert("Failed to send email.");
+          }
         })
         .catch((error) => {
-          console.error("Error generating PDF:", error); // Log any errors that occur during PDF generation
+          console.error("Error:", error);
+          alert("Failed to send email.");
         });
     },
+
     generateBarcode() {
       this.concatenateStrings();
 
@@ -681,6 +753,10 @@ export default {
 <style scoped lang="less">
 .payment-slip-container {
   background: white;
+  .above-info {
+    max-width: 500px;
+    margin: auto;
+  }
 }
 input {
   padding-left: 5px;
