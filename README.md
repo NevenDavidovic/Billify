@@ -1,18 +1,24 @@
 # Billify
 
-## TO DO/DONE:
+## DONE:
 - [x] CRUD organizacije
 - [x] Preuzimanje uplatnica 
 - [x] Postavljanje organizacije kao aktivne
 - [x] CRUD primatelja
 - [x] Generiranje jedne ili više uplatnica
 - [x] Slanje elektroničkom poštom
+- [x] Barkod generator
+- [x] Spajanje s gmailom
+
+## TO DO
 - [ ] više templatea za slanje
 - [ ] Checkboxes for printing chosen ones
 - [ ] Provjera unosa
 - [ ] Dotjeraj backend(rasporedi module/možda neki orm)
 - [ ] Stavi orm
 - [ ] Šifriraj podatke
+- [ ] Dodaj tablicu postavke
+- [ ] Sredi mail postavke maila
 
 
 
