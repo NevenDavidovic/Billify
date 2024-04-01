@@ -1,11 +1,18 @@
 # Billify
 
-## TO DO:
-[x] Slanje elektroničkom poštom
-- više templatea za slanje
-- checkboxes for printing chosen ones
-- provjera unosa
-- dotjeraj backend(rasporedi module/možda neki orm)
+## TO DO/DONE:
+- [x] CRUD organizacije
+- [x] Preuzimanje uplatnica 
+- [x] Postavljanje organizacije kao aktivne
+- [x] CRUD primatelja
+- [x] Generiranje jedne ili više uplatnica
+- [x] Slanje elektroničkom poštom
+- [ ] više templatea za slanje
+- [ ] Checkboxes for printing chosen ones
+- [ ] Provjera unosa
+- [ ] Dotjeraj backend(rasporedi module/možda neki orm)
+- [ ] Stavi orm
+- [ ] Šifriraj podatke
 
 
 
