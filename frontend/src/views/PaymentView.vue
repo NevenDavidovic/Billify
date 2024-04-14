@@ -32,6 +32,14 @@
           ><span class="preuzmi-btn">Preuzmi sve</span>
         </button>
 
+        <button
+          @click="sendAllEmails"
+          v-if="users.length"
+          class="btn-gold send-all-btn"
+        >
+          Pošalji sve Uplatnice
+        </button>
+
         <div class="notification-payment" v-if="!users.length">
           <h2>Trenutno niste odabrali ni jednu uplatnicu.</h2>
           <router-link to="/receiver">Generiraj Barkod</router-link>
@@ -39,7 +47,11 @@
 
         <br />
         <div v-for="user in users" :key="user.id">
-          <PaymentSlip :userData="user" />
+          <PaymentSlip
+            :userData="user"
+            @barcode-generated="collectBarcodeData"
+            ref="paymentSlips"
+          />
         </div>
 
         <br />
@@ -51,6 +63,7 @@
 <script>
 import PaymentSlip from "@/components/PaymentSlip.vue";
 import SideNav from "@/components/SideNav.vue";
+
 export default {
   components: {
     SideNav,
@@ -61,6 +74,7 @@ export default {
       users: [],
       statisticsLoaded: false,
       showCityStats: true,
+      barcodeData: [], // Store barcode data for each instance,
     };
   },
   mounted() {
@@ -70,15 +84,37 @@ export default {
     windowPrint() {
       window.print();
     },
+    collectBarcodeData(barcodeImage) {
+      // Collect the barcode image data emitted by PaymentSlip component
+      this.barcodeData.push(barcodeImage);
+    },
 
     getUsers() {
       this.users = this.$store.getters.getUsers;
       this.$store.commit("resetUsers");
     },
+    async sendAllEmails() {
+      const paymentSlips = this.$refs.paymentSlips;
+      console.log("PaymentSlips", paymentSlips);
+      console.log("PaymentslipsEND");
+
+      // Iterate over each PaymentSlip component
+      for (let i = 0; i < paymentSlips.length; i++) {
+        const paymentSlip = paymentSlips[i];
+
+        // Await the completion of the current email sending before moving to the next one
+        await paymentSlip.generatePDFAndSendEmail(paymentSlip.userData.e_mail);
+      }
+    },
   },
 };
 </script>
 <style scoped lang="less">
+.send-all-btn {
+  padding: 10px 20px;
+  font-size: 24px;
+  margin: auto;
+}
 .main-ps {
   display: flex;
   flex-direction: column;
@@ -131,6 +167,7 @@ export default {
   -webkit-user-select: none;
   touch-action: manipulation;
   border-radius: 20px;
+  height: 80px;
 }
 
 .button-57 span:first-child {

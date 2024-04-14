@@ -454,6 +454,7 @@ export default {
 
     generateBarcodeForAll() {
       this.$store.dispatch("saveUsers", this.primateljiData);
+      console.log(this.primateljiData);
       this.$router.push({ name: "PaymentView" });
     },
 

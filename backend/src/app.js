@@ -546,7 +546,7 @@ app.post("/send-pdf", async (req, res) => {
     text: "Please find attached PDF.",
     attachments: [
       {
-        filename: "attachment.pdf",
+        filename: "uplatnica.pdf",
         content: pdfBuffer,
       },
     ],
