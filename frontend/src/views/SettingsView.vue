@@ -25,24 +25,24 @@
           <div class="template-one template">
             <h2>Template 1</h2>
             <input type="radio" value="1" v-model="emailTemplate" />
-            <img src="" alt="" />
+            <img :src="require('@/assets/images/BlueExample.jpg')" alt="My Image">
           </div>
           <div class="template-two template">
             <h2>Template 2</h2>
             <input type="radio" value="2" v-model="emailTemplate" />
-            <img src="" alt="" />
+            <img :src="require('@/assets/images/BlueExample.jpg')" alt="My Image">
           </div>
           <div class="template-three template">
             <h2>Template 3</h2>
             <input type="radio" value="3" v-model="emailTemplate" />
-            <img src="" alt="" />
+            <img :src="require('@/assets/images/BlueExample.jpg')" alt="My Image">
           </div>
         </div>
 
         <div class="item">
           <h2>Gmail ključ</h2>
           <p>-postavi ključ elektroiničke pošte gmaila</p>
-          <input type="text" v-model="gmailKey" />
+          <input type="password" v-model="gmailKey" />
         </div>
         <div class="item">
           <h2>E mail adresa</h2>
@@ -177,16 +177,21 @@ export default {
       color: gray;
       font-style: italic;
     }
+    
     input {
       height: 47px;
       border-radius: 8px;
       border: 0px solid;
+      padding-left: 20px;
     }
   }
   .template-picker {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 30px;
+    img{
+      width: 200px;
+    }
 
     input {
       height: 30px;

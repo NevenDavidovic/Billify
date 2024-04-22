@@ -23,6 +23,10 @@
 - [x] Sredi mail
 - [x] Postavke slanja
 - [ ] Upute za korištenje
+- [ ] Reset password feature
+- [ ] Newsletter
+- [ ] Postavi Excell XML template sa e_mailom korisnika
+- [ ] Error Proffing i data checking
 
 ## Screenshots of the APP
 
