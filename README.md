@@ -1,8 +1,9 @@
 # Billify
 
 ## DONE:
+
 - [x] CRUD organizacije
-- [x] Preuzimanje uplatnica 
+- [x] Preuzimanje uplatnica
 - [x] Postavljanje organizacije kao aktivne
 - [x] CRUD primatelja
 - [x] Generiranje jedne ili više uplatnica
@@ -11,36 +12,28 @@
 - [x] Spajanje s gmailom
 
 ## TO DO
+
 - [ ] više templatea za slanje
 - [ ] Checkboxes for printing chosen ones
 - [ ] Provjera unosa
 - [ ] Dotjeraj backend(rasporedi module/možda neki orm)
 - [ ] Stavi orm
 - [ ] Šifriraj podatke
-- [ ] Dodaj tablicu postavke
-- [ ] Sredi mail postavke maila
-
-
+- [x] Dodaj tablicu postavke
+- [x] Sredi mail
+- [x] Postavke slanja
+- [ ] Upute za korištenje
 
 ## Screenshots of the APP
-
 
 ![image](https://github.com/NevenDavidovic/Billify/assets/57957655/68487e47-910f-413e-9c5a-e6eb6e392d00)
 
 ![image](https://github.com/NevenDavidovic/Billify/assets/57957655/676901bf-6895-4a71-8f85-32dce078ebf5)
 
-
-
 ![image](https://github.com/NevenDavidovic/Billify/assets/57957655/bd682db5-25d4-4057-9de8-2e5bb5086a60)
 
 ![image](https://github.com/NevenDavidovic/Billify/assets/57957655/bc0c4105-3503-4a7a-b147-5f9f975c4062)
 
-
 ![image](https://github.com/NevenDavidovic/Billify/assets/57957655/f92252a1-73f6-4a26-8d45-83890f9461bd)
 
 ![image](https://github.com/NevenDavidovic/Billify/assets/57957655/aa71ca56-4072-401e-ad9d-ad34e2ed9a53)
-
-
-
-
-

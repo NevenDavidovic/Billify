@@ -529,6 +529,12 @@ export default {
       blockHeight: 1,
       barcodeImage: null,
       receiverEmail: null,
+      subject:"", 
+      message: "", 
+      emailTemplate: 3, // Handle null values
+      gmailKey:"", // Handle null values
+      e_mail:"", // Handle null values
+      filename:"",
 
       //PAYMENT PARAMETRI
       paymentParams: {
@@ -560,6 +566,7 @@ export default {
   mounted() {
     this.fetchData();
     this.adjustPaymentParams();
+    this.fetchPostavkeData();
   },
   methods: {
     resetUserData() {
@@ -618,6 +625,21 @@ export default {
       let sifraNamjene = this.paymentParams.sifraNamjene;
 
       let opisPlacanja = this.paymentParams.opisPlacanja;
+
+      if (!email) {
+        const confirmSend = confirm(
+          `Za korisnika ${imePlatitelja} nema unesene Email adrese. Ako želite poslati uplatnicu unesite mail.`
+        );
+        if (!confirmSend) {
+          return; // Return from the method if the user chooses not to send the email
+        } else {
+          // Prompt the user to enter an email address
+          email = prompt(`Unseite Email za korisnika ${imePlatitelja}`);
+          if (!email) {
+            return; // Return from the method if the user cancels the prompt
+          }
+        }
+      }
 
       const htmlContent = `
       <table width="400" style="border: 2px solid #002D62; padding: 20px; background-color: #F4F4F4; margin: auto; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
@@ -684,6 +706,7 @@ export default {
           console.log("Response from server:", response); // Log server response
           if (response.ok) {
             console.log("Email sent successfully!");
+            alert("Email sent successfully!");
           } else {
             alert("Failed to send email.");
           }
@@ -715,6 +738,28 @@ export default {
         .join("");
 
       this.concatenatedString = concatenatedValues;
+    },
+    fetchPostavkeData() {
+      axios
+        .get("http://localhost:8081/postavke")
+        .then((response) => {
+          const postavkeData = response.data.data; // Assuming the data key holds the postavke data
+
+          // Assuming this is inside your Vue component
+          this.subject = postavkeData[0].subject; // Handle null values
+          this.message = postavkeData[0].message; // Handle null values
+          this.emailTemplate = postavkeData[0].e_mail_template; // Handle null values
+          this.gmailKey = postavkeData[0].gmail_key; // Handle null values
+          this.e_mail = postavkeData[0].e_mail; // Handle null values
+          this.filename = postavkeData[0].filename; // Handle null values
+
+          // Log or perform any additional actions as needed
+          console.log("Postavke data fetched:", postavkeData);
+        })
+        .catch((error) => {
+          console.error("Error fetching postavke data:", error);
+          alert(error);
+        });
     },
 
     fetchData() {

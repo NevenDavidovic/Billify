@@ -151,6 +151,13 @@
         >
         <router-link
           class="signup-btn"
+          to="/settings"
+          id="btnSignUp"
+          v-if="isLoggedIn"
+          >Postavke</router-link
+        >
+        <router-link
+          class="signup-btn"
           to="/"
           id="btnLogOut"
           v-if="isLoggedIn"

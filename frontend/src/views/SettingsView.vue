@@ -1,0 +1,206 @@
+<template>
+  <div class="background-primary page-statistika">
+    <div class="generiraj-barkod container">
+      <div class="aside">
+        <SideNav />
+      </div>
+
+      <div class="settings-container">
+        <h2>Postavke Emaila</h2>
+        <div class="subjekt item">
+          <label for="subjekt">Subjekt maila</label>
+          <input type="text" name="subjekt" v-model="subject" />
+        </div>
+        <div class="poruka item">
+          <label for="poruka">Poruka unutar maila</label>
+          <input type="text" name="poruka" v-model="message" />
+        </div>
+
+        <div class="filename item">
+          <label for="poruka">Ime privitka</label>
+          <input type="text" name="poruka" v-model="filename" />
+        </div>
+
+        <div class="template-picker">
+          <div class="template-one template">
+            <h2>Template 1</h2>
+            <input type="radio" value="1" v-model="emailTemplate" />
+            <img src="" alt="" />
+          </div>
+          <div class="template-two template">
+            <h2>Template 2</h2>
+            <input type="radio" value="2" v-model="emailTemplate" />
+            <img src="" alt="" />
+          </div>
+          <div class="template-three template">
+            <h2>Template 3</h2>
+            <input type="radio" value="3" v-model="emailTemplate" />
+            <img src="" alt="" />
+          </div>
+        </div>
+
+        <div class="item">
+          <h2>Gmail ključ</h2>
+          <p>-postavi ključ elektroiničke pošte gmaila</p>
+          <input type="text" v-model="gmailKey" />
+        </div>
+        <div class="item">
+          <h2>E mail adresa</h2>
+          <p>- postavi adresu elektroiničke pošte s koje upisujete ključ</p>
+          <input type="text" v-model="e_mail" />
+        </div>
+
+        <button class="green-btn" @click="handleUpdateSettings">Spremi</button>
+      </div>
+    </div>
+    <br />
+  </div>
+</template>
+
+<script>
+import SideNav from "@/components/SideNav.vue";
+import axios from "axios";
+
+export default {
+  components: {
+    SideNav,
+    // Register the HeaderNavbar component
+  },
+  data() {
+    return {
+      users: [],
+      statisticsLoaded: false,
+      showCityStats: true,
+      barcodeData: [],
+      subject: "",
+      message: "",
+      emailTemplate: null,
+      gmailKey: "",
+      e_mail: "",
+      filename: "",
+       // Store barcode data for each instance,
+    };
+  },
+  mounted() {
+    this.fetchPostavkeData();
+  },
+  methods: {
+
+    async handleUpdateSettings() {
+      try {
+        const updatedSettings = {
+          subject: this.subject,
+          message: this.message,
+          e_mail_template: this.emailTemplate,
+          gmail_key: this.gmailKey,
+          e_mail: this.e_mail,
+          filename: this.filename
+        };
+        console.log("Settings:",updatedSettings);
+        // Call the updatePostavkeData method with the updated settings data
+        await this.updatePostavkeData(updatedSettings);
+      } catch (error) {
+        console.error("Error updating settings:", error);
+        // Handle errors accordingly
+      }
+    },
+
+
+    async updatePostavkeData(updatedSettings) {
+    try {
+      const response = await axios.put("http://localhost:8081/postavke", updatedSettings);
+      console.log("Settings updated successfully:", response.data);
+      alert("Settings updated successfully");
+      // Optionally, you can fetch the updated settings data again and update the UI
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      // Handle errors accordingly
+      alert(error)
+    }
+  },
+    fetchPostavkeData() {
+      axios
+        .get("http://localhost:8081/postavke")
+        .then((response) => {
+          const postavkeData = response.data.data; // Assuming the data key holds the postavke data
+
+          // Assuming this is inside your Vue component
+          this.subject = postavkeData[0].subject; // Handle null values
+          this.message = postavkeData[0].message; // Handle null values
+          this.emailTemplate = postavkeData[0].e_mail_template; // Handle null values
+          this.gmailKey = postavkeData[0].gmail_key; // Handle null values
+          this.e_mail = postavkeData[0].e_mail; // Handle null values
+          this.filename = postavkeData[0].filename; // Handle null values
+
+          // Log or perform any additional actions as needed
+          console.log("Postavke data fetched:", postavkeData);
+        })
+        .catch((error) => {
+          console.error("Error fetching postavke data:", error);
+          alert(error);
+        });
+    },
+  },
+};
+</script>
+
+<style scoped lang="less">
+.page-statistika {
+  padding-bottom: 300px;
+}
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  color: white;
+  border-left: 2px solid white;
+  padding: 50px;
+  .green-btn {
+    max-width: 200px;
+    margin: auto;
+    color: white;
+    background: rgb(16, 197, 16);
+    border: 0px solid;
+    padding: 10px 20px;
+    border-radius: 10px;
+    &:hover {
+      background: green;
+    }
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 20px;
+    p{
+      color: gray;
+      font-style: italic;
+    }
+    input {
+      height: 47px;
+      border-radius: 8px;
+      border: 0px solid;
+    }
+  }
+  .template-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+
+    input {
+      height: 30px;
+      width: 30px;
+      border: 0px solid;
+    }
+    .template {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      justify-items: center;
+      gap: 20px;
+    }
+  }
+}
+</style>

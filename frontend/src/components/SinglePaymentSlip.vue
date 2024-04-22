@@ -502,7 +502,7 @@
       </button>
 
       <button
-        @click="sendEmailWithAttachment"
+        @click="generatePDFAndSendEmail()"
         class="btn-black btn-preuzmi"
         v-if="barcodeImage"
       >
@@ -547,6 +547,7 @@ export default {
       blockWidth: 2,
       blockHeight: 1,
       barcodeImage: null,
+      receiverEmail: null,
 
       //PAYMENT PARAMETRI
       paymentParams: {
@@ -588,6 +589,116 @@ export default {
     windowPrint() {
       window.print();
     },
+    generatePDFAndSendEmail(email) {
+      const barcodeElement = document.getElementById("barcode");
+      const logoOrganization = document.getElementById("logo-org");
+      // Extract HTML content
+
+      let imePrimatelja = this.paymentParams.imePrimatelja;
+      let imePlatitelja = this.paymentParams.imePlatitelja;
+      let adresaPlatitelja = this.paymentParams.adresaPlatitelja;
+      let adresaPrimatelja = this.paymentParams.adresaPrimatelja;
+      let iznosTransakcije = this.paymentParams.iznosTransakcije;
+      let postanskiBrojIMjestoPrimatelja =
+        this.paymentParams.postanskiBrojIMjestoPrimatelja;
+      let postanskiBrojIMjestoPlatitelja =
+        this.paymentParams.postanskiBrojIMjestoPlatitelja;
+      let ibanPrimatelja = this.paymentParams.ibanPrimatelja;
+      let modelPlacanja = this.paymentParams.modelPlacanja;
+      let pozivNaBroj = this.paymentParams.pozivNaBroj;
+      let sifraNamjene = this.paymentParams.sifraNamjene;
+
+      let opisPlacanja = this.paymentParams.opisPlacanja;
+
+      if (!email) {
+        const confirmSend = confirm(
+          `Za korisnika ${imePlatitelja} nema unesene Email adrese. Ako želite poslati uplatnicu unesite mail.`
+        );
+        if (!confirmSend) {
+          return; // Return from the method if the user chooses not to send the email
+        } else {
+          // Prompt the user to enter an email address
+          email = prompt(`Unseite Email za korisnika ${imePlatitelja}`);
+          if (!email) {
+            return; // Return from the method if the user cancels the prompt
+          }
+        }
+      }
+
+      const htmlContent = `
+      <table width="400" style="border: 2px solid #002D62; padding: 20px; background-color: #F4F4F4; margin: auto; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+  <tr style="margin-bottom: 20px;">
+    <th width="100" align="left" style="vertical-align: middle;">
+      <div style="padding: 10px;">
+        ${logoOrganization.outerHTML}
+      </div>
+    </th>
+    <th align="left" width="300">
+      <div style="color: #002D62;">
+        <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">${imePrimatelja}</p>
+        <p style="font-size: 14px; margin-bottom: 5px;">${adresaPrimatelja}, ${postanskiBrojIMjestoPrimatelja}</p>
+        <p style="font-size: 14px; margin-bottom: 5px;">IBAN: ${ibanPrimatelja}</p>
+      </div>
+    </th>
+  </tr>
+
+  <tr>
+    <td colspan="2">
+      <div style="padding: 10px;">
+        <h2 style="font-size: 14px; margin-bottom: 10px;color: #002D62;"><b>DETALJI PLAĆANJA</b> </h2>
+        <hr style="border-color: #002D62; margin: 20px 0;">
+        <p style="font-size: 14px; margin-bottom: 10px;"><b>IME I PREZIME:</b> ${imePlatitelja}</p>
+        <p style="font-size: 14px; margin-bottom: 10px;"><b>ADRESA:</b> ${adresaPlatitelja}, ${postanskiBrojIMjestoPlatitelja}</p>
+        <p style="font-size: 14px; margin-bottom: 10px;"><b>ŠIFRA NAMJENE:</b> ${sifraNamjene}</p>
+        <p style="font-size: 14px; margin-bottom: 10px;"><b>MODEL I POZIV NA BROJ:</b> ${modelPlacanja}${pozivNaBroj}</p>
+        <p style="font-size: 14px; margin-bottom: 10px;"><b>OPIS PLAĆANJA:</b> ${opisPlacanja}</p>
+        <p style="font-size: 14px; margin-bottom: 10px;"><b>IZNOS ZA PLATITI:</b> ${iznosTransakcije} EUR</p>
+        <hr style="border-color: #002D62; margin: 20px 0;">
+        <div style="margin-top: 20px;">
+          ${barcodeElement.outerHTML}
+        </div>
+      </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan="2" style="font-size: 14px; color: #002D62; padding: 10px;">Automatski generirana uplatnica! Molimo Vas provjerite sve podatke.</td>
+  </tr>
+</table>
+
+
+
+`;
+
+      // Prepare data to send via email
+      const emailData = {
+        email: email, // Replace with recipient's email address
+        htmlContent: htmlContent,
+      };
+
+      console.log("Sending email data:", emailData); // Log email data before sending
+
+      // Send data to server for PDF generation and email sending
+      fetch("http://localhost:8081/send-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailData),
+      })
+        .then((response) => {
+          console.log("Response from server:", response); // Log server response
+          if (response.ok) {
+            console.log("Email sent successfully!");
+          } else {
+            alert("Failed to send email.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Failed to send email.");
+        });
+    },
 
     resetUserData() {
       this.$store.dispatch("resetUserData");
@@ -609,6 +720,7 @@ export default {
         this.paymentParams.iznosTransakcije = this.userData.iznos;
         this.paymentParams.pozivNaBroj = this.userData.poziv_na_primatelja;
         this.paymentParams.opisPlacanja = this.userData.opis_placanja;
+        this.receiverEmail = this.userData.e_mail;
         // Assuming that adjustPaymentParams is an action in your store
         setTimeout(() => {
           this.generateBarcode();

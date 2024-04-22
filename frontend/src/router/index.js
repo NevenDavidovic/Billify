@@ -9,6 +9,7 @@ import PaymentView from "@/views/PaymentView.vue";
 import LoginForm from "@/views/LoginForm.vue";
 import SignupForm from "@/views/SignupForm.vue";
 import AboutView from "@/views/AboutView.vue";
+import SettingsView from "@/views/SettingsView.vue";
 
 const routes = [
   {
@@ -61,6 +62,12 @@ const routes = [
     path: "/about",
     name: "about",
     component: AboutView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/settings",
+    name: "settings",
+    component: SettingsView,
     meta: { requiresAuth: true },
   },
 ];

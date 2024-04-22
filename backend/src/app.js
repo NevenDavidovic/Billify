@@ -67,6 +67,7 @@ app.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Check if the email is already in use
     const existingUser = await db.query(
       "SELECT * FROM korisnik WHERE e_mail = $1",
       [email]
@@ -75,19 +76,49 @@ app.post("/register", async (req, res) => {
       return res.status(409).json({ error: "Email is already in use" });
     }
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const queryString = `
+    // Register the user and get the user ID
+    const registerQuery = `
       INSERT INTO korisnik (e_mail, password)
       VALUES ($1, $2)
-      RETURNING *;
+      RETURNING id;
+    `;
+    const registerResult = await db.query(registerQuery, [
+      email,
+      hashedPassword,
+    ]);
+    const userId = registerResult.rows[0].id;
+
+    // Insert default settings for the user
+    const defaultSettingsQuery = `
+      INSERT INTO postavke (subject, message, e_mail_template, gmail_key, id_korisnik,e_mail,filename)
+      VALUES ($1, $2, $3, $4, $5, $6 , $7);
     `;
 
-    const result = await db.query(queryString, [email, hashedPassword]);
+    // Hardcoded default settings values
+    const defaultSubject = "Servis za dostavu uplatnicu Bilify";
+    const defaultMessage = "Uplatnica je dostavljena putem servisa bilify";
+    const defaultEmailTemplate = 3;
+    const defaultGmailKey = "Unesi svoj gmail Key";
+    const emailKorisnik = "something@gmail.com";
+    const filename = "upatnica";
 
+    await db.query(defaultSettingsQuery, [
+      defaultSubject,
+      defaultMessage,
+      defaultEmailTemplate,
+      defaultGmailKey,
+      userId,
+      emailKorisnik,
+      filename,
+    ]);
+
+    // Respond with success message and user details
     res.status(201).json({
       message: "User registered successfully",
-      user: result.rows[0],
+      user: { id: userId, email: email },
     });
   } catch (error) {
     console.error("Error during registration:", error);
@@ -508,7 +539,6 @@ app.get("/statistics", async (req, res) => {
 });
 
 // Route to generate PDF and send via email
-// Backend code
 app.post("/send-pdf", async (req, res) => {
   console.log("Received request to send PDF");
 
@@ -516,55 +546,126 @@ app.post("/send-pdf", async (req, res) => {
   console.log("Email:", email);
   console.log("HTML Content:", htmlContent);
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "nenoronnie@gmail.com",
-      pass: "",
-    },
-  });
+  try {
+    // Fetch data from the "postavke" table
+    const loggedInUserIdCopy = loggedInUserId;// Assuming you have the logged-in user's ID
+    const postavkeQuery = `
+      SELECT * FROM postavke WHERE id_korisnik = $1;
+    `;
 
-  const browser = await puppeteer.launch();
-  console.log("Browser launched");
+    const result = await db.query(postavkeQuery, [loggedInUserIdCopy]);
+    const postavkeData = result.rows[0]; // Assuming you only expect one row
 
-  const page = await browser.newPage();
-  console.log("New page created");
-
-  await page.setContent(htmlContent); // Set the received HTML content
-  console.log("HTML content set on page");
-
-  const pdfBuffer = await page.pdf();
-  console.log("PDF generated");
-
-  // Sending email with PDF attachment
-  const mailOptions = {
-    from: "nenoronnie@gmail.com",
-    to: email,
-    subject: "PDF Attachment",
-    text: "Please find attached PDF.",
-    attachments: [
-      {
-        filename: "uplatnica.pdf",
-        content: pdfBuffer,
-      },
-    ],
-  };
-
-  console.log("Sending email...");
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log("Error sending email:", error);
-      res.status(500).send("Error sending email.");
-    } else {
-      console.log("Email sent: ", info.response);
-      res.status(200).send("Email sent successfully.");
+    // Check if postavkeData is defined before accessing its properties
+    if (!postavkeData) {
+      throw new Error("No data found in the 'postavke' table for the logged-in user");
     }
-  });
 
-  await browser.close();
-  console.log("Browser closed");
+    // Extract necessary data from postavkeData and store it into variables
+    const subject = postavkeData.subject;
+    const message = postavkeData.message;
+    const gmailKey = postavkeData.gmail_key;
+    const e_mail = postavkeData.e_mail;
+    const filename = postavkeData.filename;
+
+    // Set up transporter using data from postavkeData
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: e_mail,
+        pass: gmailKey,
+      },
+    });
+
+    // Continue with PDF generation and email sending
+    const browser = await puppeteer.launch();
+    console.log("Browser launched");
+
+    const page = await browser.newPage();
+    console.log("New page created");
+
+    await page.setContent(htmlContent); // Set the received HTML content
+    console.log("HTML content set on page");
+
+    const pdfBuffer = await page.pdf();
+    console.log("PDF generated");
+
+    // Sending email with PDF attachment
+    const mailOptions = {
+      from: e_mail,
+      to: email,
+      subject: subject,
+      text: message,
+      attachments: [
+        {
+          filename: filename+".pdf",
+          content: pdfBuffer,
+        },
+      ],
+    };
+
+    console.log("Sending email...");
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("Error sending email:", error);
+        res.status(500).send("Error sending email.");
+      } else {
+        console.log("Email sent: ", info.response);
+        res.status(200).send("Email sent successfully.");
+      }
+    });
+
+    await browser.close();
+    console.log("Browser closed");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Internal Server Error.");
+  }
 });
+
+
+
+app.get("/postavke", async (req, res) => {
+  try {
+    const loggedInUserIdCopy = loggedInUserId; // Assuming you have the logged-in user's ID
+    console.log(loggedInUserIdCopy);
+    const postavkeQuery = `
+      SELECT * FROM postavke WHERE id_korisnik = $1;
+    `;
+
+    const result = await db.query(postavkeQuery, [loggedInUserIdCopy]);
+
+    res.json({ data: result.rows });
+  } catch (error) {
+    console.error("Error fetching data from postavke:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.put("/postavke", async (req, res) => {
+  try {
+    const { subject, message, e_mail_template, gmail_key, e_mail, filename } = req.body;
+    const loggedInUserIdCopy = loggedInUserId; // Assuming you have the logged-in user's ID
+    
+    console.log("Received update request with data:", req.body);
+
+      const updateQuery = `
+        UPDATE postavke
+        SET subject = $1, message = $2, e_mail_template = $3, gmail_key = $4, e_mail = $5, filename = $6
+        WHERE id_korisnik = $7;
+      `;
+
+    await db.query(updateQuery, [subject, message, e_mail_template, gmail_key, e_mail, filename, loggedInUserIdCopy]);
+
+    res.json({ success: true, message: "Settings updated successfully" });
+  } catch (error) {
+    console.error("Error updating postavke data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 app.listen(process.env.PORT || 8081);
