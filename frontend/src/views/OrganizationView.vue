@@ -220,22 +220,18 @@
       </form>
     </div>
   </div>
-  <!--Modal for editing-->
 
   <div class="modal-organization" v-if="isEditOpen">
     <form @submit.prevent="editData">
-      <!-- Attach a submit handler for saving changes -->
       <div class="zatvori-tag" @click="toogleEditData">ZATVORI</div>
-      <!--LEFT-->
+
       <div class="modal-item modal-left">
         <img :src="editableItem.slika" alt="" />
         <input type="text" v-model="editableItem.naziv" />
         <input type="text" v-model="editableItem.ulica" />
         <input type="text" v-model="editableItem.grad" />
-        <!-- Bind each input to the corresponding field in 'formData' -->
       </div>
 
-      <!--RIGHT-->
       <div class="modal-item modal-right">
         <div class="right-item right-first">
           <input type="text" v-model="editableItem.e_mail" />
@@ -372,7 +368,6 @@ export default {
     },
 
     setActiveOrganization(id) {
-      // Set the clicked organization as active (status 1) in the backend
       axios
         .put(`http://localhost:8081/update-organization-status/${id}`)
         .then((response) => {
@@ -397,16 +392,14 @@ export default {
 
     editData(id) {
       this.toogleEditData();
-      //filter the data on frontend
       const filteredRow = this.organizacijaData.find((row) => row.id === id);
-      // Assigning values from the filtered row to editableItem
+
       for (let key in this.editableItem) {
         this.editableItem[key] = filteredRow[key];
       }
     },
 
     resetFormData() {
-      // Iterate through formData properties and reset each to its initial value
       for (let key in this.formData) {
         if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
           this.formData[key] = Array.isArray(this.formData[key]) ? [] : "";
@@ -444,7 +437,6 @@ export default {
         slika: this.formData.slika,
       };
 
-      // Make a POST request to the backend endpoint to save the data
       axios
         .post("http://localhost:8081/save-organization", this.formData)
         .then((response) => {
@@ -452,12 +444,10 @@ export default {
           this.closeModal();
           this.resetFormData();
           this.fetchData();
-          // Optionally, perform any necessary actions after data is saved
         })
         .catch((error) => {
           console.error("Error saving data:", error);
           console.log(formData);
-          // Handle errors accordingly
         });
     },
   },
@@ -530,8 +520,6 @@ export default {
 .right-side-btn {
   display: none !important;
 }
-
-//Inactive organization css
 
 .data-organization-inactive {
   display: grid;

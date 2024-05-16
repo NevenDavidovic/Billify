@@ -30,8 +30,6 @@
 </template>
 
 <script>
-//import axios from "axios";
-
 export default {
   data() {
     return {
@@ -47,15 +45,13 @@ export default {
   methods: {
     async login() {
       try {
-        // Dispatch the login action with email and password
         const redirectRoute = await this.$store.dispatch("login", {
           email: this.emailInput,
           password: this.passwordInput,
         });
-        this.$router.push(redirectRoute); // Redirect to the route returned by the login action
+        this.$router.push(redirectRoute);
       } catch (error) {
-        // Handle login error
-        console.error("Error during login:", error);
+        alert("Greška prilikom prijave!", error);
       }
     },
   },

@@ -7,14 +7,11 @@
 <script>
 import HeaderNavbar from "./components/HeaderNavbar.vue";
 
-// Adjust the path if necessary
-
 export default {
   components: {
-    HeaderNavbar, // Register the HeaderNavbar component
+    HeaderNavbar,
   },
   methods: {},
-  // Other logic for App.vue
 };
 </script>
 <style>

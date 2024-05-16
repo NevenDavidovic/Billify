@@ -35,10 +35,7 @@
           <br />
           <div class="table-container">
             <div class="table-horizontal-container">
-              <div v-if="isLoading">
-                <!-- Show loading spinner or message -->
-                Loading...
-              </div>
+              <div v-if="isLoading">Loading...</div>
               <table class="unfixed-table" v-else>
                 <thead>
                   <tr>
@@ -56,7 +53,6 @@
                 </thead>
                 <tbody>
                   <tr v-for="(item, index) in primateljiData" :key="index">
-                    <!-- Modify table cells based on your data properties -->
                     <td class="row-button">
                       <button
                         class="btn-white"
@@ -154,8 +150,6 @@
                     <td>{{ item.opis_placanja }}</td>
                     <td>{{ item.model_placanja }}</td>
                     <td>{{ item.poziv_na_primatelja }}</td>
-
-                    <!-- Add more cells for other properties as needed -->
                   </tr>
                 </tbody>
               </table>
@@ -163,7 +157,6 @@
           </div>
 
           <div v-if="!isLoading && primateljiData.length === 0">
-            <!-- Show a message when there is no data -->
             Nema podataka za prikazati
           </div>
         </div>
@@ -442,13 +435,13 @@ export default {
           this.closeEditModal();
         })
         .catch((error) => {
-          console.error("Error updating receiver data:", error);
+          console.error("Greška pri ažuriranju korisničkih podataka:", error);
 
           const errorMessage = error.response
             ? error.response.data.error
-            : "Unknown error";
+            : "Error";
 
-          alert("Error updating receiver data: " + errorMessage);
+          alert("Greška pri ažuriranju korisničkih podataka: " + errorMessage);
         });
     },
 
@@ -486,7 +479,7 @@ export default {
 
     parseXML() {
       if (!this.uploadedFile) {
-        console.error("No file uploaded.");
+        alert("Datoteka nije učitana");
         return;
       }
 
@@ -503,32 +496,42 @@ export default {
         const rows = xmlDoc.querySelectorAll("rowNalog");
 
         rows.forEach((row) => {
-          const platiteljNaziv =
-            row.querySelector("platiteljNaziv").textContent;
-          const platiteljAdresa =
-            row.querySelector("platiteljAdresa").textContent;
-          const platiteljMjesto =
-            row.querySelector("platiteljMjesto").textContent;
-          const iznos = parseFloat(
-            row.querySelector("iznos").textContent.replace(",", ".")
-          );
-          const pozivNaBrojPrimatelja = row.querySelector(
+          const platiteljNazivEl = row.querySelector("platiteljNaziv");
+          const platiteljAdresaEl = row.querySelector("platiteljAdresa");
+          const platiteljMjestoEl = row.querySelector("platiteljMjesto");
+          const iznosEl = row.querySelector("iznos");
+          const pozivNaBrojPrimateljaEl = row.querySelector(
             "pozivNaBrojPrimatelja"
-          ).textContent;
-          const opisPlacanja = row.querySelector("opisPlacanja").textContent;
+          );
+          const opisPlacanjaEl = row.querySelector("opisPlacanja");
 
-          this.receiverData.push({
-            platiteljNaziv,
-            platiteljAdresa,
-            platiteljMjesto,
-            iznos,
-            pozivNaBrojPrimatelja,
-            opisPlacanja,
-          });
+          if (
+            platiteljNazivEl &&
+            platiteljAdresaEl &&
+            platiteljMjestoEl &&
+            iznosEl &&
+            pozivNaBrojPrimateljaEl &&
+            opisPlacanjaEl
+          ) {
+            const platiteljNaziv = platiteljNazivEl.textContent;
+            const platiteljAdresa = platiteljAdresaEl.textContent;
+            const platiteljMjesto = platiteljMjestoEl.textContent;
+            const iznos = parseFloat(iznosEl.textContent.replace(",", "."));
+            const pozivNaBrojPrimatelja = pozivNaBrojPrimateljaEl.textContent;
+            const opisPlacanja = opisPlacanjaEl.textContent;
+
+            this.receiverData.push({
+              platiteljNaziv,
+              platiteljAdresa,
+              platiteljMjesto,
+              iznos,
+              pozivNaBrojPrimatelja,
+              opisPlacanja,
+            });
+          } else {
+            alert("Jedan ili više elemenata nije učitano:", row);
+          }
         });
-
-        console.log("Receiver Data:", this.receiverData);
-
         this.sendDataToBackend(this.receiverData);
       };
 
@@ -540,16 +543,17 @@ export default {
           "http://localhost:8081/save-receivers",
           data
         );
-        console.log("Data sent to the backend:", response.data);
-        alert("Data sent to backend!!");
+
+        alert("Podaci poslani poslužitelju.");
         if (response.data.message) {
           alert(response.data.message);
         }
         this.closeModal();
       } catch (error) {
-        console.error("Error sending data to the backend:", error);
-        console.log("Full response:", error.response);
-        alert("Error sending data to the backend:", error);
+        alert(
+          "Greška u slanju podatka poslužitelju. Pokušajte ponovno kasnije.",
+          error
+        );
       }
       this.fetchDataPrimatelji();
     },
@@ -564,8 +568,7 @@ export default {
             this.fetchDataPrimatelji();
           })
           .catch((error) => {
-            console.error("Error deleting receiver:", error);
-            alert("Error deleting receiver:", error);
+            alert("Greška u brisanju primatelja", error);
           });
       } else {
         return;
@@ -594,8 +597,6 @@ export default {
     },
 
     async saveReceiverData() {
-      console.log("Ovipodaci iz forme", this.formData);
-
       try {
         const response = await axios.post(
           "http://localhost:8081/save-receiver",
@@ -604,15 +605,11 @@ export default {
         console.log("Data saved:", response.data);
         this.closeModal();
         this.resetFormData();
-        alert("Uspjeh");
+        alert("Podaci su uspješno spremljeni");
 
-        console.log("Calling fetchDataPrimatelji...");
         await this.fetchDataPrimatelji();
-        console.log("fetchDataPrimatelji completed.");
       } catch (error) {
-        console.error("Error saving data:", error);
-        console.log(this.formData);
-        alert("ERROR", error);
+        alert("Greška prilikom spremanja podataka", error);
       }
     },
     closeModal() {

@@ -548,7 +548,7 @@ app.post("/send-pdf", async (req, res) => {
 
   try {
     // Fetch data from the "postavke" table
-    const loggedInUserIdCopy = loggedInUserId;// Assuming you have the logged-in user's ID
+    const loggedInUserIdCopy = loggedInUserId; // Assuming you have the logged-in user's ID
     const postavkeQuery = `
       SELECT * FROM postavke WHERE id_korisnik = $1;
     `;
@@ -558,7 +558,9 @@ app.post("/send-pdf", async (req, res) => {
 
     // Check if postavkeData is defined before accessing its properties
     if (!postavkeData) {
-      throw new Error("No data found in the 'postavke' table for the logged-in user");
+      throw new Error(
+        "No data found in the 'postavke' table for the logged-in user"
+      );
     }
 
     // Extract necessary data from postavkeData and store it into variables
@@ -600,7 +602,7 @@ app.post("/send-pdf", async (req, res) => {
       text: message,
       attachments: [
         {
-          filename: filename+".pdf",
+          filename: filename + ".pdf",
           content: pdfBuffer,
         },
       ],
@@ -625,8 +627,6 @@ app.post("/send-pdf", async (req, res) => {
   }
 });
 
-
-
 app.get("/postavke", async (req, res) => {
   try {
     const loggedInUserIdCopy = loggedInUserId; // Assuming you have the logged-in user's ID
@@ -646,18 +646,27 @@ app.get("/postavke", async (req, res) => {
 
 app.put("/postavke", async (req, res) => {
   try {
-    const { subject, message, e_mail_template, gmail_key, e_mail, filename } = req.body;
+    const { subject, message, e_mail_template, gmail_key, e_mail, filename } =
+      req.body;
     const loggedInUserIdCopy = loggedInUserId; // Assuming you have the logged-in user's ID
-    
+
     console.log("Received update request with data:", req.body);
 
-      const updateQuery = `
+    const updateQuery = `
         UPDATE postavke
         SET subject = $1, message = $2, e_mail_template = $3, gmail_key = $4, e_mail = $5, filename = $6
         WHERE id_korisnik = $7;
       `;
 
-    await db.query(updateQuery, [subject, message, e_mail_template, gmail_key, e_mail, filename, loggedInUserIdCopy]);
+    await db.query(updateQuery, [
+      subject,
+      message,
+      e_mail_template,
+      gmail_key,
+      e_mail,
+      filename,
+      loggedInUserIdCopy,
+    ]);
 
     res.json({ success: true, message: "Settings updated successfully" });
   } catch (error) {
@@ -665,7 +674,5 @@ app.put("/postavke", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-
 
 app.listen(process.env.PORT || 8081);

@@ -66,7 +66,7 @@ import axios from "axios";
 import SideNav from "@/components/SideNav.vue";
 export default {
   components: {
-    SideNav, // Register the HeaderNavbar component
+    SideNav,
   },
   data() {
     return {
@@ -84,10 +84,8 @@ export default {
         const response = await axios.get("http://localhost:8081/statistics");
         this.statistics = response.data;
         this.statisticsLoaded = true;
-        console.log("conn za statistics");
       } catch (error) {
-        console.error("Error fetching statistics:", error);
-        // Handle error - show an error message or retry, etc.
+        alert("Greška dohvaćanja statistike:", error);
       }
     },
     showCityStatss() {

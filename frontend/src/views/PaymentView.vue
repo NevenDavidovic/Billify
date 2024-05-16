@@ -67,14 +67,14 @@ import SideNav from "@/components/SideNav.vue";
 export default {
   components: {
     SideNav,
-    PaymentSlip, // Register the HeaderNavbar component
+    PaymentSlip,
   },
   data() {
     return {
       users: [],
       statisticsLoaded: false,
       showCityStats: true,
-      barcodeData: [], // Store barcode data for each instance,
+      barcodeData: [],
     };
   },
   mounted() {
@@ -85,7 +85,6 @@ export default {
       window.print();
     },
     collectBarcodeData(barcodeImage) {
-      // Collect the barcode image data emitted by PaymentSlip component
       this.barcodeData.push(barcodeImage);
     },
 
@@ -95,14 +94,8 @@ export default {
     },
     async sendAllEmails() {
       const paymentSlips = this.$refs.paymentSlips;
-      console.log("PaymentSlips", paymentSlips);
-      console.log("PaymentslipsEND");
-
-      // Iterate over each PaymentSlip component
       for (let i = 0; i < paymentSlips.length; i++) {
         const paymentSlip = paymentSlips[i];
-
-        // Await the completion of the current email sending before moving to the next one
         await paymentSlip.generatePDFAndSendEmail(paymentSlip.userData.e_mail);
       }
     },

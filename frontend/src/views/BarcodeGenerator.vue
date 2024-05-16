@@ -78,10 +78,10 @@ export default {
         this.paymentParams.pozivNaBroj = user.poziv_na_primatelja;
         this.paymentParams.opisPlacanja = user.opis_placanja;
 
-        // adding a litle timepause
+        // dodavanje male pauze za generiranje barkoda
         setTimeout(() => {
           this.generateBarcode();
-        }, 100);
+        }, 300);
       }
     },
 
@@ -112,9 +112,8 @@ export default {
           this.blockHeight
         );
       } else {
-        alert("ERROR");
+        alert("Error prilikom generiranja barkoda");
       }
-      console.log("This text:", this.text);
     },
 
     concatenateStrings() {
@@ -152,7 +151,7 @@ export default {
           console.log(this.activeOrganization);
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          alert("Greška u dohvaćanju podataka", error);
         })
         .finally(() => {
           this.isLoading = false;

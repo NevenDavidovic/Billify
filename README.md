@@ -28,6 +28,8 @@
 - [ ] Postavi Excell XML template sa e_mailom korisnika
 - [ ] Error Proffing i data checking
 
+NOTES: Nemoj zaboravit uredit i komponentu druge payment slipa
+
 ## Screenshots of the APP
 
 ![image](https://github.com/NevenDavidovic/Billify/assets/57957655/68487e47-910f-413e-9c5a-e6eb6e392d00)

@@ -13,7 +13,14 @@
         </div>
         <div class="poruka item">
           <label for="poruka">Poruka unutar maila</label>
-          <input type="text" name="poruka" v-model="message" />
+          <textarea
+            type="text"
+            id="textbox"
+            name="textbox"
+            rows="4"
+            cols="50"
+            v-model="message"
+          ></textarea>
         </div>
 
         <div class="filename item">
@@ -25,17 +32,26 @@
           <div class="template-one template">
             <h2>Template 1</h2>
             <input type="radio" value="1" v-model="emailTemplate" />
-            <img :src="require('@/assets/images/BlueExample.jpg')" alt="My Image">
+            <img
+              :src="require('@/assets/images/BlueExample.jpg')"
+              alt="My Image"
+            />
           </div>
           <div class="template-two template">
             <h2>Template 2</h2>
             <input type="radio" value="2" v-model="emailTemplate" />
-            <img :src="require('@/assets/images/BlueExample.jpg')" alt="My Image">
+            <img
+              :src="require('@/assets/images/BlueExample.jpg')"
+              alt="My Image"
+            />
           </div>
           <div class="template-three template">
             <h2>Template 3</h2>
             <input type="radio" value="3" v-model="emailTemplate" />
-            <img :src="require('@/assets/images/BlueExample.jpg')" alt="My Image">
+            <img
+              :src="require('@/assets/images/BlueExample.jpg')"
+              alt="My Image"
+            />
           </div>
         </div>
 
@@ -51,6 +67,7 @@
         </div>
 
         <button class="green-btn" @click="handleUpdateSettings">Spremi</button>
+        <br />
       </div>
     </div>
     <br />
@@ -64,7 +81,6 @@ import axios from "axios";
 export default {
   components: {
     SideNav,
-    // Register the HeaderNavbar component
   },
   data() {
     return {
@@ -78,14 +94,12 @@ export default {
       gmailKey: "",
       e_mail: "",
       filename: "",
-       // Store barcode data for each instance,
     };
   },
   mounted() {
     this.fetchPostavkeData();
   },
   methods: {
-
     async handleUpdateSettings() {
       try {
         const updatedSettings = {
@@ -94,50 +108,42 @@ export default {
           e_mail_template: this.emailTemplate,
           gmail_key: this.gmailKey,
           e_mail: this.e_mail,
-          filename: this.filename
+          filename: this.filename,
         };
-        console.log("Settings:",updatedSettings);
-        // Call the updatePostavkeData method with the updated settings data
+        console.log("Settings:", updatedSettings);
         await this.updatePostavkeData(updatedSettings);
       } catch (error) {
         console.error("Error updating settings:", error);
-        // Handle errors accordingly
       }
     },
 
-
     async updatePostavkeData(updatedSettings) {
-    try {
-      const response = await axios.put("http://localhost:8081/postavke", updatedSettings);
-      console.log("Settings updated successfully:", response.data);
-      alert("Settings updated successfully");
-      // Optionally, you can fetch the updated settings data again and update the UI
-    } catch (error) {
-      console.error("Error updating settings:", error);
-      // Handle errors accordingly
-      alert(error)
-    }
-  },
+      try {
+        const response = await axios.put(
+          "http://localhost:8081/postavke",
+          updatedSettings
+        );
+        console.log("Settings updated successfully:", response.data);
+        alert("Settings updated successfully");
+      } catch (error) {
+        console.error("Error updating settings:", error);
+        alert(error);
+      }
+    },
     fetchPostavkeData() {
       axios
         .get("http://localhost:8081/postavke")
         .then((response) => {
-          const postavkeData = response.data.data; // Assuming the data key holds the postavke data
-
-          // Assuming this is inside your Vue component
-          this.subject = postavkeData[0].subject; // Handle null values
-          this.message = postavkeData[0].message; // Handle null values
-          this.emailTemplate = postavkeData[0].e_mail_template; // Handle null values
-          this.gmailKey = postavkeData[0].gmail_key; // Handle null values
-          this.e_mail = postavkeData[0].e_mail; // Handle null values
-          this.filename = postavkeData[0].filename; // Handle null values
-
-          // Log or perform any additional actions as needed
-          console.log("Postavke data fetched:", postavkeData);
+          const postavkeData = response.data.data;
+          this.subject = postavkeData[0].subject;
+          this.message = postavkeData[0].message;
+          this.emailTemplate = postavkeData[0].e_mail_template;
+          this.gmailKey = postavkeData[0].gmail_key;
+          this.e_mail = postavkeData[0].e_mail;
+          this.filename = postavkeData[0].filename;
         })
         .catch((error) => {
-          console.error("Error fetching postavke data:", error);
-          alert(error);
+          alert("Greška prilikom dohvaćanja podataka:", error);
         });
     },
   },
@@ -173,11 +179,11 @@ export default {
     flex-direction: column;
     text-align: left;
     gap: 20px;
-    p{
+    p {
       color: gray;
       font-style: italic;
     }
-    
+
     input {
       height: 47px;
       border-radius: 8px;
@@ -189,7 +195,7 @@ export default {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 30px;
-    img{
+    img {
       width: 200px;
     }
 

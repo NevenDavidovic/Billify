@@ -8,12 +8,6 @@
 
       <label for="password" placeholder="Unesi lozinku">Lozinka</label>
       <input type="password" v-model="passwordInput" />
-      <!-- <label for="password">Ponovno unesi lozinku</label>
-      <input
-        type="password"
-        placeholder="Unesi lozinku"
-        v-model="passwordInput"
-      /> -->
 
       <button type="submit">Registriraj se</button>
 
@@ -67,27 +61,21 @@ export default {
           password: this.passwordInput,
         });
 
-        console.log("Registration successful:", response.data);
-        alert("Registration successful! Please LogIn:", response.data);
+        alert("Registracija uspješna", response.data);
         this.$router.push("/login");
         this.resetInputFields();
-        // Optionally, redirect to a login page or perform other actions
       } catch (error) {
-        console.error("Error during registration:", error);
-
         if (error.response) {
           if (error.response.status === 409) {
-            alert(
-              "Email is already in use. Please use a different email address."
-            );
+            alert("Emal se već koristi. Molimo koristite drugi mail.");
           } else {
             alert(
-              "An error occurred during registration. Please try again later."
+              "Greška se dogodila prilikom registracije. Molimo pokušajte kasnije"
             );
           }
         } else {
           alert(
-            "Failed to connect to the server. Please check your internet connection."
+            "Greška prilikom spajanja na poslužitelj. Provjerite internetsku vezu."
           );
         }
       }

@@ -63,6 +63,13 @@ table .row-button {
   align-content: center;
   justify-content: center;
 }
+table .row-button td {
+  overflow: scroll;
+}
+table .row-button td::-webkit-scrollbar {
+  display: none;
+  /* Hide the scrollbar */
+}
 table .row-button button {
   color: #3d4c4d;
   font-weight: 500;
@@ -83,6 +90,16 @@ th {
   background: white;
   box-sizing: border-box;
   text-align: left;
+  overflow: scroll;
+  border: 1px solid #0d45a5;
+}
+th::-webkit-scrollbar {
+  display: none;
+  /* Hide the scrollbar */
+}
+td::-webkit-scrollbar {
+  display: none;
+  /* Hide the scrollbar */
 }
 .table-container {
   position: relative;
