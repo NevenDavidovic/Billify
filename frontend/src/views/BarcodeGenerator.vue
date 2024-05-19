@@ -151,7 +151,7 @@ export default {
           console.log(this.activeOrganization);
         })
         .catch((error) => {
-          alert("Greška u dohvaćanju podataka", error);
+          console.error("Error fetching data:", error);
         })
         .finally(() => {
           this.isLoading = false;

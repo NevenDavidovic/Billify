@@ -28,6 +28,11 @@
 - [ ] Postavi Excell XML template sa e_mailom korisnika
 - [ ] Error Proffing i data checking
 
+PROBLEMI
+
+-[x] Single payment slip korištenje maila već unesenog u bazu -[x] Popravak funkcije za generiranje barkodova
+-[] Popravak funkcije za slanje uplatnica
+
 NOTES: Nemoj zaboravit uredit i komponentu druge payment slipa
 
 ## Screenshots of the APP

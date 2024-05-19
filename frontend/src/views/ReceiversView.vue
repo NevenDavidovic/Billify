@@ -451,8 +451,8 @@ export default {
       this.$router.push({ name: "PaymentView" });
     },
 
-    generateBarcode(user) {
-      this.$store.dispatch("saveUserData", user);
+    async generateBarcode(user) {
+      await this.$store.dispatch("saveUserData", user);
       this.$router.push({ name: "BarcodeGenerator" });
     },
 

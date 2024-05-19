@@ -529,12 +529,12 @@ export default {
       blockHeight: 1,
       barcodeImage: null,
       receiverEmail: null,
-      subject:"", 
-      message: "", 
+      subject: "",
+      message: "",
       emailTemplate: 3, // Handle null values
-      gmailKey:"", // Handle null values
-      e_mail:"", // Handle null values
-      filename:"",
+      gmailKey: "", // Handle null values
+      e_mail: "", // Handle null values
+      filename: "",
 
       //PAYMENT PARAMETRI
       paymentParams: {
@@ -590,7 +590,7 @@ export default {
         // Assuming that adjustPaymentParams is an action in your store
         setTimeout(() => {
           this.generateBarcode();
-        }, 100);
+        }, 300);
       }
     },
 

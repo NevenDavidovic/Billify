@@ -724,7 +724,7 @@ export default {
         // Assuming that adjustPaymentParams is an action in your store
         setTimeout(() => {
           this.generateBarcode();
-        }, 100);
+        }, 300);
       } else {
         if (user) {
           console.log("thisUSER", user);
@@ -739,7 +739,7 @@ export default {
           // adding a litle timepause
           setTimeout(() => {
             this.generateBarcode();
-          }, 100);
+          }, 300);
         }
       }
     },
