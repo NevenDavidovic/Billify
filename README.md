@@ -30,8 +30,9 @@
 
 PROBLEMI
 
--[x] Single payment slip korištenje maila već unesenog u bazu -[x] Popravak funkcije za generiranje barkodova
--[] Popravak funkcije za slanje uplatnica
+- [x] Single payment slip korištenje maila već unesenog u bazu
+- [x] Popravak funkcije za generiranje barkodova
+- [] Popravak funkcije za slanje uplatnica
 
 NOTES: Nemoj zaboravit uredit i komponentu druge payment slipa
 
