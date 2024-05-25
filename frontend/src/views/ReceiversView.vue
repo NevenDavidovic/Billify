@@ -197,7 +197,7 @@
         :class="{ active: isExcellOpen }"
         @click="formLogic('B')"
       >
-        Učitaj Excell
+        Učitaj XML
       </div>
     </div>
 
@@ -512,6 +512,7 @@ export default {
             "pozivNaBrojPrimatelja"
           );
           const opisPlacanjaEl = row.querySelector("opisPlacanja");
+          const emailAdresaEl = row.querySelector("emailAdresa");
 
           if (
             platiteljNazivEl &&
@@ -521,12 +522,16 @@ export default {
             pozivNaBrojPrimateljaEl &&
             opisPlacanjaEl
           ) {
-            const platiteljNaziv = platiteljNazivEl.textContent;
-            const platiteljAdresa = platiteljAdresaEl.textContent;
-            const platiteljMjesto = platiteljMjestoEl.textContent;
-            const iznos = parseFloat(iznosEl.textContent.replace(",", "."));
-            const pozivNaBrojPrimatelja = pozivNaBrojPrimateljaEl.textContent;
-            const opisPlacanja = opisPlacanjaEl.textContent;
+            const platiteljNaziv = platiteljNazivEl.textContent || "";
+            const platiteljAdresa = platiteljAdresaEl.textContent || "";
+            const platiteljMjesto = platiteljMjestoEl.textContent || "";
+            const iznos = parseFloat(
+              iznosEl.textContent.replace(",", ".") || 0
+            );
+            const pozivNaBrojPrimatelja =
+              pozivNaBrojPrimateljaEl.textContent || "";
+            const opisPlacanja = opisPlacanjaEl.textContent || "";
+            const emailAdresa = emailAdresaEl ? emailAdresaEl.textContent : "";
 
             this.receiverData.push({
               platiteljNaziv,
@@ -535,6 +540,7 @@ export default {
               iznos,
               pozivNaBrojPrimatelja,
               opisPlacanja,
+              emailAdresa,
             });
           } else {
             alert("Jedan ili više elemenata nije učitano:", row);

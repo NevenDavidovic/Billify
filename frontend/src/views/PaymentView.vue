@@ -5,8 +5,16 @@
     </div>
 
     <div class="payment-slips-container">
+      <h1 class="title-payment-view" v-if="primateljiData.length">
+        Generirane su sve uplatnice
+      </h1>
       <div class="btn-container">
-        <button class="button-57" role="button" @click="windowPrint">
+        <button
+          class="button-57"
+          role="button"
+          @click="windowPrint"
+          v-if="primateljiData.length"
+        >
           <span class="text">
             <svg
               width="60px"
@@ -24,9 +32,38 @@
           ><span class="preuzmi-btn">Preuzmi sve</span>
         </button>
 
-        <button @click="sendAllEmails" class="btn-gold send-all-btn">
+        <button
+          @click="sendAllEmails"
+          class="btn-gold send-all-btn"
+          v-if="primateljiData.length"
+        >
           Pošalji sve Uplatnice
         </button>
+        <p class="note-no-results" v-if="!primateljiData.length">
+          Nema podataka za obradu
+          <svg
+            width="250"
+            fill="#000000"
+            viewBox="0 0 14 14"
+            role="img"
+            focusable="false"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <path
+                fill="red"
+                d="M13 10.65657q0 .40404-.28283.68686l-1.37374 1.37374Q11.06061 13 10.65657 13t-.68687-.28283L7 9.74747l-2.9697 2.9697Q3.74747 13 3.34343 13q-.40404 0-.68686-.28283l-1.37374-1.37374Q1 11.06061 1 10.65657t.28283-.68687L4.25253 7l-2.9697-2.9697Q1 3.74747 1 3.34343q0-.40404.28283-.68686l1.37374-1.37374Q2.93939 1 3.34343 1t.68687.28283L7 4.25253l2.9697-2.9697Q10.25253 1 10.65657 1q.40404 0 .68686.28283l1.37374 1.37374Q13 2.93939 13 3.34343t-.28283.68687L9.74747 7l2.9697 2.9697Q13 10.25253 13 10.65657z"
+              ></path>
+            </g>
+          </svg>
+        </p>
       </div>
 
       <div
@@ -111,12 +148,34 @@ export default {
 </script>
 
 <style scoped lang="less">
+.payment-slips-container {
+  width: 100%;
+}
+.title-payment-view {
+  background: white;
+  color: #ff8900;
+  font-size: 40px;
+}
+.note-no-results {
+  font-size: 40px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  gap: 40px;
+  color: #ff8900;
+}
 .btn-container {
   display: flex;
   flex-direction: column;
-  background: white;
+  background: url("https://images.squarespace-cdn.com/content/v1/609701bc21f2ee5734517421/1642038232680-Z6OLCQ7TYQG42GLSRMKV/Gold+World+Cover+WM+new+.jpg?format=1500w");
+  background-size: cover;
   padding: 50px 0;
   gap: 30px;
+  width: 100%;
+  height: 100%;
 }
 .payements {
   display: flex;
@@ -127,7 +186,7 @@ export default {
 .send-all-btn {
   padding: 10px 20px;
   font-size: 24px;
-  margin: auto;
+  margin: 0 auto;
 }
 .main-ps {
   display: flex;

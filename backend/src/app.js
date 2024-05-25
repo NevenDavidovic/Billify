@@ -24,9 +24,8 @@ app.post("/logout", (req, res) => {
   try {
     loggedInUserId = null;
 
-    res.status(200).json({ message: "User logged out successfully" });
+    res.status(200).json({ message: "Korisnik se uspješno odjavio" });
   } catch (error) {
-    console.error("Error during logout:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -40,26 +39,29 @@ app.post("/login", async (req, res) => {
     ]);
 
     if (result.rows.length === 0) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ error: "Nepravilni korisničko ime i lozinka" });
     }
 
     const match = await bcrypt.compare(password, result.rows[0].password);
 
     if (!match) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ error: "Nepravilni korisničko ime i lozinka" });
     }
 
     loggedInUserId = result.rows[0].id;
     console.log(loggedInUserId);
 
     res.status(200).json({
-      message: "User logged in successfully",
+      message: "Korisnik se uspješno prijavio",
       email,
       id: result.rows[0].id,
     });
   } catch (error) {
-    console.error("Error during login:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Unutarnji server error" });
   }
 });
 
@@ -73,7 +75,7 @@ app.post("/register", async (req, res) => {
       [email]
     );
     if (existingUser.rows.length > 0) {
-      return res.status(409).json({ error: "Email is already in use" });
+      return res.status(409).json({ error: "Email se već koristi" });
     }
 
     // Hash the password
@@ -117,12 +119,12 @@ app.post("/register", async (req, res) => {
 
     // Respond with success message and user details
     res.status(201).json({
-      message: "User registered successfully",
+      message: "Korisnik se uspješno prijavio",
       user: { id: userId, email: email },
     });
   } catch (error) {
-    console.error("Error during registration:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    c;
+    res.status(500).json({ error: "Unutrašnji server error" });
   }
 });
 
@@ -156,10 +158,9 @@ app.post("/save-receiver", (req, res) => {
     ],
     (err, result) => {
       if (err) {
-        console.log("Error saving receiver data:", err);
         return res.status(500).json({ error: err.message });
       }
-      console.log("Receiver data saved successfully");
+
       res.status(200).json({ message: "Receiver data saved successfully" });
     }
   );
@@ -173,15 +174,11 @@ app.delete("/delete-all-receivers", (req, res) => {
     [loggedInUserIdCopy], // Use loggedInUserId directly in the query
     (err, result) => {
       if (err) {
-        console.log("Error deleting receivers data:", err);
         return res.status(500).json({ error: err.message });
       }
-      console.log(
-        "All receivers data deleted successfully for the logged-in user"
-      );
+
       res.status(200).json({
-        message:
-          "All receivers data deleted successfully for the logged-in user",
+        message: "Svi primatelji su uspješno obrisani!",
       });
     }
   );
@@ -205,7 +202,7 @@ app.post("/save-receivers", (req, res) => {
           receiver.platiteljNaziv,
           receiver.platiteljAdresa,
           receiver.platiteljMjesto,
-          null,
+          receiver.emailAdresa,
           receiver.iznos,
           new Date(),
           receiver.opisPlacanja,
@@ -215,10 +212,8 @@ app.post("/save-receivers", (req, res) => {
         ],
         (err, result) => {
           if (err) {
-            console.log("Error saving receiver data:", err);
             reject(err);
           } else {
-            console.log("Receiver data saved successfully");
             resolve(result);
           }
         }
@@ -228,11 +223,9 @@ app.post("/save-receivers", (req, res) => {
 
   Promise.all(insertPromises)
     .then((results) => {
-      console.log("All receiver data saved successfully");
       res.status(200).json({ message: "All receiver data saved successfully" });
     })
     .catch((error) => {
-      console.log("Error saving receiver data:", error);
       res.status(500).json({ error: "Error saving receiver data" });
     });
 });
@@ -408,7 +401,6 @@ app.get("/api/user/:userId", (req, res) => {
 
   db.query("SELECT * FROM users WHERE id = $1", [userId], (err, result) => {
     if (err) {
-      console.log("Error fetching user data:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
@@ -426,7 +418,6 @@ app.get("/api/user/:userId", (req, res) => {
 
   db.query("SELECT * FROM users WHERE id = $1", [userId], (err, result) => {
     if (err) {
-      console.log("Error fetching user data:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
@@ -449,10 +440,9 @@ app.get("/", (req, res) => {
     [loggedInUserIdCopy],
     (err, result) => {
       if (err) {
-        console.log("ERROR");
         return res.status(500).json({ error: err.message });
       }
-      console.log("Successful Connection to organizacija");
+
       res.json({ data: result.rows });
     }
   );
@@ -471,7 +461,7 @@ app.get("/receiver", (req, res) => {
           error: err.message,
         });
       }
-      console.log("Successful connection to the primatelji table");
+
       return res.json({ data: result.rows });
     }
   );
@@ -485,10 +475,9 @@ app.delete("/delete-receiver/:id", (req, res) => {
     [receiverId],
     (err, result) => {
       if (err) {
-        console.log("Error deleting receiver:", err);
         return res.status(500).json({ error: err.message });
       }
-      console.log("Receiver deleted successfully");
+
       res.status(200).json({ message: "Receiver deleted successfully" });
     }
   );
@@ -509,12 +498,10 @@ app.get("/statistics", async (req, res) => {
     const cityNumberResult = await db.query(cityNumberQuery, [
       loggedInUserIdCopy,
     ]);
-    console.log("cityNumberResult:", cityNumberResult.rows);
 
     const largestPayersResult = await db.query(largestPayersQuery, [
       loggedInUserIdCopy,
     ]);
-    console.log("largestPayersResult:", largestPayersResult.rows);
 
     const numberOfPayersResult = await db.query(numberOfPayersQuery, [
       loggedInUserIdCopy,
@@ -525,20 +512,16 @@ app.get("/statistics", async (req, res) => {
     const largestPayers = largestPayersResult.rows;
     const numberOfPayers = numberOfPayersResult.rows;
 
-    // Sending the aggregated results as a JSON response
-    console.log("Successful Connection to stats");
     return res.json({
       cityNum: cityNumber,
       largestPay: largestPayers,
       numPayers: numberOfPayers,
     });
   } catch (err) {
-    console.error("Error occurred while fetching data:", err);
     return res.status(500).json({ error: err.message });
   }
 });
 
-// Route to generate PDF and send via email
 app.post("/send-pdf", async (req, res) => {
   console.log("Received request to send PDF");
 
@@ -547,30 +530,26 @@ app.post("/send-pdf", async (req, res) => {
   console.log("HTML Content:", htmlContent);
 
   try {
-    // Fetch data from the "postavke" table
-    const loggedInUserIdCopy = loggedInUserId; // Assuming you have the logged-in user's ID
+    const loggedInUserIdCopy = loggedInUserId;
     const postavkeQuery = `
       SELECT * FROM postavke WHERE id_korisnik = $1;
     `;
 
     const result = await db.query(postavkeQuery, [loggedInUserIdCopy]);
-    const postavkeData = result.rows[0]; // Assuming you only expect one row
+    const postavkeData = result.rows[0];
 
-    // Check if postavkeData is defined before accessing its properties
     if (!postavkeData) {
       throw new Error(
         "No data found in the 'postavke' table for the logged-in user"
       );
     }
 
-    // Extract necessary data from postavkeData and store it into variables
     const subject = postavkeData.subject;
     const message = postavkeData.message;
     const gmailKey = postavkeData.gmail_key;
     const e_mail = postavkeData.e_mail;
     const filename = postavkeData.filename;
 
-    // Set up transporter using data from postavkeData
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -581,20 +560,18 @@ app.post("/send-pdf", async (req, res) => {
       },
     });
 
-    // Continue with PDF generation and email sending
     const browser = await puppeteer.launch();
     console.log("Browser launched");
 
     const page = await browser.newPage();
     console.log("New page created");
 
-    await page.setContent(htmlContent); // Set the received HTML content
+    await page.setContent(htmlContent);
     console.log("HTML content set on page");
 
     const pdfBuffer = await page.pdf();
     console.log("PDF generated");
 
-    // Sending email with PDF attachment
     const mailOptions = {
       from: e_mail,
       to: email,
@@ -629,7 +606,7 @@ app.post("/send-pdf", async (req, res) => {
 
 app.get("/postavke", async (req, res) => {
   try {
-    const loggedInUserIdCopy = loggedInUserId; // Assuming you have the logged-in user's ID
+    const loggedInUserIdCopy = loggedInUserId;
     console.log(loggedInUserIdCopy);
     const postavkeQuery = `
       SELECT * FROM postavke WHERE id_korisnik = $1;
@@ -648,7 +625,7 @@ app.put("/postavke", async (req, res) => {
   try {
     const { subject, message, e_mail_template, gmail_key, e_mail, filename } =
       req.body;
-    const loggedInUserIdCopy = loggedInUserId; // Assuming you have the logged-in user's ID
+    const loggedInUserIdCopy = loggedInUserId;
 
     console.log("Received update request with data:", req.body);
 
