@@ -11,6 +11,17 @@
   @page {
     size: landscape;
   }
+  .above-info {
+    visibility: hidden;
+    display: none;
+  }
+  .payment-slips-container {
+    max-width: 350px;
+    max-height: 350px;
+    .inactive {
+      visibility: hidden;
+    }
+  }
   .btn-black {
     visibility: hidden;
   }
@@ -29,5 +40,9 @@
   }
   .button-57 {
     visibility: hidden;
+  }
+  .btn-container {
+    visibility: hidden;
+    display: none;
   }
 }

@@ -29,9 +29,14 @@
         </button>
       </div>
 
-      <div v-if="primateljiData.length">
+      <div
+        v-if="primateljiData.length"
+        class="payements"
+        ref="paymentSlipsContainer"
+      >
         <div v-for="user in primateljiData" :key="user.id">
           <PaymentSlip
+            ref="paymentSlips"
             :userData="user"
             @barcode-generated="collectBarcodeData"
           />
@@ -63,12 +68,6 @@ export default {
   },
 
   methods: {
-    generateBarcodeForAll() {
-      this.$store.dispatch("saveUsers", this.primateljiData);
-      console.log(this.primateljiData);
-      this.$router.push({ name: "PaymentView" });
-    },
-
     async generateBarcode(user) {
       await this.$store.dispatch("saveUserData", user);
       this.$router.push({ name: "BarcodeGenerator" });
@@ -98,10 +97,13 @@ export default {
       this.$store.commit("resetUsers");
     },
     async sendAllEmails() {
-      const paymentSlips = this.$refs.paymentSlips;
-      for (let i = 0; i < paymentSlips.length; i++) {
-        const paymentSlip = paymentSlips[i];
-        await paymentSlip.generatePDFAndSendEmail(paymentSlip.userData.e_mail);
+      const paymentSlipComponents = this.$refs.paymentSlips;
+      console.log(paymentSlipComponents);
+
+      for (let i = 0; i < paymentSlipComponents.length; i++) {
+        const paymentSlipComponent = paymentSlipComponents[i];
+        const userEmail = this.primateljiData[i].e_mail;
+        await paymentSlipComponent.generatePDFAndSendEmail(userEmail);
       }
     },
   },
@@ -114,6 +116,12 @@ export default {
   flex-direction: column;
   background: white;
   padding: 50px 0;
+  gap: 30px;
+}
+.payements {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .send-all-btn {

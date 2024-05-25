@@ -14,7 +14,7 @@
       }}
     </div>
 
-    <div class="uplatnica-form-img" id="izvoz-uplatnice">
+    <div class="uplatnica-form-img" id="izvoz-uplatnice" ref="izvozUplatnice">
       <div class="platitelj">
         <input
           type="text"
@@ -605,7 +605,7 @@ export default {
     },
 
     generatePDF() {
-      const element = document.getElementById("izvoz-uplatnice"); // Replace with your element ID
+      const element = this.$refs.izvozUplatnice; // Replace with your element ID
       const options = {
         filename: this.paymentParams.imePlatitelja + ".pdf",
         image: { type: "png", quality: 1.0 }, // Image options (if needed)
@@ -700,8 +700,6 @@ export default {
         htmlContent: htmlContent,
       };
 
-      console.log("Sending email data:", emailData); // Log email data before sending
-
       // Send data to server for PDF generation and email sending
       fetch("http://localhost:8081/send-pdf", {
         method: "POST",
@@ -711,7 +709,6 @@ export default {
         body: JSON.stringify(emailData),
       })
         .then((response) => {
-          console.log("Odgovor servera:", response); // Log server response
           if (response.ok) {
             alert("Email poslan uspješno!");
           } else {
@@ -719,21 +716,19 @@ export default {
           }
         })
         .catch((error) => {
-          console.error("Error:", error);
-          alert("Failed to send email.");
+          alert("Greška u slanju maila.", error);
         });
     },
 
     generateBarcode() {
       this.text = this.concatenateStrings();
-      console.log("Concatenated String for Barcode:", this.text); // Debugging
+
       if (this.text) {
         this.barcodeImage = generateBarcode(
           this.text,
           this.blockWidth,
           this.blockHeight
         );
-        console.log("Generated Barcode Image:", this.barcodeImage); // Debugging
       } else {
         alert("ERROR");
       }
@@ -759,10 +754,8 @@ export default {
           this.filename = postavkeData[0].filename; // Handle null values
 
           // Log or perform any additional actions as needed
-          console.log("Postavke data fetched:", postavkeData);
         })
         .catch((error) => {
-          console.error("Error fetching postavke data:", error);
           alert(error);
         });
     },
@@ -791,7 +784,7 @@ export default {
           this.paymentParams.ibanPrimatelja = this.activeOrganization[0].iban;
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          alert("Error fetching data:", error);
         })
         .finally(() => {
           this.isLoading = false;
@@ -803,6 +796,7 @@ export default {
 <style scoped lang="less">
 .payment-slip-container {
   background: white;
+  padding: 50px 0;
   .above-info {
     max-width: 500px;
     margin: auto;

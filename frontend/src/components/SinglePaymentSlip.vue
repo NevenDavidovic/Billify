@@ -676,8 +676,6 @@ export default {
         htmlContent: htmlContent,
       };
 
-      console.log("Sending email data:", emailData); // Log email data before sending
-
       // Send data to server for PDF generation and email sending
       fetch("http://localhost:8081/send-pdf", {
         method: "POST",
@@ -687,7 +685,7 @@ export default {
         body: JSON.stringify(emailData),
       })
         .then((response) => {
-          console.log("Odgovor servera:", response); // Log server response
+          // Log server response
           if (response.ok) {
             alert("Email poslan uspješno!");
           } else {
@@ -695,8 +693,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.error("Error:", error);
-          alert("Failed to send email.");
+          alert("Failed to send email.", error);
         });
     },
 
@@ -727,8 +724,6 @@ export default {
         }, 300);
       } else {
         if (user) {
-          console.log("thisUSER", user);
-
           this.paymentParams.imePlatitelja = user.ime_prezime;
           this.paymentParams.adresaPlatitelja = user.ulica;
           this.paymentParams.postanskiBrojIMjestoPlatitelja = user.grad;
