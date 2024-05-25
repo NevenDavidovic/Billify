@@ -687,11 +687,11 @@ export default {
         body: JSON.stringify(emailData),
       })
         .then((response) => {
-          console.log("Response from server:", response); // Log server response
+          console.log("Odgovor servera:", response); // Log server response
           if (response.ok) {
-            console.log("Email sent successfully!");
+            alert("Email poslan uspješno!");
           } else {
-            alert("Failed to send email.");
+            alert("Greška prilikom slanja maila");
           }
         })
         .catch((error) => {

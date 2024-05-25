@@ -391,7 +391,7 @@
         id=""
         v-model="paymentParams.opisPlacanja"
       ></textarea>
-      <div class="last-item generated-barcode" id="barcode">
+      <div class="last-item generated-barcode" id="barcode" ref="barcode">
         <div v-if="barcodeImage">
           <img :src="barcodeImage" alt="Generated Barcode" />
         </div>
@@ -499,7 +499,7 @@
       </button>
 
       <button
-        @click="generatePDFAndSendEmail(receiverEmail)"
+        @click="generatePDFAndSendEmail(this.receiverEmail)"
         class="btn-black btn-preuzmi"
       >
         Pošalji uplatnicu
@@ -615,11 +615,13 @@ export default {
 
       html2pdf().from(element).set(options).save();
     },
-    generatePDFAndSendEmail(email) {
-      const barcodeElement = document.getElementById("barcode");
+    async generatePDFAndSendEmail(email) {
+      // Wait for Vue to finish rendering the DOM
+      await this.$nextTick();
+
+      const barcodeElement = this.$refs.barcode;
       const logoOrganization = document.getElementById("logo-org");
       // Extract HTML content
-
       let imePrimatelja = this.paymentParams.imePrimatelja;
       let imePlatitelja = this.paymentParams.imePlatitelja;
       let adresaPlatitelja = this.paymentParams.adresaPlatitelja;
@@ -633,7 +635,6 @@ export default {
       let modelPlacanja = this.paymentParams.modelPlacanja;
       let pozivNaBroj = this.paymentParams.pozivNaBroj;
       let sifraNamjene = this.paymentParams.sifraNamjene;
-
       let opisPlacanja = this.paymentParams.opisPlacanja;
 
       if (!email) {
@@ -653,48 +654,45 @@ export default {
 
       const htmlContent = `
       <table width="400" style="border: 2px solid #002D62; padding: 20px; background-color: #F4F4F4; margin: auto; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-  <tr style="margin-bottom: 20px;">
-    <th width="100" align="left" style="vertical-align: middle;">
-      <div style="padding: 10px;">
-        ${logoOrganization.outerHTML}
-      </div>
-    </th>
-    <th align="left" width="300">
-      <div style="color: #002D62;">
-        <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">${imePrimatelja}</p>
-        <p style="font-size: 14px; margin-bottom: 5px;">${adresaPrimatelja}, ${postanskiBrojIMjestoPrimatelja}</p>
-        <p style="font-size: 14px; margin-bottom: 5px;">IBAN: ${ibanPrimatelja}</p>
-      </div>
-    </th>
-  </tr>
+        <tr style="margin-bottom: 20px;">
+          <th width="100" align="left" style="vertical-align: middle;">
+            <div style="padding: 10px;">
+              ${logoOrganization.outerHTML}
+            </div>
+          </th>
+          <th align="left" width="300">
+            <div style="color: #002D62;">
+              <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">${imePrimatelja}</p>
+              <p style="font-size: 14px; margin-bottom: 5px;">${adresaPrimatelja}, ${postanskiBrojIMjestoPrimatelja}</p>
+              <p style="font-size: 14px; margin-bottom: 5px;">IBAN: ${ibanPrimatelja}</p>
+            </div>
+          </th>
+        </tr>
 
-  <tr>
-    <td colspan="2">
-      <div style="padding: 10px;">
-        <h2 style="font-size: 14px; margin-bottom: 10px;color: #002D62;"><b>DETALJI PLAĆANJA</b> </h2>
-        <hr style="border-color: #002D62; margin: 20px 0;">
-        <p style="font-size: 14px; margin-bottom: 10px;"><b>IME I PREZIME:</b> ${imePlatitelja}</p>
-        <p style="font-size: 14px; margin-bottom: 10px;"><b>ADRESA:</b> ${adresaPlatitelja}, ${postanskiBrojIMjestoPlatitelja}</p>
-        <p style="font-size: 14px; margin-bottom: 10px;"><b>ŠIFRA NAMJENE:</b> ${sifraNamjene}</p>
-        <p style="font-size: 14px; margin-bottom: 10px;"><b>MODEL I POZIV NA BROJ:</b> ${modelPlacanja}${pozivNaBroj}</p>
-        <p style="font-size: 14px; margin-bottom: 10px;"><b>OPIS PLAĆANJA:</b> ${opisPlacanja}</p>
-        <p style="font-size: 14px; margin-bottom: 10px;"><b>IZNOS ZA PLATITI:</b> ${iznosTransakcije} EUR</p>
-        <hr style="border-color: #002D62; margin: 20px 0;">
-        <div style="margin-top: 20px;">
-          ${barcodeElement.outerHTML}
-        </div>
-      </div>
-    </td>
-  </tr>
+        <tr>
+          <td colspan="2">
+            <div style="padding: 10px;">
+              <h2 style="font-size: 14px; margin-bottom: 10px;color: #002D62;"><b>DETALJI PLAĆANJA</b> </h2>
+              <hr style="border-color: #002D62; margin: 20px 0;">
+              <p style="font-size: 14px; margin-bottom: 10px;"><b>IME I PREZIME:</b> ${imePlatitelja}</p>
+              <p style="font-size: 14px; margin-bottom: 10px;"><b>ADRESA:</b> ${adresaPlatitelja}, ${postanskiBrojIMjestoPlatitelja}</p>
+              <p style="font-size: 14px; margin-bottom: 10px;"><b>ŠIFRA NAMJENE:</b> ${sifraNamjene}</p>
+              <p style="font-size: 14px; margin-bottom: 10px;"><b>MODEL I POZIV NA BROJ:</b> ${modelPlacanja}${pozivNaBroj}</p>
+              <p style="font-size: 14px; margin-bottom: 10px;"><b>OPIS PLAĆANJA:</b> ${opisPlacanja}</p>
+              <p style="font-size: 14px; margin-bottom: 10px;"><b>IZNOS ZA PLATITI:</b> ${iznosTransakcije} EUR</p>
+              <hr style="border-color: #002D62; margin: 20px 0;">
+              <div style="margin-top: 20px;">
+                ${barcodeElement.outerHTML}
+              </div>
+            </div>
+          </td>
+        </tr>
 
-  <tr>
-    <td colspan="2" style="font-size: 14px; color: #002D62; padding: 10px;">Automatski generirana uplatnica! Molimo Vas provjerite sve podatke.</td>
-  </tr>
-</table>
-
-
-
-`;
+        <tr>
+          <td colspan="2" style="font-size: 14px; color: #002D62; padding: 10px;">Automatski generirana uplatnica! Molimo Vas provjerite sve podatke.</td>
+        </tr>
+      </table>
+      `;
 
       // Prepare data to send via email
       const emailData = {
@@ -713,12 +711,11 @@ export default {
         body: JSON.stringify(emailData),
       })
         .then((response) => {
-          console.log("Response from server:", response); // Log server response
+          console.log("Odgovor servera:", response); // Log server response
           if (response.ok) {
-            console.log("Email sent successfully!");
-            alert("Email sent successfully!");
+            alert("Email poslan uspješno!");
           } else {
-            alert("Failed to send email.");
+            alert("Greška prilikom slanja maila");
           }
         })
         .catch((error) => {
