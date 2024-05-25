@@ -396,6 +396,15 @@ export default {
         });
       }
     },
+    splitData(data) {
+      // Split data into chunks if necessary
+      const chunkSize = 10; // Example chunk size
+      const chunks = [];
+      for (let i = 0; i < data.length; i += chunkSize) {
+        chunks.push(data.slice(i, i + chunkSize));
+      }
+      return chunks;
+    },
 
     editReceiverData(id) {
       const filteredRow = this.primateljiData.find((row) => row.id === id);
@@ -446,7 +455,6 @@ export default {
     },
 
     generateBarcodeForAll() {
-      this.$store.dispatch("saveUsers", this.primateljiData);
       console.log(this.primateljiData);
       this.$router.push({ name: "PaymentView" });
     },

@@ -1,20 +1,12 @@
 <template>
-  <div class="background-primary page-statistika">
-    <div class="generiraj-barkod container">
-      <div class="aside">
-        <SideNav />
-      </div>
+  <div class="generiraj-barkod container">
+    <div class="aside">
+      <SideNav />
+    </div>
 
-      <div
-        class="main-ps"
-        style="display: flex; flex-direction: column; gap: 1em; width: 100%"
-      >
-        <button
-          class="button-57"
-          role="button"
-          v-if="users.length"
-          @click="windowPrint"
-        >
+    <div class="payment-slips-container">
+      <div class="btn-container">
+        <button class="button-57" role="button" @click="windowPrint">
           <span class="text">
             <svg
               width="60px"
@@ -32,37 +24,27 @@
           ><span class="preuzmi-btn">Preuzmi sve</span>
         </button>
 
-        <button
-          @click="sendAllEmails"
-          v-if="users.length"
-          class="btn-gold send-all-btn"
-        >
+        <button @click="sendAllEmails" class="btn-gold send-all-btn">
           Pošalji sve Uplatnice
         </button>
+      </div>
 
-        <div class="notification-payment" v-if="!users.length">
-          <h2>Trenutno niste odabrali ni jednu uplatnicu.</h2>
-          <router-link to="/receiver">Generiraj Barkod</router-link>
-        </div>
-
-        <br />
-        <div v-for="user in users" :key="user.id">
+      <div v-if="primateljiData.length">
+        <div v-for="user in primateljiData" :key="user.id">
           <PaymentSlip
             :userData="user"
             @barcode-generated="collectBarcodeData"
-            ref="paymentSlips"
           />
         </div>
-
-        <br />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import PaymentSlip from "@/components/PaymentSlip.vue";
+import axios from "axios";
 import SideNav from "@/components/SideNav.vue";
+import PaymentSlip from "@/components/PaymentSlip.vue";
 
 export default {
   components: {
@@ -71,16 +53,39 @@ export default {
   },
   data() {
     return {
-      users: [],
-      statisticsLoaded: false,
-      showCityStats: true,
-      barcodeData: [],
+      primateljiData: [],
+      receiverData: [],
     };
   },
-  mounted() {
-    this.getUsers();
+  computed: {},
+  created() {
+    this.fetchDataPrimatelji();
   },
+
   methods: {
+    generateBarcodeForAll() {
+      this.$store.dispatch("saveUsers", this.primateljiData);
+      console.log(this.primateljiData);
+      this.$router.push({ name: "PaymentView" });
+    },
+
+    async generateBarcode(user) {
+      await this.$store.dispatch("saveUserData", user);
+      this.$router.push({ name: "BarcodeGenerator" });
+    },
+
+    async fetchDataPrimatelji() {
+      try {
+        const response1 = await axios.get("http://localhost:8081/receiver");
+        this.primateljiData = response1.data.data;
+        console.log(response1);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
     windowPrint() {
       window.print();
     },
@@ -102,7 +107,15 @@ export default {
   },
 };
 </script>
+
 <style scoped lang="less">
+.btn-container {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 50px 0;
+}
+
 .send-all-btn {
   padding: 10px 20px;
   font-size: 24px;
@@ -134,11 +147,6 @@ export default {
   &:hover {
     opacity: 1;
   }
-}
-
-.notification-payment {
-  margin: auto;
-  max-width: 60%;
 }
 
 .button-57 {

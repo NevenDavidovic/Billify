@@ -535,6 +535,7 @@ export default {
       gmailKey: "", // Handle null values
       e_mail: "", // Handle null values
       filename: "",
+      dataChanged: false,
 
       //PAYMENT PARAMETRI
       paymentParams: {
@@ -552,7 +553,7 @@ export default {
         sifraNamjene: "",
         opisPlacanja: "",
       },
-      concatenatedString: "",
+
       organizacijaData: [],
       activeOrganization: [],
       inactiveOrganization: [],
@@ -563,9 +564,17 @@ export default {
   created() {
     this.adjustPaymentParams();
   },
+  watch: {
+    userData: {
+      immediate: true,
+      handler() {
+        this.adjustPaymentParams();
+      },
+    },
+  },
+
   mounted() {
     this.fetchData();
-    this.adjustPaymentParams();
     this.fetchPostavkeData();
   },
   methods: {
@@ -577,9 +586,8 @@ export default {
       return this.paymentParams;
     },
 
-    adjustPaymentParams() {
+    async adjustPaymentParams() {
       if (this.userData) {
-        // Example mapping, modify as needed
         this.paymentParams.imePlatitelja = this.userData.ime_prezime;
         this.paymentParams.adresaPlatitelja = this.userData.ulica;
         this.paymentParams.postanskiBrojIMjestoPlatitelja = this.userData.grad;
@@ -587,10 +595,12 @@ export default {
         this.paymentParams.pozivNaBroj = this.userData.poziv_na_primatelja;
         this.paymentParams.opisPlacanja = this.userData.opis_placanja;
         this.receiverEmail = this.userData.e_mail;
-        // Assuming that adjustPaymentParams is an action in your store
+
+        // Ensure the view updates before generating the barcode
+        await this.$nextTick();
         setTimeout(() => {
           this.generateBarcode();
-        }, 300);
+        }, 100);
       }
     },
 
@@ -718,26 +728,24 @@ export default {
     },
 
     generateBarcode() {
-      this.concatenateStrings();
-
-      this.text = this.concatenatedString;
+      this.text = this.concatenateStrings();
+      console.log("Concatenated String for Barcode:", this.text); // Debugging
       if (this.text) {
         this.barcodeImage = generateBarcode(
           this.text,
           this.blockWidth,
           this.blockHeight
         );
+        console.log("Generated Barcode Image:", this.barcodeImage); // Debugging
       } else {
         alert("ERROR");
       }
     },
-
     concatenateStrings() {
       const concatenatedValues = Object.values(this.paymentParams)
         .map((value) => `${value}\n`)
         .join("");
-
-      this.concatenatedString = concatenatedValues;
+      return concatenatedValues;
     },
     fetchPostavkeData() {
       axios

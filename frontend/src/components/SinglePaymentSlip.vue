@@ -502,7 +502,7 @@
       </button>
 
       <button
-        @click="generatePDFAndSendEmail()"
+        @click="generatePDFAndSendEmail(this.receiverEmail)"
         class="btn-black btn-preuzmi"
         v-if="barcodeImage"
       >
@@ -735,6 +735,7 @@ export default {
           this.paymentParams.iznosTransakcije = user.iznos;
           this.paymentParams.pozivNaBroj = user.poziv_na_primatelja;
           this.paymentParams.opisPlacanja = user.opis_placanja;
+          this.receiverEmail = user.e_mail;
 
           // adding a litle timepause
           setTimeout(() => {
