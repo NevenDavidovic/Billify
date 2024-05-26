@@ -329,7 +329,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/services/Api";
 import SideNav from "@/components/SideNav.vue";
 
 export default {
@@ -435,8 +435,8 @@ export default {
         poziv_na_primatelja: this.editData.poziv_na_primatelja,
       };
 
-      axios
-        .put(`http://localhost:8081/update-receiver/${id}`, editedReceiverData)
+      api
+        .put(`/update-receiver/${id}`, editedReceiverData)
         .then((response) => {
           console.log("Receiver data updated:", response.data);
           this.fetchDataPrimatelji();
@@ -466,9 +466,7 @@ export default {
 
     async deleteAllReceivers() {
       try {
-        const response = await axios.delete(
-          "http://localhost:8081/delete-all-receivers"
-        );
+        const response = await api.delete("/delete-all-receivers");
         console.log("Svi primatelji obrisani:", response.data);
 
         if (response.data.message) {
@@ -553,10 +551,7 @@ export default {
     },
     async sendDataToBackend(data) {
       try {
-        const response = await axios.post(
-          "http://localhost:8081/save-receivers",
-          data
-        );
+        const response = await api.post("/save-receivers", data);
 
         alert("Podaci poslani poslužitelju.");
         if (response.data.message) {
@@ -574,8 +569,8 @@ export default {
 
     deleteReceiver(id) {
       if (confirm("Jeste li sigurni da želite obrisati primatelja?")) {
-        axios
-          .delete(`http://localhost:8081/delete-receiver/${id}`)
+        api
+          .delete(`/delete-receiver/${id}`)
           .then((response) => {
             console.log("Receiver deleted:", response.data);
             alert("Receiver deleted");
@@ -600,7 +595,7 @@ export default {
     },
     async fetchDataPrimatelji() {
       try {
-        const response1 = await axios.get("http://localhost:8081/receiver");
+        const response1 = await api.get("/receiver");
         this.primateljiData = response1.data.data;
         console.log(response1);
       } catch (error) {
@@ -612,10 +607,7 @@ export default {
 
     async saveReceiverData() {
       try {
-        const response = await axios.post(
-          "http://localhost:8081/save-receiver",
-          this.formData
-        );
+        const response = await api.post("/save-receiver", this.formData);
         console.log("Data saved:", response.data);
         this.closeModal();
         this.resetFormData();

@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import axios from "axios";
+import api from "@/services/Api";
 
 export default createStore({
   state: {
@@ -53,7 +53,7 @@ export default createStore({
     },
     async login({ commit }, { email, password }) {
       try {
-        const response = await axios.post("http://localhost:8081/login", {
+        const response = await api.post("/login", {
           email: email,
           password: password,
         });

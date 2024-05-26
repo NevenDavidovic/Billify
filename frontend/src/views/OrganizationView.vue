@@ -267,7 +267,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/services/Api";
 import SideNav from "@/components/SideNav.vue";
 
 export default {
@@ -313,8 +313,8 @@ export default {
   },
   methods: {
     fetchData() {
-      axios
-        .get("http://localhost:8081/")
+      api
+        .get("/")
         .then((response) => {
           this.organizacijaData = response.data.data;
           console.log(this.organizacijaData);
@@ -352,8 +352,8 @@ export default {
       console.log("Editd Data", this.editedData);
       console.log("Id", id);
 
-      axios
-        .put(`http://localhost:8081/update-organization/${id}`, editedData)
+      api
+        .put(`/update-organization/${id}`, editedData)
         .then((response) => {
           console.log("Data updated:", response.data);
           this.fetchData();
@@ -368,8 +368,8 @@ export default {
     },
 
     setActiveOrganization(id) {
-      axios
-        .put(`http://localhost:8081/update-organization-status/${id}`)
+      api
+        .put(`/update-organization-status/${id}`)
         .then((response) => {
           console.log("Organization status updated:", response.data);
           this.fetchData();
@@ -413,8 +413,8 @@ export default {
         return;
       }
 
-      axios
-        .delete(`http://localhost:8081/delete-organization/${id}`)
+      api
+        .delete(`/delete-organization/${id}`)
         .then((response) => {
           console.log("Organization deleted:", response.data);
 
@@ -437,8 +437,8 @@ export default {
         slika: this.formData.slika,
       };
 
-      axios
-        .post("http://localhost:8081/save-organization", this.formData)
+      api
+        .post("/save-organization", this.formData)
         .then((response) => {
           console.log("Data saved:", response.data);
           this.closeModal();

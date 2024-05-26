@@ -529,7 +529,7 @@
 
 <script>
 import generateBarcode from "pdf417";
-import axios from "axios";
+import api from "@/services/Api";
 import html2pdf from "html2pdf.js";
 
 export default {
@@ -776,8 +776,8 @@ export default {
     },
 
     fetchData() {
-      axios
-        .get("http://localhost:8081/")
+      api
+        .get("/")
         .then((response) => {
           this.organizacijaData = response.data.data;
 

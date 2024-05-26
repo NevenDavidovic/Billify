@@ -170,7 +170,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/services/Api";
 
 export default {
   name: "HeaderNavbar",
@@ -186,20 +186,6 @@ export default {
     },
   },
   methods: {
-    // changeStyle() {
-    //   const btnLoggin = document.getElementById("btnLogin");
-    //   const btnSignUp = document.getElementById("btnSignUp");
-    //   const btnHeader = document.getElementById("btnHeader");
-    //   const btnImeAppa = document.getElementById("imeApp-a");
-    //   if (this.$route.path === "http://localhost:8080//organization") {
-    //     btnHeader.style.background = "#db9f58";
-    //     btnSignUp.style.display = "none";
-    //     btnImeAppa.style.color = "white";
-    //     btnLoggin.style.display = "none";
-    //     console.log("the path");
-    //     console.log(this.$route.path);
-    //   }
-    // },
     redirectHome() {
       this.$router.push("/");
     },
@@ -209,8 +195,8 @@ export default {
         .dispatch("logout")
         .then(() => {
           // If logout action succeeds, make a request to the server to reset the variable
-          axios
-            .post("http://localhost:8081/logout")
+          api
+            .post("/logout")
             .then((response) => {
               // Optionally, handle response from the server
               console.log(response.data);

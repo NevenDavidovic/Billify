@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/services/Api";
 import SideNav from "@/components/SideNav.vue";
 import PaymentSlip from "@/components/PaymentSlip.vue";
 
@@ -112,7 +112,7 @@ export default {
 
     async fetchDataPrimatelji() {
       try {
-        const response1 = await axios.get("http://localhost:8081/receiver");
+        const response1 = await api.get("/receiver");
         this.primateljiData = response1.data.data;
         console.log(response1);
       } catch (error) {

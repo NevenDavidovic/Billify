@@ -510,7 +510,7 @@
 
 <script>
 import generateBarcode from "pdf417";
-import axios from "axios";
+import api from "@/services/Api";
 import html2pdf from "html2pdf.js";
 
 export default {
@@ -740,8 +740,8 @@ export default {
       return concatenatedValues;
     },
     fetchPostavkeData() {
-      axios
-        .get("http://localhost:8081/postavke")
+      api
+        .get("/postavke")
         .then((response) => {
           const postavkeData = response.data.data; // Assuming the data key holds the postavke data
 
@@ -761,8 +761,8 @@ export default {
     },
 
     fetchData() {
-      axios
-        .get("http://localhost:8081/")
+      api
+        .get("/")
         .then((response) => {
           this.organizacijaData = response.data.data;
 

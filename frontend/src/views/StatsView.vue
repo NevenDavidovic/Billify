@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/services/Api";
 import SideNav from "@/components/SideNav.vue";
 export default {
   components: {
@@ -81,7 +81,7 @@ export default {
   methods: {
     async fetchStatistics() {
       try {
-        const response = await axios.get("http://localhost:8081/statistics");
+        const response = await api.get("/statistics");
         this.statistics = response.data;
         this.statisticsLoaded = true;
       } catch (error) {

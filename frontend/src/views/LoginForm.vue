@@ -15,6 +15,8 @@
 
       <button class="">Prijavi se</button>
 
+      <router-link to="/reset-password">Zaboravljena lozinka?</router-link>
+
       <div class="or-el"><span></span>or<span></span></div>
 
       <div class="register-msg">

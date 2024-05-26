@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/services/Api";
 
 export default {
   beforeRouteEnter(to, from, next) {
@@ -56,7 +56,7 @@ export default {
 
     async register() {
       try {
-        const response = await axios.post("http://localhost:8081/register", {
+        const response = await api.post("/register", {
           email: this.emailInput,
           password: this.passwordInput,
         });

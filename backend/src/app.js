@@ -12,9 +12,9 @@ const app = express();
 app.use(morgan("combined"));
 app.use(bodyParser.json());
 app.use(cors());
-// Multer configuration
+
 const upload = multer({
-  storage: multer.memoryStorage(), // Store files in memory
+  storage: multer.memoryStorage(),
 });
 
 const bcrypt = require("bcrypt");

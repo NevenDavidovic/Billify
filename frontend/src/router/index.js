@@ -10,6 +10,7 @@ import LoginForm from "@/views/LoginForm.vue";
 import SignupForm from "@/views/SignupForm.vue";
 import AboutView from "@/views/AboutView.vue";
 import SettingsView from "@/views/SettingsView.vue";
+import RequestPasswordReset from "@/views/RequestPasswordReset.vue";
 
 const routes = [
   {
@@ -69,6 +70,11 @@ const routes = [
     name: "settings",
     component: SettingsView,
     meta: { requiresAuth: true },
+  },
+  {
+    path: "/reset-password",
+    name: "reset-password",
+    component: RequestPasswordReset,
   },
 ];
 

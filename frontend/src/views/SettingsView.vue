@@ -76,7 +76,7 @@
 
 <script>
 import SideNav from "@/components/SideNav.vue";
-import axios from "axios";
+import api from "@/services/Api";
 
 export default {
   components: {
@@ -119,10 +119,7 @@ export default {
 
     async updatePostavkeData(updatedSettings) {
       try {
-        const response = await axios.put(
-          "http://localhost:8081/postavke",
-          updatedSettings
-        );
+        const response = await api.put("/postavke", updatedSettings);
         console.log("Settings updated successfully:", response.data);
         alert("Settings updated successfully");
       } catch (error) {
@@ -131,8 +128,8 @@ export default {
       }
     },
     fetchPostavkeData() {
-      axios
-        .get("http://localhost:8081/postavke")
+      api
+        .get("/postavke")
         .then((response) => {
           const postavkeData = response.data.data;
           this.subject = postavkeData[0].subject;
