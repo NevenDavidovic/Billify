@@ -81,13 +81,16 @@ export default {
   methods: {
     async fetchStatistics() {
       try {
-        const response = await api.get("/statistics");
+        const userID = this.$store.state.userID;
+
+        const response = await api.get("/statistics", { params: { userID } });
         this.statistics = response.data;
         this.statisticsLoaded = true;
       } catch (error) {
         alert("Greška dohvaćanja statistike:", error);
       }
     },
+
     showCityStatss() {
       this.showCityStats = false;
     },

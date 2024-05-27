@@ -223,7 +223,12 @@
           v-model="formData.gradPostanskiBroj"
         />
         <input type="text" placeholder="Email..." v-model="formData.eMail" />
-        <input type="text" placeholder="Iznos..." v-model="formData.iznos" />
+        <input
+          type="text"
+          placeholder="Iznos..."
+          v-model="formattedIznos"
+          @input="formatIznos"
+        />
         <input
           type="text"
           placeholder="Opis plaćanja..."
@@ -358,6 +363,7 @@ export default {
         opisPlacanja: "",
         model_placanja: "",
         poziv_na_primatelja: "",
+        userID: "",
       },
       editData: {
         id: "",
@@ -373,12 +379,41 @@ export default {
       },
     };
   },
-  computed: {},
+  computed: {
+    formattedIznos: {
+      get() {
+        return this.formData.iznos; // Return formatted value
+      },
+      set(newValue) {
+        this.formData.iznos = newValue; // Update formData with the new value
+      },
+    },
+  },
   created() {
     this.fetchDataPrimatelji();
+    this.setUserID();
   },
 
   methods: {
+    formatIznos(event) {
+      let value = event.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+      if (value !== "") {
+        value = parseInt(value) / 100; // Convert to number and move decimal place two positions to the left
+        value = value.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }); // Format the number
+
+        // Remove comma if the number is larger than 1000
+        if (value.includes(",")) {
+          value = value.replace(",", "");
+        }
+      }
+      this.formData.iznos = value; // Update formData with the formatted value
+    },
+    setUserID() {
+      this.formData.userID = this.$store.state.userID;
+    },
     searchReceivers() {
       if (this.searchField.trim() === "") {
         this.fetchDataPrimatelji();
@@ -395,15 +430,6 @@ export default {
           );
         });
       }
-    },
-    splitData(data) {
-      // Split data into chunks if necessary
-      const chunkSize = 10; // Example chunk size
-      const chunks = [];
-      for (let i = 0; i < data.length; i += chunkSize) {
-        chunks.push(data.slice(i, i + chunkSize));
-      }
-      return chunks;
     },
 
     editReceiverData(id) {
@@ -466,12 +492,17 @@ export default {
 
     async deleteAllReceivers() {
       try {
-        const response = await api.delete("/delete-all-receivers");
+        const userID = this.$store.state.userID;
+
+        const response = await api.delete("/delete-all-receivers", {
+          data: { userID },
+        });
         console.log("Svi primatelji obrisani:", response.data);
 
         if (response.data.message) {
           alert(response.data.message);
         }
+
         this.fetchDataPrimatelji();
       } catch (error) {
         console.error("Greška u brisanju svih primatelja:", error);
@@ -488,6 +519,10 @@ export default {
         alert("Datoteka nije učitana");
         return;
       }
+
+      const userID = this.$store.state.userID; // Get the userID from Vuex store
+
+      console.log("Fetching data for userID:", userID);
 
       const reader = new FileReader();
 
@@ -518,7 +553,8 @@ export default {
             platiteljMjestoEl &&
             iznosEl &&
             pozivNaBrojPrimateljaEl &&
-            opisPlacanjaEl
+            opisPlacanjaEl &&
+            userID
           ) {
             const platiteljNaziv = platiteljNazivEl.textContent || "";
             const platiteljAdresa = platiteljAdresaEl.textContent || "";
@@ -539,6 +575,7 @@ export default {
               pozivNaBrojPrimatelja,
               opisPlacanja,
               emailAdresa,
+              userID,
             });
           } else {
             alert("Jedan ili više elemenata nije učitano:", row);
@@ -595,7 +632,13 @@ export default {
     },
     async fetchDataPrimatelji() {
       try {
-        const response1 = await api.get("/receiver");
+        const userID = this.$store.state.userID; // Get the userID from Vuex store
+
+        const response1 = await api.get("/receiver", {
+          params: {
+            userID: userID,
+          },
+        });
         this.primateljiData = response1.data.data;
         console.log(response1);
       } catch (error) {
@@ -606,6 +649,7 @@ export default {
     },
 
     async saveReceiverData() {
+      this.setUserID();
       try {
         const response = await api.post("/save-receiver", this.formData);
         console.log("Data saved:", response.data);

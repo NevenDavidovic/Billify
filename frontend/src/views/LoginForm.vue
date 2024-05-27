@@ -51,6 +51,10 @@ export default {
           email: this.emailInput,
           password: this.passwordInput,
         });
+        // Assuming the response contains an "id" property
+        const userId = redirectRoute.id;
+        // Save the user ID in the store
+        await this.$store.commit("SET_USER_ID", userId);
         this.$router.push(redirectRoute);
       } catch (error) {
         alert("Greška prilikom prijave!", error);

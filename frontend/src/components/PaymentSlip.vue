@@ -616,12 +616,9 @@ export default {
       html2pdf().from(element).set(options).save();
     },
     async generatePDFAndSendEmail(email) {
-      // Wait for Vue to finish rendering the DOM
-      await this.$nextTick();
-
-      const barcodeElement = this.$refs.barcode;
+      const barcodeElement = document.getElementById("barcode");
       const logoOrganization = document.getElementById("logo-org");
-      // Extract HTML content
+
       let imePrimatelja = this.paymentParams.imePrimatelja;
       let imePlatitelja = this.paymentParams.imePlatitelja;
       let adresaPlatitelja = this.paymentParams.adresaPlatitelja;
@@ -635,6 +632,7 @@ export default {
       let modelPlacanja = this.paymentParams.modelPlacanja;
       let pozivNaBroj = this.paymentParams.pozivNaBroj;
       let sifraNamjene = this.paymentParams.sifraNamjene;
+
       let opisPlacanja = this.paymentParams.opisPlacanja;
 
       if (!email) {
@@ -653,71 +651,62 @@ export default {
       }
 
       const htmlContent = `
-      <table width="400" style="border: 2px solid #002D62; padding: 20px; background-color: #F4F4F4; margin: auto; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-        <tr style="margin-bottom: 20px;">
-          <th width="100" align="left" style="vertical-align: middle;">
-            <div style="padding: 10px;">
-              ${logoOrganization.outerHTML}
+    <table width="400" style="border: 2px solid #002D62; padding: 20px; background-color: #F4F4F4; margin: auto; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+      <tr style="margin-bottom: 20px;">
+        <th width="100" align="left" style="vertical-align: middle;">
+          <div style="padding: 10px;">
+            ${logoOrganization.outerHTML}
+          </div>
+        </th>
+        <th align="left" width="300">
+          <div style="color: #002D62;">
+            <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">${imePrimatelja}</p>
+            <p style="font-size: 14px; margin-bottom: 5px;">${adresaPrimatelja}, ${postanskiBrojIMjestoPrimatelja}</p>
+            <p style="font-size: 14px; margin-bottom: 5px;">IBAN: ${ibanPrimatelja}</p>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div style="padding: 10px;">
+            <h2 style="font-size: 14px; margin-bottom: 10px;color: #002D62;"><b>DETALJI PLAĆANJA</b> </h2>
+            <hr style="border-color: #002D62; margin: 20px 0;">
+            <p style="font-size: 14px; margin-bottom: 10px;"><b>IME I PREZIME:</b> ${imePlatitelja}</p>
+            <p style="font-size: 14px; margin-bottom: 10px;"><b>ADRESA:</b> ${adresaPlatitelja}, ${postanskiBrojIMjestoPlatitelja}</p>
+            <p style="font-size: 14px; margin-bottom: 10px;"><b>ŠIFRA NAMJENE:</b> ${sifraNamjene}</p>
+            <p style="font-size: 14px; margin-bottom: 10px;"><b>MODEL I POZIV NA BROJ:</b> ${modelPlacanja}${pozivNaBroj}</p>
+            <p style="font-size: 14px; margin-bottom: 10px;"><b>OPIS PLAĆANJA:</b> ${opisPlacanja}</p>
+            <p style="font-size: 14px; margin-bottom: 10px;"><b>IZNOS ZA PLATITI:</b> ${iznosTransakcije} EUR</p>
+            <hr style="border-color: #002D62; margin: 20px 0;">
+            <div style="margin-top: 20px;">
+              ${barcodeElement.outerHTML}
             </div>
-          </th>
-          <th align="left" width="300">
-            <div style="color: #002D62;">
-              <p style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">${imePrimatelja}</p>
-              <p style="font-size: 14px; margin-bottom: 5px;">${adresaPrimatelja}, ${postanskiBrojIMjestoPrimatelja}</p>
-              <p style="font-size: 14px; margin-bottom: 5px;">IBAN: ${ibanPrimatelja}</p>
-            </div>
-          </th>
-        </tr>
-
-        <tr>
-          <td colspan="2">
-            <div style="padding: 10px;">
-              <h2 style="font-size: 14px; margin-bottom: 10px;color: #002D62;"><b>DETALJI PLAĆANJA</b> </h2>
-              <hr style="border-color: #002D62; margin: 20px 0;">
-              <p style="font-size: 14px; margin-bottom: 10px;"><b>IME I PREZIME:</b> ${imePlatitelja}</p>
-              <p style="font-size: 14px; margin-bottom: 10px;"><b>ADRESA:</b> ${adresaPlatitelja}, ${postanskiBrojIMjestoPlatitelja}</p>
-              <p style="font-size: 14px; margin-bottom: 10px;"><b>ŠIFRA NAMJENE:</b> ${sifraNamjene}</p>
-              <p style="font-size: 14px; margin-bottom: 10px;"><b>MODEL I POZIV NA BROJ:</b> ${modelPlacanja}${pozivNaBroj}</p>
-              <p style="font-size: 14px; margin-bottom: 10px;"><b>OPIS PLAĆANJA:</b> ${opisPlacanja}</p>
-              <p style="font-size: 14px; margin-bottom: 10px;"><b>IZNOS ZA PLATITI:</b> ${iznosTransakcije} EUR</p>
-              <hr style="border-color: #002D62; margin: 20px 0;">
-              <div style="margin-top: 20px;">
-                ${barcodeElement.outerHTML}
-              </div>
-            </div>
-          </td>
-        </tr>
-
-        <tr>
-          <td colspan="2" style="font-size: 14px; color: #002D62; padding: 10px;">Automatski generirana uplatnica! Molimo Vas provjerite sve podatke.</td>
-        </tr>
-      </table>
-      `;
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" style="font-size: 14px; color: #002D62; padding: 10px;">Automatski generirana uplatnica! Molimo Vas provjerite sve podatke.</td>
+      </tr>
+    </table>
+  `;
 
       // Prepare data to send via email
       const emailData = {
         email: email, // Replace with recipient's email address
         htmlContent: htmlContent,
+        userID: this.$store.state.userID, // Get the userID from Vuex store and send it
       };
 
-      // Send data to server for PDF generation and email sending
-      fetch("http://localhost:8081/send-pdf", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(emailData),
-      })
-        .then((response) => {
-          if (response.ok) {
-            alert("Email poslan uspješno!");
-          } else {
-            alert("Greška prilikom slanja maila");
-          }
-        })
-        .catch((error) => {
-          alert("Greška u slanju maila.", error);
-        });
+      try {
+        const response = await api.post("/send-pdf", emailData);
+        if (response.status === 200) {
+          alert("Email poslan uspješno!");
+        } else {
+          alert("Greška prilikom slanja maila");
+        }
+      } catch (error) {
+        alert("Greška u slanju maila", error);
+      }
     },
 
     generateBarcode() {
@@ -740,8 +729,13 @@ export default {
       return concatenatedValues;
     },
     fetchPostavkeData() {
+      const userID = this.$store.state.userID; // Get the userID from Vuex store
       api
-        .get("/postavke")
+        .get(`/postavke`, {
+          params: {
+            userID: userID,
+          },
+        })
         .then((response) => {
           const postavkeData = response.data.data; // Assuming the data key holds the postavke data
 
@@ -756,13 +750,21 @@ export default {
           // Log or perform any additional actions as needed
         })
         .catch((error) => {
-          alert(error);
+          alert("ERROR in fetch postavke", error);
         });
     },
 
     fetchData() {
+      const userID = this.$store.state.userID; // Get the userID from Vuex store
+      console.log("FETCH DTAA");
+      console.log("Fetching data for userID:", userID); // Debugging line
+
       api
-        .get("/")
+        .get("/", {
+          params: {
+            userID: userID,
+          },
+        })
         .then((response) => {
           this.organizacijaData = response.data.data;
 
@@ -776,15 +778,17 @@ export default {
           this.activeOrganization = status1Rows;
           this.inactiveOrganization = status0Rows;
 
-          this.paymentParams.imePrimatelja = this.activeOrganization[0].naziv;
+          this.paymentParams.imePrimatelja =
+            this.activeOrganization[0]?.naziv || "";
           this.paymentParams.adresaPrimatelja =
-            this.activeOrganization[0].ulica;
+            this.activeOrganization[0]?.ulica || "";
           this.paymentParams.postanskiBrojIMjestoPrimatelja =
-            this.activeOrganization[0].grad;
-          this.paymentParams.ibanPrimatelja = this.activeOrganization[0].iban;
+            this.activeOrganization[0]?.grad || "";
+          this.paymentParams.ibanPrimatelja =
+            this.activeOrganization[0]?.iban || "";
         })
         .catch((error) => {
-          alert("Error fetching data:", error);
+          alert("Greška u dohvaćanju podataka:", error);
         })
         .finally(() => {
           this.isLoading = false;

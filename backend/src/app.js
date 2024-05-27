@@ -7,31 +7,26 @@ const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
 const multer = require("multer");
 const fs = require("fs");
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
 
 const app = express();
 app.use(morgan("combined"));
 app.use(bodyParser.json());
 app.use(cors());
 
-const upload = multer({
-  storage: multer.memoryStorage(),
-});
-
 const bcrypt = require("bcrypt");
 let loggedInUserId = null;
 
-const loginRouter = require("./routes/auth/logout");
-app.use("/login", loginRouter);
-
-// app.post("/logout", (req, res) => {
-//   try {
-//     loggedInUserId = null;
-
-//     res.status(200).json({ message: "Korisnik se uspješno odjavio" });
-//   } catch (error) {
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
+app.post("/logout", (req, res) => {
+  console.log("Request received on /logout route!");
+  try {
+    res.status(200).json({ message: "Korisnik se uspješno odjavio" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 app.post("/login", async (req, res) => {
   try {
@@ -142,8 +137,10 @@ app.post("/save-receiver", (req, res) => {
     opisPlacanja,
     model_placanja,
     poziv_na_primatelja,
+    userID,
   } = req.body;
   console.log("request body", req.body);
+  console.log(typeof userID);
 
   db.query(
     "INSERT INTO primatelji_uplatnice (ime_prezime, ulica, grad, e_mail, iznos,datum_unosa_primatelja,opis_placanja,model_placanja,poziv_na_primatelja,id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)",
@@ -157,7 +154,7 @@ app.post("/save-receiver", (req, res) => {
       opisPlacanja,
       model_placanja,
       poziv_na_primatelja,
-      loggedInUserId,
+      userID,
     ],
     (err, result) => {
       if (err) {
@@ -170,11 +167,11 @@ app.post("/save-receiver", (req, res) => {
 });
 
 app.delete("/delete-all-receivers", (req, res) => {
-  const loggedInUserIdCopy = loggedInUserId;
+  const loggedInUserId = req.body.userID; // Assuming userID is sent in the request body
 
   db.query(
     "DELETE FROM primatelji_uplatnice WHERE id_korisnik = $1",
-    [loggedInUserIdCopy], // Use loggedInUserId directly in the query
+    [loggedInUserId],
     (err, result) => {
       if (err) {
         return res.status(500).json({ error: err.message });
@@ -189,7 +186,8 @@ app.delete("/delete-all-receivers", (req, res) => {
 
 app.post("/save-receivers", (req, res) => {
   const receiverData = req.body;
-  const loggedInUserIdCopy = loggedInUserId;
+
+  const loggedInUserIdCopy = req.body[0].userID;
 
   const insertPromises = receiverData.map((receiver) => {
     return new Promise((resolve, reject) => {
@@ -243,10 +241,10 @@ app.post("/save-organization", (req, res) => {
     datum_unosa_organizacije,
     status,
     slika,
+    userID, // Extract userID from the request body
   } = req.body;
 
   const slikaUrl = slika ? slika : "https://i.stack.imgur.com/l60Hf.png";
-  const loggedInUserIdCopy = loggedInUserId;
 
   db.query(
     "INSERT INTO organizacija (naziv, ulica, grad, e_mail, iban, datum_unosa_organizacije, status, slika, id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
@@ -259,7 +257,7 @@ app.post("/save-organization", (req, res) => {
       datum_unosa_organizacije,
       status,
       slikaUrl,
-      loggedInUserIdCopy,
+      userID, // Use userID from the request body
     ],
     (err, result) => {
       if (err) {
@@ -404,28 +402,11 @@ app.get("/api/user/:userId", (req, res) => {
 
   db.query("SELECT * FROM users WHERE id = $1", [userId], (err, result) => {
     if (err) {
-      return res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Greška na poslužitelju" });
     }
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const userData = result.rows[0];
-    res.status(200).json(userData);
-  });
-});
-
-app.get("/api/user/:userId", (req, res) => {
-  const userId = req.params.userId;
-
-  db.query("SELECT * FROM users WHERE id = $1", [userId], (err, result) => {
-    if (err) {
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Korisnik nije nađen" });
     }
 
     const userData = result.rows[0];
@@ -436,11 +417,11 @@ app.get("/api/user/:userId", (req, res) => {
 //HOME
 
 app.get("/", (req, res) => {
-  const loggedInUserIdCopy = loggedInUserId;
+  const { userID } = req.query;
 
   db.query(
     "SELECT * FROM organizacija WHERE id_korisnik = $1",
-    [loggedInUserIdCopy],
+    [userID],
     (err, result) => {
       if (err) {
         return res.status(500).json({ error: err.message });
@@ -452,11 +433,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/receiver", (req, res) => {
-  const loggedInUserIdCopy = loggedInUserId;
+  const userID = req.query.userID; // Get userID from query parameters
 
   db.query(
     "SELECT * FROM primatelji_uplatnice WHERE id_korisnik = $1",
-    [loggedInUserIdCopy],
+    [userID],
     (err, result) => {
       if (err) {
         console.log("ERROR");
@@ -488,7 +469,7 @@ app.delete("/delete-receiver/:id", (req, res) => {
 
 app.get("/statistics", async (req, res) => {
   try {
-    const loggedInUserIdCopy = loggedInUserId;
+    const loggedInUserId = req.query.userID; // Retrieve userID from query parameters
     console.log("loggedInUserId:", loggedInUserId);
 
     const cityNumberQuery =
@@ -498,16 +479,12 @@ app.get("/statistics", async (req, res) => {
     const numberOfPayersQuery =
       "SELECT COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1";
 
-    const cityNumberResult = await db.query(cityNumberQuery, [
-      loggedInUserIdCopy,
-    ]);
-
+    const cityNumberResult = await db.query(cityNumberQuery, [loggedInUserId]);
     const largestPayersResult = await db.query(largestPayersQuery, [
-      loggedInUserIdCopy,
+      loggedInUserId,
     ]);
-
     const numberOfPayersResult = await db.query(numberOfPayersQuery, [
-      loggedInUserIdCopy,
+      loggedInUserId,
     ]);
     console.log("numberOfPayersResult:", numberOfPayersResult.rows);
 
@@ -528,17 +505,17 @@ app.get("/statistics", async (req, res) => {
 app.post("/send-pdf", async (req, res) => {
   console.log("Received request to send PDF");
 
-  const { email, htmlContent } = req.body;
+  const { email, htmlContent, userID } = req.body;
   console.log("Email:", email);
   console.log("HTML Content:", htmlContent);
+  console.log("UserID:", userID);
 
   try {
-    const loggedInUserIdCopy = loggedInUserId;
     const postavkeQuery = `
       SELECT * FROM postavke WHERE id_korisnik = $1;
     `;
 
-    const result = await db.query(postavkeQuery, [loggedInUserIdCopy]);
+    const result = await db.query(postavkeQuery, [userID]);
     const postavkeData = result.rows[0];
 
     if (!postavkeData) {
@@ -609,13 +586,14 @@ app.post("/send-pdf", async (req, res) => {
 
 app.get("/postavke", async (req, res) => {
   try {
-    const loggedInUserIdCopy = loggedInUserId;
-    console.log(loggedInUserIdCopy);
+    const { userID } = req.query; // Get userID from query parameters
+    console.log("Received userID:", userID);
+
     const postavkeQuery = `
       SELECT * FROM postavke WHERE id_korisnik = $1;
     `;
 
-    const result = await db.query(postavkeQuery, [loggedInUserIdCopy]);
+    const result = await db.query(postavkeQuery, [userID]);
 
     res.json({ data: result.rows });
   } catch (error) {
@@ -623,20 +601,26 @@ app.get("/postavke", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+//----------------------------------------------------------------------------ONLY THIS
 app.put("/postavke", async (req, res) => {
   try {
-    const { subject, message, e_mail_template, gmail_key, e_mail, filename } =
-      req.body;
-    const loggedInUserIdCopy = loggedInUserId;
+    const {
+      userID,
+      subject,
+      message,
+      e_mail_template,
+      gmail_key,
+      e_mail,
+      filename,
+    } = req.body;
 
     console.log("Received update request with data:", req.body);
 
     const updateQuery = `
-        UPDATE postavke
-        SET subject = $1, message = $2, e_mail_template = $3, gmail_key = $4, e_mail = $5, filename = $6
-        WHERE id_korisnik = $7;
-      `;
+      UPDATE postavke
+      SET subject = $1, message = $2, e_mail_template = $3, gmail_key = $4, e_mail = $5, filename = $6
+      WHERE id_korisnik = $7;
+    `;
 
     await db.query(updateQuery, [
       subject,
@@ -645,7 +629,7 @@ app.put("/postavke", async (req, res) => {
       gmail_key,
       e_mail,
       filename,
-      loggedInUserIdCopy,
+      userID,
     ]);
 
     res.json({ success: true, message: "Settings updated successfully" });

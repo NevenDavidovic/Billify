@@ -112,7 +112,13 @@ export default {
 
     async fetchDataPrimatelji() {
       try {
-        const response1 = await api.get("/receiver");
+        const userID = this.$store.state.userID; // Get the userID from Vuex store
+
+        const response1 = await api.get("/receiver", {
+          params: {
+            userID: userID,
+          },
+        });
         this.primateljiData = response1.data.data;
         console.log(response1);
       } catch (error) {

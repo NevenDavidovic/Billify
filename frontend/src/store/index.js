@@ -8,6 +8,7 @@ export default createStore({
     users: [],
     loggedInUser: null,
     isLoggedIn: false,
+    userID: null,
   },
   mutations: {
     setUserData(state, userData) {
@@ -19,6 +20,7 @@ export default createStore({
     setUserId(state, userId) {
       state.userId = userId;
     },
+
     resetUsers(state) {
       state.users = [];
     },
@@ -31,11 +33,14 @@ export default createStore({
     setLoggedInUser(state, user) {
       state.loggedInUser = user;
       state.isLoggedIn = true;
+      state.userID = user.id; // Update the userID state
+      console.log("userID set to:", state.userID);
     },
     logout(state) {
       state.userData = null;
       state.loggedInUser = null;
       state.isLoggedIn = false;
+      state.userID = null;
     },
   },
   actions: {
@@ -58,9 +63,7 @@ export default createStore({
           password: password,
         });
         commit("setLoggedInUser", response.data);
-        // Optionally, you can commit mutations to set other user data if needed
-        alert("You have successfully logged in");
-        // Redirect to '/about' after successful login
+        alert("You have successfully logged in", response.data);
         return "/about";
       } catch (error) {
         alert("Error during login: " + error.response.data.error);

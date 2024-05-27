@@ -178,25 +178,8 @@ export default {
   props: {
     msg: String,
   },
-  methods: {
-    // changeStyle() {
-    //   const btnLoggin = document.getElementById("btnLogin");
-    //   const btnSignUp = document.getElementById("btnSignUp");
-    //   const btnHeader = document.getElementById("btnHeader");
-    //   const btnImeAppa = document.getElementById("imeApp-a");
-    //   if (this.$route.path === "http://localhost:8080//organization") {
-    //     btnHeader.style.background = "#db9f58";
-    //     btnSignUp.style.display = "none";
-    //     btnImeAppa.style.color = "white";
-    //     btnLoggin.style.display = "none";
-    //     console.log("the path");
-    //     console.log(this.$route.path);
-    //   }
-    // },
-  },
-  mounted() {
-    // this.changeStyle();
-  },
+  methods: {},
+  mounted() {},
 };
 </script>
 

@@ -313,11 +313,20 @@ export default {
   },
   methods: {
     fetchData() {
+      const userID = this.$store.state.userID; // Get the userID from Vuex store
+
+      console.log("Fetching data for userID:", userID); // Debugging line
+
       api
-        .get("/")
+        .get("/", {
+          params: {
+            userID: userID,
+          },
+        })
         .then((response) => {
           this.organizacijaData = response.data.data;
           console.log(this.organizacijaData);
+
           const status0Rows = this.organizacijaData.filter(
             (row) => row.status === 0
           );
@@ -327,8 +336,9 @@ export default {
 
           this.activeOrganization = status1Rows;
           this.inactiveOrganization = status0Rows;
-          console.log("Status 0 Data:", this.status0Data);
-          console.log("Status 1 Data:", this.status1Data);
+
+          console.log("Status 0 Data:", this.inactiveOrganization);
+          console.log("Status 1 Data:", this.activeOrganization);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -426,19 +436,24 @@ export default {
     },
 
     saveOrganization() {
+      const userID = this.$store.state.userID; // Get the userID from Vuex store
+
       const formData = {
         naziv: this.formData.naziv,
         ulica: this.formData.ulica,
         grad: this.formData.grad,
-        e_mail: this.formData.email,
+        e_mail: this.formData.e_mail, // Ensure to use correct field name
         iban: this.formData.iban,
         datum_unosa_organizacije: this.formData.datum_unosa_organizacije,
         status: this.formData.status,
         slika: this.formData.slika,
+        userID: userID, // Include userID in the formData
       };
 
+      console.log("Form Data:", formData); // Debugging line
+
       api
-        .post("/save-organization", this.formData)
+        .post("/save-organization", formData)
         .then((response) => {
           console.log("Data saved:", response.data);
           this.closeModal();

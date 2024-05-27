@@ -119,17 +119,28 @@ export default {
 
     async updatePostavkeData(updatedSettings) {
       try {
-        const response = await api.put("/postavke", updatedSettings);
+        const userID = this.$store.state.userID; // Get the userID from Vuex store
+
+        const response = await api.put("/postavke", {
+          userID: userID,
+          ...updatedSettings,
+        });
+
         console.log("Settings updated successfully:", response.data);
         alert("Settings updated successfully");
       } catch (error) {
         console.error("Error updating settings:", error);
-        alert(error);
+        alert("Error updating settings:", error);
       }
     },
     fetchPostavkeData() {
+      const userID = this.$store.state.userID; // Get the userID from Vuex store
       api
-        .get("/postavke")
+        .get("/postavke", {
+          params: {
+            userID: userID,
+          },
+        })
         .then((response) => {
           const postavkeData = response.data.data;
           this.subject = postavkeData[0].subject;

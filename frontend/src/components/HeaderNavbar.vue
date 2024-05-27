@@ -214,9 +214,7 @@ export default {
         });
     },
   },
-  mounted() {
-    // this.changeStyle();
-  },
+  mounted() {},
 };
 </script>
 
