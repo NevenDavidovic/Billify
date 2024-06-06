@@ -244,6 +244,10 @@ app.post("/save-organization", (req, res) => {
     userID, // Extract userID from the request body
   } = req.body;
 
+  if (datum_unosa_organizacije === "") {
+    datum_unosa_organizacije = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
+  }
+
   const slikaUrl = slika ? slika : "https://i.stack.imgur.com/l60Hf.png";
 
   db.query(
