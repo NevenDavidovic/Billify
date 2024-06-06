@@ -211,16 +211,19 @@
           type="text"
           placeholder="Ime i prezime..."
           v-model="formData.imePrezime"
+          required
         />
         <input
           type="text"
           placeholder="Adresa..."
           v-model="formData.adresaStanovanja"
+          required
         />
         <input
           type="text"
           placeholder="Poš.br. i Grad..."
           v-model="formData.gradPostanskiBroj"
+          required
         />
         <input type="text" placeholder="Email..." v-model="formData.eMail" />
         <input
@@ -228,11 +231,13 @@
           placeholder="Iznos..."
           v-model="formattedIznos"
           @input="formatIznos"
+          required
         />
         <input
           type="text"
           placeholder="Opis plaćanja..."
           v-model="formData.opisPlacanja"
+          required
         />
         <input
           type="text"
@@ -246,7 +251,6 @@
         />
 
         <button type="submit" class="btn-gold">Spremi</button>
-        <div class="mandatory">*Sva polja su obavezna</div>
       </form>
     </div>
     <div class="excel-form" :class="{ hidden: isFormOpen }">

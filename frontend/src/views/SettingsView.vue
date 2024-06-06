@@ -28,7 +28,7 @@
           <input type="text" name="poruka" v-model="filename" />
         </div>
 
-        <div class="template-picker">
+        <div class="template-picker" style="display: none">
           <div class="template-one template">
             <h2>Template 1</h2>
             <input type="radio" value="1" v-model="emailTemplate" />

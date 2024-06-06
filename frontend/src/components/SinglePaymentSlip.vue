@@ -8,10 +8,6 @@
       >
         <img width="150" :src="item.slika" alt="" />
       </div>
-      {{ paymentParams.imePrimatelja }} ˙* {{ paymentParams.adresaPrimatelja }},
-      {{ paymentParams.postanskiBrojIMjestoPrimatelja }}* IBAN:{{
-        paymentParams.ibanPrimatelja
-      }}
     </div>
     <div class="uplatnica-form-img" id="izvoz-uplatnice">
       <div class="platitelj">

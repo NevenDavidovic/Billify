@@ -183,8 +183,8 @@
 
             <h2 class="item-card">Spremanje uplatnica</h2>
             <p class="item-card-p">
-              You can promote any event or give discount codes when people scan
-              the QR Code.
+              Spremanje uplatnica može služiti da se uplatnice isprintaju te
+              uruče fizički.
             </p>
           </div>
         </div>
