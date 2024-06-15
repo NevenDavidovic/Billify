@@ -25,7 +25,7 @@
 - [ ] Upute za korištenje
 - [ ] Reset password feature
 - [ ] Newsletter
-- [ ] Postavi Excell XML template sa e_mailom korisnika
+- [x] Postavi Excell XML template sa e_mailom korisnika
 - [ ] Error Proffing i data checking
 
 PROBLEMI
