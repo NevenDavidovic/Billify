@@ -38,7 +38,8 @@ NOTES: Nemoj zaboravit uredit i komponentu druge payment slipa
 
 ## Video
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/peFxjsStzwg?si=uzVwrazenLgM-ah1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![Watch the video](![image](https://github.com/NevenDavidovic/Billify/assets/57957655/68487e47-910f-413e-9c5a-e6eb6e392d00))](https://www.youtube.com/watch?v=peFxjsStzwg&ab_channel=NevenDavidovi%C4%87)
+
 
 ## Screenshots of the APP
 
