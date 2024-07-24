@@ -21,6 +21,10 @@ const PORT = process.env.PORT || 8081;
 const bcrypt = require("bcrypt");
 let loggedInUserId = null;
 
+app.get("/test", (req, res) => {
+  res.status(200).send("Backend is working");
+});
+
 app.post("/logout", (req, res) => {
   console.log("Request received on /logout route!");
   try {
