@@ -1,5 +1,22 @@
 # Billify
 
+Kratak opis aplikacije:
+
+Bilify je aplikacija namijenjena za generiranje personaliziranih uplatnica, idealna za male poduzetnike i obrtnike, udruge i neprofitne organizacije, klubove, osobe koje vode događaje ili tečajeve, te fizičke osobe koje samostalno prodaju proizvode ili usluge.
+Aplikacija omogućava unos podataka korisnika ili učitavanje iz Excel datoteke kako bi se stvorila baza podataka korisnika čiji će se podaci koristiti za popunjavanje uplatnica. Korisnici mogu spremiti te podatke u bazu, a zatim jednostavno generirati i personalizirati uplatnice s logom i nazivom svoje organizacije. Osim toga, Bilify podržava slanje generiranih uplatnica elektroničkom poštom, bilo pojedinačno ili u grupi.
+
+Mogućnosti: 
+- spremanje podataka u bazu podataka
+- dodavanje, brisanje, uređivanje i brisanje organizacija i primatelja
+- slanje uplatnica elektroničkom poštom pojedinačno ili svih
+- bulk unos podataka uvoženjem XML-a izvezenog iz Excella
+- personaliziranje E-maila
+- statistika(broj primatelja, najviše primatelja iz grada)
+
+
+
+
+
 ## DONE:
 
 - [x] CRUD organizacije
