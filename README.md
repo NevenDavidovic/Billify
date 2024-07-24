@@ -1,21 +1,18 @@
 # Billify
 
-Kratak opis aplikacije:
+-- Kratak opis aplikacije:
 
 Bilify je aplikacija namijenjena za generiranje personaliziranih uplatnica, idealna za male poduzetnike i obrtnike, udruge i neprofitne organizacije, klubove, osobe koje vode događaje ili tečajeve, te fizičke osobe koje samostalno prodaju proizvode ili usluge.
 Aplikacija omogućava unos podataka korisnika ili učitavanje iz Excel datoteke kako bi se stvorila baza podataka korisnika čiji će se podaci koristiti za popunjavanje uplatnica. Korisnici mogu spremiti te podatke u bazu, a zatim jednostavno generirati i personalizirati uplatnice s logom i nazivom svoje organizacije. Osim toga, Bilify podržava slanje generiranih uplatnica elektroničkom poštom, bilo pojedinačno ili u grupi.
 
-Mogućnosti: 
+-- Mogućnosti:
+
 - spremanje podataka u bazu podataka
 - dodavanje, brisanje, uređivanje i brisanje organizacija i primatelja
 - slanje uplatnica elektroničkom poštom pojedinačno ili svih
 - bulk unos podataka uvoženjem XML-a izvezenog iz Excella
 - personaliziranje E-maila
 - statistika(broj primatelja, najviše primatelja iz grada)
-
-
-
-
 
 ## DONE:
 
@@ -56,7 +53,6 @@ NOTES: Nemoj zaboravit uredit i komponentu druge payment slipa
 ## Video
 
 [![Watch the video](https://private-user-images.githubusercontent.com/57957655/318253836-68487e47-910f-413e-9c5a-e6eb6e392d00.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTg0Mzk4MTUsIm5iZiI6MTcxODQzOTUxNSwicGF0aCI6Ii81Nzk1NzY1NS8zMTgyNTM4MzYtNjg0ODdlNDctOTEwZi00MTNlLTljNWEtZTZlYjZlMzkyZDAwLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MTUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjE1VDA4MTgzNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWU3Mzc1M2ZmMGYyZmU5NWUzOGFlZWYwMzdiYzhhNTE4NGZlNDAxMWI1MWJjNGQzODFhMjBmM2RhNDkzOGI1NWMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.j1kdJAlmdLQTOOEF-MA2ZxMizYGpm7yWYcXsBiPp75E)](https://www.youtube.com/watch?v=peFxjsStzwg&ab_channel=NevenDavidovi%C4%87)
-
 
 ## Screenshots of the APP
 
