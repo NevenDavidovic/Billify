@@ -668,4 +668,6 @@ app.put("/postavke", async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT || 8081);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
