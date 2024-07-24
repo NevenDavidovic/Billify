@@ -15,6 +15,8 @@ const app = express();
 app.use(morgan("combined"));
 app.use(bodyParser.json());
 app.use(cors());
+require("dotenv").config();
+const PORT = process.env.PORT || 8081;
 
 const bcrypt = require("bcrypt");
 let loggedInUserId = null;

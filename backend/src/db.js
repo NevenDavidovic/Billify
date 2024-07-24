@@ -1,22 +1,23 @@
-// postgree configuration for connection to the databse
+const { Pool } = require("pg"); // Import Pool class from pg library
 
-const { Pool } = require("pg");
-
-// PostgreSQL configuration for connection to the database
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "bilify",
-  password: "root",
-  port: "5433", // Default port for PostgreSQL is usually 5432
+  user: process.env.DB_USER || "postgres",
+  host: process.env.DB_HOST || "localhost",
+  database: process.env.DB_NAME || "bilify",
+  password: process.env.DB_PASSWORD || "root",
+  port: process.env.DB_PORT || 5433,
 });
+
+function handleDbError(err) {
+  console.error("Error connecting to the PostgreSQL database:", err.stack);
+  process.exit(1); // Exit the application on database connection error (optional: handle gracefully)
+}
+
 pool.on("connect", () => {
   console.log("Connected to the PostgreSQL database");
 });
 
-pool.on("error", (err) => {
-  console.error("Error connecting to the PostgreSQL database:", err.stack);
-});
+pool.on("error", handleDbError);
 
 module.exports = {
   query: (text, params, callback) => {
