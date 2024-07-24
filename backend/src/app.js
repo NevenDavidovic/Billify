@@ -25,6 +25,18 @@ app.get("/test", (req, res) => {
   res.status(200).send("Backend is working");
 });
 
+app.get("/test-db", async (req, res) => {
+  try {
+    const connection = await db.getConnection();
+    const [rows] = await connection.query("SELECT * FROM korisnik");
+    connection.release();
+    res.status(200).json({ message: "Database connection successful", rows });
+  } catch (error) {
+    console.error("Database connection error:", error);
+    res.status(500).json({ message: "Database connection failed", error });
+  }
+});
+
 app.post("/logout", (req, res) => {
   console.log("Request received on /logout route!");
   try {
