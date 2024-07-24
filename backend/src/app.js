@@ -32,7 +32,7 @@ app.post("/test", (req, res) => {
 app.get("/test-db", async (req, res) => {
   try {
     const connection = await db.getConnection();
-    const [rows] = await connection.query("SELECT 1");
+    const [rows] = await connection.query("SELECT * FROM korisnik");
     connection.release();
     res.status(200).json({ message: "Database connection successful", rows });
   } catch (error) {
