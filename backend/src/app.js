@@ -21,6 +21,30 @@ const PORT = process.env.PORT || 8081;
 const bcrypt = require("bcrypt");
 let loggedInUserId = null;
 
+app.post("/test", (req, res) => {
+  try {
+    res.status(200).json({ message: "Korisnik se uspješno odjavio" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/test-db", async (req, res) => {
+  try {
+    const connection = await db.getConnection();
+    const [rows] = await connection.query("SELECT 1");
+    connection.release();
+    res.status(200).json({ message: "Database connection successful", rows });
+  } catch (error) {
+    console.error("Database connection error:", error);
+    res.status(500).json({ message: "Database connection failed", error });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 app.post("/logout", (req, res) => {
   console.log("Request received on /logout route!");
   try {
@@ -33,7 +57,6 @@ app.post("/logout", (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const result = await db.query("SELECT * FROM korisnik WHERE e_mail = $1", [
       email,
     ]);
