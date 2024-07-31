@@ -127,6 +127,7 @@ app.post("/register", async (req, res) => {
       user: { id: userId, email: email },
     });
   } catch (error) {
+    console.error("Register error:", error);
     res.status(500).json({ error: "Unutrašnji server error" });
   }
 });
@@ -648,4 +649,6 @@ app.put("/postavke", async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT || 8081);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
