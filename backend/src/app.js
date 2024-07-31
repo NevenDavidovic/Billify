@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
-//const db = require("./db");
+const db = require("./db");
 const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
 const multer = require("multer");
@@ -20,24 +20,6 @@ const PORT = process.env.PORT || 8081;
 
 const bcrypt = require("bcrypt");
 let loggedInUserId = null;
-const { Pool } = require("pg"); // Import Pool class from pg library
-
-const pool = new Pool({
-  user: process.env.DB_USER || "postgres",
-  host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_NAME || "bilify",
-  password: process.env.DB_PASSWORD || "root",
-  port: process.env.DB_PORT || 5433,
-});
-
-function handleDbError(err) {
-  console.error("Error connecting to the PostgreSQL database:", err.stack);
-  process.exit(1); // Exit the application on database connection error (optional: handle gracefully)
-}
-
-pool.on("connect", () => {
-  console.log("Connected to the PostgreSQL database");
-});
 
 app.get("/test", (req, res) => {
   res.status(200).send("Backend is working");
@@ -45,7 +27,7 @@ app.get("/test", (req, res) => {
 
 app.get("/test-db", async (req, res) => {
   try {
-    const connection = await pool.getConnection();
+    const connection = await db.getConnection();
     const [rows] = await connection.query("SELECT * FROM korisnik");
     connection.release();
     res.status(200).json({ message: "Database connection successful", rows });
