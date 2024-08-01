@@ -18,11 +18,14 @@ pool.on("error", (err) => {
 });
 
 module.exports = {
-  query: (text, params, callback) => {
+  query: async (text, params) => {
     console.log(`Executing query: ${text} with params: ${params}`);
-    return pool.query(text, params, callback).catch((err) => {
+    try {
+      const res = await pool.query(text, params);
+      return res;
+    } catch (err) {
       console.error("Query error:", err.stack);
       throw err;
-    });
+    }
   },
 };

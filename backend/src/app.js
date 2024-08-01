@@ -37,7 +37,6 @@ app.post("/logout", (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const result = await db.query("SELECT * FROM korisnik WHERE e_mail = $1", [
       email,
     ]);
@@ -49,7 +48,6 @@ app.post("/login", async (req, res) => {
     }
 
     const match = await bcrypt.compare(password, result.rows[0].password);
-
     if (!match) {
       return res
         .status(401)
@@ -65,6 +63,7 @@ app.post("/login", async (req, res) => {
       id: result.rows[0].id,
     });
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({ error: "Unutarnji server error" });
   }
 });
@@ -72,20 +71,17 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Check if the email is already in use
     const existingUser = await db.query(
       "SELECT * FROM korisnik WHERE e_mail = $1",
       [email]
     );
+
     if (existingUser.rows.length > 0) {
       return res.status(409).json({ error: "Email se već koristi" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Register the user and get the user ID
     const registerQuery = `
       INSERT INTO korisnik (e_mail, password)
       VALUES ($1, $2)
@@ -97,13 +93,11 @@ app.post("/register", async (req, res) => {
     ]);
     const userId = registerResult.rows[0].id;
 
-    // Insert default settings for the user
     const defaultSettingsQuery = `
-      INSERT INTO postavke (subject, message, e_mail_template, gmail_key, id_korisnik,e_mail,filename)
-      VALUES ($1, $2, $3, $4, $5, $6 , $7);
+      INSERT INTO postavke (subject, message, e_mail_template, gmail_key, id_korisnik, e_mail, filename)
+      VALUES ($1, $2, $3, $4, $5, $6, $7);
     `;
 
-    // Hardcoded default settings values
     const defaultSubject = "Servis za dostavu uplatnicu Bilify";
     const defaultMessage = "Uplatnica je dostavljena putem servisa bilify";
     const defaultEmailTemplate = 3;
@@ -121,7 +115,6 @@ app.post("/register", async (req, res) => {
       filename,
     ]);
 
-    // Respond with success message and user details
     res.status(201).json({
       message: "Korisnik se uspješno prijavio",
       user: { id: userId, email: email },
