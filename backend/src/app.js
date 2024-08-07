@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
-//const pool = require("./pool");
+const db = require("./db");
 const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
 const multer = require("multer");
@@ -11,62 +11,13 @@ const upload = multer({
   storage: multer.memoryStorage(),
 });
 
-const { Pool } = require("pg"); // Import Pool class from pg library
-
-const pool = new Pool({
-  user: process.env.DB_USER || "postgres",
-  host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_NAME || "bilify",
-  password: process.env.DB_PASSWORD || "root",
-  port: process.env.DB_PORT || 5432,
-});
-
-console.log({
-  user: process.env.pool_USER,
-  host: process.env.pool_HOST,
-  database: process.env.pool_NAME,
-  password: process.env.pool_PASSWORD,
-  port: process.env.pool_PORT,
-});
-
-pool.on("connect", () => {
-  console.log("Connected to the PostgreSQL database");
-});
-
-pool.on("error", (err) => {
-  console.error("Error connecting to the PostgreSQL database:", err.stack);
-  process.exit(1); // Exit the application on database connection error (optional: handle gracefully)
-});
-
-// Test database connection (optional)
-async function testpoolConnection() {
-  try {
-    const result = await pool.query("SELECT NOW()");
-    console.log(
-      "Database connection successful (test query):",
-      result.rows[0].now
-    );
-  } catch (error) {
-    console.error("Error testing database connection:", error.message);
-  }
-}
-
-// Call the testpoolConnection function if desired (optional)
-testpoolConnection(); //
-
 const app = express();
 app.use(morgan("combined"));
 app.use(bodyParser.json());
 app.use(cors());
-require("dotenv").config();
-const PORT = process.env.PORT || 8081;
 
 const bcrypt = require("bcrypt");
 let loggedInUserId = null;
-
-app.get("/test", (req, res) => {
-  res.status(200).send("Backend is working");
-});
 
 app.post("/logout", (req, res) => {
   console.log("Request received on /logout route!");
@@ -80,10 +31,10 @@ app.post("/logout", (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const result = await pool.query(
-      "SELECT * FROM korisnik WHERE e_mail = $1",
-      [email]
-    );
+
+    const result = await db.query("SELECT * FROM korisnik WHERE e_mail = $1", [
+      email,
+    ]);
 
     if (result.rows.length === 0) {
       return res
@@ -92,13 +43,14 @@ app.post("/login", async (req, res) => {
     }
 
     const match = await bcrypt.compare(password, result.rows[0].password);
+
     if (!match) {
       return res
         .status(401)
         .json({ error: "Nepravilni korisničko ime i lozinka" });
     }
 
-    loggedInUserId = result.rows[0].id;
+    const loggedInUserId = result.rows[0].id;
     console.log(loggedInUserId);
 
     res.status(200).json({
@@ -107,7 +59,7 @@ app.post("/login", async (req, res) => {
       id: result.rows[0].id,
     });
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Error in /login route:", error);
     res.status(500).json({ error: "Unutarnji server error" });
   }
 });
@@ -115,33 +67,38 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const existingUser = await pool.query(
+
+    // Check if the email is already in use
+    const existingUser = await db.query(
       "SELECT * FROM korisnik WHERE e_mail = $1",
       [email]
     );
-
     if (existingUser.rows.length > 0) {
       return res.status(409).json({ error: "Email se već koristi" });
     }
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Register the user and get the user ID
     const registerQuery = `
       INSERT INTO korisnik (e_mail, password)
       VALUES ($1, $2)
       RETURNING id;
     `;
-    const registerResult = await pool.query(registerQuery, [
+    const registerResult = await db.query(registerQuery, [
       email,
       hashedPassword,
     ]);
     const userId = registerResult.rows[0].id;
 
+    // Insert default settings for the user
     const defaultSettingsQuery = `
-      INSERT INTO postavke (subject, message, e_mail_template, gmail_key, id_korisnik, e_mail, filename)
-      VALUES ($1, $2, $3, $4, $5, $6, $7);
+      INSERT INTO postavke (subject, message, e_mail_template, gmail_key, id_korisnik,e_mail,filename)
+      VALUES ($1, $2, $3, $4, $5, $6 , $7);
     `;
 
+    // Hardcoded default settings values
     const defaultSubject = "Servis za dostavu uplatnicu Bilify";
     const defaultMessage = "Uplatnica je dostavljena putem servisa bilify";
     const defaultEmailTemplate = 3;
@@ -149,7 +106,7 @@ app.post("/register", async (req, res) => {
     const emailKorisnik = "something@gmail.com";
     const filename = "upatnica";
 
-    await pool.query(defaultSettingsQuery, [
+    await db.query(defaultSettingsQuery, [
       defaultSubject,
       defaultMessage,
       defaultEmailTemplate,
@@ -159,12 +116,13 @@ app.post("/register", async (req, res) => {
       filename,
     ]);
 
+    // Respond with success message and user details
     res.status(201).json({
       message: "Korisnik se uspješno prijavio",
       user: { id: userId, email: email },
     });
   } catch (error) {
-    console.error("Register error:", error);
+    c;
     res.status(500).json({ error: "Unutrašnji server error" });
   }
 });
@@ -185,7 +143,7 @@ app.post("/save-receiver", (req, res) => {
   console.log("request body", req.body);
   console.log(typeof userID);
 
-  pool.query(
+  db.query(
     "INSERT INTO primatelji_uplatnice (ime_prezime, ulica, grad, e_mail, iznos,datum_unosa_primatelja,opis_placanja,model_placanja,poziv_na_primatelja,id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)",
     [
       imePrezime,
@@ -212,7 +170,7 @@ app.post("/save-receiver", (req, res) => {
 app.delete("/delete-all-receivers", (req, res) => {
   const loggedInUserId = req.body.userID; // Assuming userID is sent in the request body
 
-  pool.query(
+  db.query(
     "DELETE FROM primatelji_uplatnice WHERE id_korisnik = $1",
     [loggedInUserId],
     (err, result) => {
@@ -234,7 +192,7 @@ app.post("/save-receivers", (req, res) => {
 
   const insertPromises = receiverData.map((receiver) => {
     return new Promise((resolve, reject) => {
-      pool.query(
+      db.query(
         `
         INSERT INTO primatelji_uplatnice (
           ime_prezime, ulica, grad, e_mail, iznos,
@@ -293,7 +251,7 @@ app.post("/save-organization", (req, res) => {
 
   const slikaUrl = slika ? slika : "https://i.stack.imgur.com/l60Hf.png";
 
-  pool.query(
+  db.query(
     "INSERT INTO organizacija (naziv, ulica, grad, e_mail, iban, datum_unosa_organizacije, status, slika, id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
     [
       naziv,
@@ -331,7 +289,7 @@ app.put("/update-receiver/:id", (req, res) => {
     poziv_na_primatelja,
   } = req.body;
 
-  pool.query(
+  db.query(
     "UPDATE primatelji_uplatnice SET ime_prezime=$1, ulica=$2, grad=$3, e_mail=$4, iznos=$5, datum_unosa_primatelja=$6, opis_placanja=$7, model_placanja=$8, poziv_na_primatelja=$9 WHERE id=$10",
     [
       ime_prezime,
@@ -370,7 +328,7 @@ app.put("/update-organization/:id", (req, res) => {
     slika,
   } = req.body;
 
-  pool.query(
+  db.query(
     "UPDATE organizacija SET naziv=$1, ulica=$2, grad=$3, e_mail=$4, iban=$5, datum_unosa_organizacije=$6, status=$7, slika=$8 WHERE id=$9",
     [
       naziv,
@@ -399,7 +357,7 @@ app.put("/update-organization/:id", (req, res) => {
 app.put("/update-organization-status/:id", (req, res) => {
   const organizationId = req.params.id;
 
-  pool.query(
+  db.query(
     "UPDATE organizacija SET status = 1 WHERE id = $1",
     [organizationId],
     (err, result) => {
@@ -409,7 +367,7 @@ app.put("/update-organization-status/:id", (req, res) => {
       }
       console.log("Organization status updated successfully");
 
-      pool.query(
+      db.query(
         "UPDATE organizacija SET status = 0 WHERE id != $1",
         [organizationId],
         (err, result) => {
@@ -430,7 +388,7 @@ app.put("/update-organization-status/:id", (req, res) => {
 app.delete("/delete-organization/:id", (req, res) => {
   const organizationId = req.params.id;
 
-  pool.query(
+  db.query(
     "DELETE FROM organizacija WHERE id = $1",
     [organizationId],
     (err, result) => {
@@ -447,7 +405,7 @@ app.delete("/delete-organization/:id", (req, res) => {
 app.get("/api/user/:userId", (req, res) => {
   const userId = req.params.userId;
 
-  pool.query("SELECT * FROM users WHERE id = $1", [userId], (err, result) => {
+  db.query("SELECT * FROM users WHERE id = $1", [userId], (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Greška na poslužitelju" });
     }
@@ -466,7 +424,7 @@ app.get("/api/user/:userId", (req, res) => {
 app.get("/", (req, res) => {
   const { userID } = req.query;
 
-  pool.query(
+  db.query(
     "SELECT * FROM organizacija WHERE id_korisnik = $1",
     [userID],
     (err, result) => {
@@ -482,7 +440,7 @@ app.get("/", (req, res) => {
 app.get("/receiver", (req, res) => {
   const userID = req.query.userID; // Get userID from query parameters
 
-  pool.query(
+  db.query(
     "SELECT * FROM primatelji_uplatnice WHERE id_korisnik = $1",
     [userID],
     (err, result) => {
@@ -501,7 +459,7 @@ app.get("/receiver", (req, res) => {
 app.delete("/delete-receiver/:id", (req, res) => {
   const receiverId = req.params.id;
 
-  pool.query(
+  db.query(
     "DELETE FROM primatelji_uplatnice WHERE id = $1",
     [receiverId],
     (err, result) => {
@@ -526,13 +484,11 @@ app.get("/statistics", async (req, res) => {
     const numberOfPayersQuery =
       "SELECT COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1";
 
-    const cityNumberResult = await pool.query(cityNumberQuery, [
+    const cityNumberResult = await db.query(cityNumberQuery, [loggedInUserId]);
+    const largestPayersResult = await db.query(largestPayersQuery, [
       loggedInUserId,
     ]);
-    const largestPayersResult = await pool.query(largestPayersQuery, [
-      loggedInUserId,
-    ]);
-    const numberOfPayersResult = await pool.query(numberOfPayersQuery, [
+    const numberOfPayersResult = await db.query(numberOfPayersQuery, [
       loggedInUserId,
     ]);
     console.log("numberOfPayersResult:", numberOfPayersResult.rows);
@@ -564,7 +520,7 @@ app.post("/send-pdf", async (req, res) => {
       SELECT * FROM postavke WHERE id_korisnik = $1;
     `;
 
-    const result = await pool.query(postavkeQuery, [userID]);
+    const result = await db.query(postavkeQuery, [userID]);
     const postavkeData = result.rows[0];
 
     if (!postavkeData) {
@@ -642,7 +598,7 @@ app.get("/postavke", async (req, res) => {
       SELECT * FROM postavke WHERE id_korisnik = $1;
     `;
 
-    const result = await pool.query(postavkeQuery, [userID]);
+    const result = await db.query(postavkeQuery, [userID]);
 
     res.json({ data: result.rows });
   } catch (error) {
@@ -671,7 +627,7 @@ app.put("/postavke", async (req, res) => {
       WHERE id_korisnik = $7;
     `;
 
-    await pool.query(updateQuery, [
+    await db.query(updateQuery, [
       subject,
       message,
       e_mail_template,
@@ -688,6 +644,4 @@ app.put("/postavke", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(process.env.PORT || 8081);
