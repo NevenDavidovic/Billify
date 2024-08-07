@@ -22,11 +22,11 @@ console.log({
 });
 
 const pool = new Pool({
-  user: process.env.pool_USER || "postgres",
-  host: process.env.pool_HOST || "localhost",
-  database: process.env.pool_NAME || "bilify",
-  password: process.env.pool_PASSWORD || "root",
-  port: process.env.pool_PORT || 5432,
+  user: process.env.DB_USER || "postgres",
+  host: process.env.DB_HOST || "localhost",
+  database: process.env.DB_NAME || "bilify",
+  password: process.env.DB_PASSWORD || "root",
+  port: process.env.DB_PORT || 5432,
 });
 
 pool.on("connect", () => {
