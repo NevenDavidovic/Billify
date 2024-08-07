@@ -13,20 +13,20 @@ const upload = multer({
 
 const { Pool } = require("pg"); // Import Pool class from pg library
 
-console.log({
-  user: process.env.pool_USER,
-  host: process.env.pool_HOST,
-  database: process.env.pool_NAME,
-  password: process.env.pool_PASSWORD,
-  port: process.env.pool_PORT,
-});
-
 const pool = new Pool({
   user: process.env.DB_USER || "postgres",
   host: process.env.DB_HOST || "localhost",
   database: process.env.DB_NAME || "bilify",
   password: process.env.DB_PASSWORD || "root",
   port: process.env.DB_PORT || 5432,
+});
+
+console.log({
+  user: process.env.pool_USER,
+  host: process.env.pool_HOST,
+  database: process.env.pool_NAME,
+  password: process.env.pool_PASSWORD,
+  port: process.env.pool_PORT,
 });
 
 pool.on("connect", () => {
@@ -37,6 +37,22 @@ pool.on("error", (err) => {
   console.error("Error connecting to the PostgreSQL database:", err.stack);
   process.exit(1); // Exit the application on database connection error (optional: handle gracefully)
 });
+
+// Test database connection (optional)
+async function testpoolConnection() {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    console.log(
+      "Database connection successful (test query):",
+      result.rows[0].now
+    );
+  } catch (error) {
+    console.error("Error testing database connection:", error.message);
+  }
+}
+
+// Call the testpoolConnection function if desired (optional)
+testpoolConnection(); //
 
 const app = express();
 app.use(morgan("combined"));
