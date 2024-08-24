@@ -94,11 +94,10 @@ app.post("/register", async (req, res) => {
 
     // Insert default settings for the user
     const defaultSettingsQuery = `
-      INSERT INTO postavke (subject, message, e_mail_template, gmail_key, id_korisnik,e_mail,filename)
-      VALUES ($1, $2, $3, $4, $5, $6 , $7);
+      INSERT INTO postavke (subject, message, e_mail_template, gmail_key, id_korisnik, e_mail, filename)
+      VALUES ($1, $2, $3, $4, $5, $6, $7);
     `;
 
-    // Hardcoded default settings values
     const defaultSubject = "Servis za dostavu uplatnicu Bilify";
     const defaultMessage = "Uplatnica je dostavljena putem servisa bilify";
     const defaultEmailTemplate = 3;
@@ -122,6 +121,7 @@ app.post("/register", async (req, res) => {
       user: { id: userId, email: email },
     });
   } catch (error) {
+    console.error("Error in /register route:", error); // Log the full error
     res.status(500).json({ error: "Unutrašnji server error" });
   }
 });
