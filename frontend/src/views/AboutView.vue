@@ -148,11 +148,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .slider-thumb {
   height: 100vh;
   background: linear-gradient(90deg, #000000, #ff8a00);
   padding: 50px 10px;
+  @media (max-width: 600px) {
+    padding: 0 10px;
+  }
 }
 
 .bubble {
@@ -172,6 +175,15 @@ export default {
   animation: sliderShape 5s linear infinite;
   z-index: -1;
   -webkit-animation: sliderShape 5s linear infinite;
+  @media (max-width: 600px) {
+    width: 80%;
+    height: unset;
+  }
+  svg {
+    @media (max-width: 600px) {
+      width: 130px;
+    }
+  }
 }
 @keyframes sliderShape {
   0%,
@@ -201,6 +213,10 @@ nav {
   background-color: #354344;
   border-radius: 8px;
   font-size: 0;
+  @media (max-width: 600px) {
+    width: 100%;
+    height: fit-content;
+  }
 }
 nav a {
   line-height: 50px;
@@ -243,6 +259,10 @@ a:nth-child(1):hover ~ .animation {
   width: 100px;
   left: 0;
   background-color: #1abc9c;
+
+  @media (max-width: 600px) {
+    width: 0;
+  }
 }
 nav .start-about,
 a:nth-child(2):hover ~ .animation {

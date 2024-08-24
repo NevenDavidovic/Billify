@@ -234,6 +234,10 @@ export default {
     justify-content: space-between;
     color: #db9f58;
     padding: 10px 16px;
+    @media (max-width: 480px) {
+      flex-direction: column;
+      gap: 30px;
+    }
 
     .left-side-logo {
       display: flex;
@@ -245,6 +249,7 @@ export default {
       display: flex;
       gap: 1em;
       align-items: center;
+
       .signup-btn,
       .login-btn {
         border-radius: 4px;

@@ -22,8 +22,8 @@
       <div class="register-msg">
         <span>Niste registrirani?</span>
         <span class="txt-msg-gold">
-          ><router-link to="/register" class="txt-msg-gold" id="btnLoggin"
-            >Registrirajte se!</router-link
+          ><router-link to="/register" class="txt-msg-gold" id="btnLoggin">
+            Registrirajte se!</router-link
           ></span
         >
       </div>

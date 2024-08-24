@@ -184,3 +184,17 @@ body {
 ul {
   list-style: none;
 }
+@media (max-width: 800px) {
+  aside {
+    height: unset;
+    margin-bottom: 50px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: unset;
+  }
+}
+@media (max-width: 1440px) {
+  .generiraj-barkod {
+    overflow: scroll;
+  }
+}

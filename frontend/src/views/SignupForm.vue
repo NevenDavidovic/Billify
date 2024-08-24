@@ -16,10 +16,10 @@
       <div class="register-msg">
         <span>Imate račun?</span>
         <span class="txt-msg-gold"
-          ><router-link to="/login" class="login-btn" id="btnLoggin"
-            >Prijavite se!</router-link
-          ></span
-        >
+          ><router-link to="/login" class="login-btn" id="btnLoggin">
+            Prijavite se!</router-link
+          >
+        </span>
       </div>
     </form>
   </div>

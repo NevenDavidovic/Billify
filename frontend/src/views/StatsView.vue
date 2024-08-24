@@ -101,6 +101,14 @@ export default {
 };
 </script>
 <style scoped lang="less">
+.aside {
+  @media (max-width: 800px) {
+    height: unset;
+    margin-bottom: 50px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
 .page-statistika {
   .about {
     .title-statistika {

@@ -1,6 +1,9 @@
 .generiraj-barkod {
   display: flex;
   height: 100vh;
+  @media (max-width: 800px) {
+    flex-direction: column;
+  }
 
   .about {
     background-color: white;
@@ -107,7 +110,7 @@ td::-webkit-scrollbar {
 .table-container {
   position: relative;
   max-height: 500px;
-  width: 1000px;
+  width: 100%;
   margin: auto;
   overflow: scroll;
 }

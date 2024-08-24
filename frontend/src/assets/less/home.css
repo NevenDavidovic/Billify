@@ -189,6 +189,11 @@ ul {
   background: linear-gradient(90deg, #000000, #ff8a00);
   padding: 150px 0;
 }
+@media (max-width: 1024px) {
+  .home-view {
+    padding: 50px 0;
+  }
+}
 .home-view .container {
   display: flex;
   align-items: center;

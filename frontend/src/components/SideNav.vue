@@ -283,4 +283,12 @@ body {
   top: 5px;
   right: 5px;
 }
+aside {
+  @media (max-width: 800px) {
+    height: unset;
+    margin-bottom: 50px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
 </style>
