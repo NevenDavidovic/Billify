@@ -11,6 +11,13 @@ const upload = multer({
   storage: multer.memoryStorage(),
 });
 const pdf = require("html-pdf");
+// require routes
+const authRoutes = require("./routes/auth");
+const receiverRoutes = require("./routes/receivers");
+const organizationRoutes = require("./routes/organization");
+const statisticsRoutes = require("./routes/statistics");
+const postavkeRoutes = require("./routes/postavke");
+const emailUtils = require("./routes/emailUtility");
 
 const app = express();
 app.use(morgan("combined"));
@@ -20,387 +27,23 @@ app.use(cors());
 const bcrypt = require("bcrypt");
 let loggedInUserId = null;
 
-app.post("/logout", (req, res) => {
-  console.log("Request received on /logout route!");
-  try {
-    res.status(200).json({ message: "Korisnik se uspješno odjavio" });
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+// Use the auth routes
+app.use("/auth", authRoutes);
 
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
+// Use the receiver routes
+app.use("/receivers", receiverRoutes);
 
-    const result = await db.query("SELECT * FROM korisnik WHERE e_mail = $1", [
-      email,
-    ]);
+// Use the organization routes
+app.use("/organizations", organizationRoutes);
 
-    if (result.rows.length === 0) {
-      return res
-        .status(401)
-        .json({ error: "Nepravilni korisničko ime i lozinka" });
-    }
+// Use the statistics routes
+app.use("/statistics", statisticsRoutes);
 
-    const match = await bcrypt.compare(password, result.rows[0].password);
+// Use the postavke routes
+app.use("/postavke", postavkeRoutes);
 
-    if (!match) {
-      return res
-        .status(401)
-        .json({ error: "Nepravilni korisničko ime i lozinka" });
-    }
-
-    const loggedInUserId = result.rows[0].id;
-    console.log(loggedInUserId);
-
-    res.status(200).json({
-      message: "Korisnik se uspješno prijavio",
-      email,
-      id: result.rows[0].id,
-    });
-  } catch (error) {
-    console.error("Error in /login route:", error);
-    res.status(500).json({ error: "Unutarnji server error" });
-  }
-});
-
-app.post("/register", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Check if the email is already in use
-    const existingUser = await db.query(
-      "SELECT * FROM korisnik WHERE e_mail = $1",
-      [email]
-    );
-    if (existingUser.rows.length > 0) {
-      return res.status(409).json({ error: "Email se već koristi" });
-    }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Register the user and get the user ID
-    const registerQuery = `
-      INSERT INTO korisnik (e_mail, password)
-      VALUES ($1, $2)
-      RETURNING id;
-    `;
-    const registerResult = await db.query(registerQuery, [
-      email,
-      hashedPassword,
-    ]);
-    const userId = registerResult.rows[0].id;
-
-    // Insert default settings for the user
-    const defaultSettingsQuery = `
-      INSERT INTO postavke (subject, message, e_mail_template, gmail_key, id_korisnik, e_mail, filename)
-      VALUES ($1, $2, $3, $4, $5, $6, $7);
-    `;
-
-    const defaultSubject = "Servis za dostavu uplatnicu Bilify";
-    const defaultMessage = "Uplatnica je dostavljena putem servisa bilify";
-    const defaultEmailTemplate = 3;
-    const defaultGmailKey = "Unesi svoj gmail Key";
-    const emailKorisnik = "something@gmail.com";
-    const filename = "upatnica";
-
-    await db.query(defaultSettingsQuery, [
-      defaultSubject,
-      defaultMessage,
-      defaultEmailTemplate,
-      defaultGmailKey,
-      userId,
-      emailKorisnik,
-      filename,
-    ]);
-
-    // Respond with success message and user details
-    res.status(201).json({
-      message: "Korisnik se uspješno prijavio",
-      user: { id: userId, email: email },
-    });
-  } catch (error) {
-    console.error("Error in /register route:", error); // Log the full error
-    res.status(500).json({ error: "Unutrašnji server error" });
-  }
-});
-
-app.post("/save-receiver", (req, res) => {
-  const {
-    imePrezime,
-    adresaStanovanja,
-    gradPostanskiBroj,
-    eMail,
-    iznos,
-    datumUnosaPrimatelja,
-    opisPlacanja,
-    model_placanja,
-    poziv_na_primatelja,
-    userID,
-  } = req.body;
-  console.log("request body", req.body);
-  console.log(typeof userID);
-
-  db.query(
-    "INSERT INTO primatelji_uplatnice (ime_prezime, ulica, grad, e_mail, iznos,datum_unosa_primatelja,opis_placanja,model_placanja,poziv_na_primatelja,id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10)",
-    [
-      imePrezime,
-      adresaStanovanja,
-      gradPostanskiBroj,
-      eMail,
-      iznos,
-      datumUnosaPrimatelja,
-      opisPlacanja,
-      model_placanja,
-      poziv_na_primatelja,
-      userID,
-    ],
-    (err, result) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-
-      res.status(200).json({ message: "Receiver data saved successfully" });
-    }
-  );
-});
-
-app.delete("/delete-all-receivers", (req, res) => {
-  const loggedInUserId = req.body.userID; // Assuming userID is sent in the request body
-
-  db.query(
-    "DELETE FROM primatelji_uplatnice WHERE id_korisnik = $1",
-    [loggedInUserId],
-    (err, result) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-
-      res.status(200).json({
-        message: "Svi primatelji su uspješno obrisani!",
-      });
-    }
-  );
-});
-
-app.post("/save-receivers", (req, res) => {
-  const receiverData = req.body;
-
-  const loggedInUserIdCopy = req.body[0].userID;
-
-  const insertPromises = receiverData.map((receiver) => {
-    return new Promise((resolve, reject) => {
-      db.query(
-        `
-        INSERT INTO primatelji_uplatnice (
-          ime_prezime, ulica, grad, e_mail, iznos,
-          datum_unosa_primatelja, opis_placanja, model_placanja, poziv_na_primatelja, id_korisnik
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        `,
-        [
-          receiver.platiteljNaziv,
-          receiver.platiteljAdresa,
-          receiver.platiteljMjesto,
-          receiver.emailAdresa,
-          receiver.iznos,
-          new Date(),
-          receiver.opisPlacanja,
-          null,
-          receiver.pozivNaBrojPrimatelja,
-          loggedInUserIdCopy,
-        ],
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        }
-      );
-    });
-  });
-
-  Promise.all(insertPromises)
-    .then((results) => {
-      res.status(200).json({ message: "All receiver data saved successfully" });
-    })
-    .catch((error) => {
-      res.status(500).json({ error: "Error saving receiver data" });
-    });
-});
-
-app.post("/save-organization", (req, res) => {
-  const {
-    naziv,
-    ulica,
-    grad,
-    e_mail,
-    iban,
-    datum_unosa_organizacije,
-    status,
-    slika,
-    userID, // Extract userID from the request body
-  } = req.body;
-
-  if (datum_unosa_organizacije === "") {
-    datum_unosa_organizacije = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
-  }
-
-  const slikaUrl = slika ? slika : "https://i.stack.imgur.com/l60Hf.png";
-
-  db.query(
-    "INSERT INTO organizacija (naziv, ulica, grad, e_mail, iban, datum_unosa_organizacije, status, slika, id_korisnik) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-    [
-      naziv,
-      ulica,
-      grad,
-      e_mail,
-      iban,
-      datum_unosa_organizacije,
-      status,
-      slikaUrl,
-      userID, // Use userID from the request body
-    ],
-    (err, result) => {
-      if (err) {
-        console.log("Error saving organization data:", err);
-        return res.status(500).json({ error: err.message });
-      }
-      console.log("Organization data saved successfully");
-      res.status(200).json({ message: "Organization data saved successfully" });
-    }
-  );
-});
-
-app.put("/update-receiver/:id", (req, res) => {
-  const receiverId = req.params.id;
-  const {
-    ime_prezime,
-    ulica,
-    grad,
-    e_mail,
-    iznos,
-    datum_unosa_primatelja,
-    opis_placanja,
-    model_placanja,
-    poziv_na_primatelja,
-  } = req.body;
-
-  db.query(
-    "UPDATE primatelji_uplatnice SET ime_prezime=$1, ulica=$2, grad=$3, e_mail=$4, iznos=$5, datum_unosa_primatelja=$6, opis_placanja=$7, model_placanja=$8, poziv_na_primatelja=$9 WHERE id=$10",
-    [
-      ime_prezime,
-      ulica,
-      grad,
-      e_mail,
-      iznos,
-      datum_unosa_primatelja,
-      opis_placanja,
-      model_placanja,
-      poziv_na_primatelja,
-      receiverId,
-    ],
-    (err, result) => {
-      if (err) {
-        console.log("Error updating receiver data:", err);
-
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-      console.log("Receiver data updated successfully");
-      res.status(200).json({ message: "Receiver data updated successfully" });
-    }
-  );
-});
-
-app.put("/update-organization/:id", (req, res) => {
-  const organizationId = req.params.id;
-  const {
-    naziv,
-    ulica,
-    grad,
-    e_mail,
-    iban,
-    datum_unosa_organizacije,
-    status,
-    slika,
-  } = req.body;
-
-  db.query(
-    "UPDATE organizacija SET naziv=$1, ulica=$2, grad=$3, e_mail=$4, iban=$5, datum_unosa_organizacije=$6, status=$7, slika=$8 WHERE id=$9",
-    [
-      naziv,
-      ulica,
-      grad,
-      e_mail,
-      iban,
-      datum_unosa_organizacije,
-      status,
-      slika,
-      organizationId,
-    ],
-    (err, result) => {
-      if (err) {
-        console.log("Error updating organization data:", err);
-        return res.status(500).json({ error: err.message });
-      }
-      console.log("Organization data updated successfully");
-      res
-        .status(200)
-        .json({ message: "Organization data updated successfully" });
-    }
-  );
-});
-
-app.put("/update-organization-status/:id", (req, res) => {
-  const organizationId = req.params.id;
-
-  db.query(
-    "UPDATE organizacija SET status = 1 WHERE id = $1",
-    [organizationId],
-    (err, result) => {
-      if (err) {
-        console.log("Error updating organization status:", err);
-        return res.status(500).json({ error: err.message });
-      }
-      console.log("Organization status updated successfully");
-
-      db.query(
-        "UPDATE organizacija SET status = 0 WHERE id != $1",
-        [organizationId],
-        (err, result) => {
-          if (err) {
-            console.log("Error updating other organization statuses:", err);
-            return res.status(500).json({ error: err.message });
-          }
-          console.log("Other organization statuses updated successfully");
-          res
-            .status(200)
-            .json({ message: "Organization status updated successfully" });
-        }
-      );
-    }
-  );
-});
-
-app.delete("/delete-organization/:id", (req, res) => {
-  const organizationId = req.params.id;
-
-  db.query(
-    "DELETE FROM organizacija WHERE id = $1",
-    [organizationId],
-    (err, result) => {
-      if (err) {
-        console.log("Error deleting organization:", err);
-        return res.status(500).json({ error: err.message });
-      }
-      console.log("Organization deleted successfully");
-      res.status(200).json({ message: "Organization deleted successfully" });
-    }
-  );
-});
+// Use the routes
+app.use("/emailUtility", emailUtils);
 
 app.get("/api/user/:userId", (req, res) => {
   const userId = req.params.userId;
@@ -421,221 +64,79 @@ app.get("/api/user/:userId", (req, res) => {
 
 //HOME
 
-app.get("/", (req, res) => {
-  const { userID } = req.query;
+// app.post("/send-pdf", async (req, res) => {
+//   console.log("Received request to send PDF");
 
-  db.query(
-    "SELECT * FROM organizacija WHERE id_korisnik = $1",
-    [userID],
-    (err, result) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
+//   const { email, htmlContent, userID } = req.body;
+//   console.log("Email:", email);
+//   console.log("HTML Content:", htmlContent);
+//   console.log("UserID:", userID);
 
-      res.json({ data: result.rows });
-    }
-  );
-});
+//   try {
+//     const postavkeQuery = `
+//       SELECT * FROM postavke WHERE id_korisnik = $1;
+//     `;
 
-app.get("/receiver", (req, res) => {
-  const userID = req.query.userID; // Get userID from query parameters
+//     const result = await db.query(postavkeQuery, [userID]);
+//     const postavkeData = result.rows[0];
 
-  db.query(
-    "SELECT * FROM primatelji_uplatnice WHERE id_korisnik = $1",
-    [userID],
-    (err, result) => {
-      if (err) {
-        console.log("ERROR");
-        return res.status(500).json({
-          error: err.message,
-        });
-      }
+//     if (!postavkeData) {
+//       throw new Error(
+//         "No data found in the 'postavke' table for the logged-in user"
+//       );
+//     }
 
-      return res.json({ data: result.rows });
-    }
-  );
-});
+//     const {
+//       subject,
+//       message,
+//       gmail_key: gmailKey,
+//       e_mail: eMail,
+//       filename,
+//     } = postavkeData;
 
-app.delete("/delete-receiver/:id", (req, res) => {
-  const receiverId = req.params.id;
+//     const transporter = nodemailer.createTransport({
+//       host: "smtp.gmail.com",
+//       port: 465,
+//       secure: true,
+//       auth: {
+//         user: eMail,
+//         pass: gmailKey,
+//       },
+//     });
 
-  db.query(
-    "DELETE FROM primatelji_uplatnice WHERE id = $1",
-    [receiverId],
-    (err, result) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
+//     pdf.create(htmlContent).toBuffer(async (err, pdfBuffer) => {
+//       if (err) {
+//         console.error("Error generating PDF:", err);
+//         return res.status(500).send("Error generating PDF.");
+//       }
 
-      res.status(200).json({ message: "Receiver deleted successfully" });
-    }
-  );
-});
+//       const mailOptions = {
+//         from: eMail,
+//         to: email,
+//         subject: subject,
+//         text: message,
+//         attachments: [
+//           {
+//             filename: `${filename}.pdf`,
+//             content: pdfBuffer,
+//           },
+//         ],
+//       };
 
-app.get("/statistics", async (req, res) => {
-  try {
-    const loggedInUserId = req.query.userID; // Retrieve userID from query parameters
-    console.log("loggedInUserId:", loggedInUserId);
-
-    const cityNumberQuery =
-      "SELECT grad, COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1 GROUP BY grad";
-    const largestPayersQuery =
-      "SELECT * FROM primatelji_uplatnice WHERE id_korisnik = $1 ORDER BY iznos DESC LIMIT 3";
-    const numberOfPayersQuery =
-      "SELECT COUNT(*) FROM primatelji_uplatnice WHERE id_korisnik = $1";
-
-    const cityNumberResult = await db.query(cityNumberQuery, [loggedInUserId]);
-    const largestPayersResult = await db.query(largestPayersQuery, [
-      loggedInUserId,
-    ]);
-    const numberOfPayersResult = await db.query(numberOfPayersQuery, [
-      loggedInUserId,
-    ]);
-    console.log("numberOfPayersResult:", numberOfPayersResult.rows);
-
-    const cityNumber = cityNumberResult.rows;
-    const largestPayers = largestPayersResult.rows;
-    const numberOfPayers = numberOfPayersResult.rows;
-
-    return res.json({
-      cityNum: cityNumber,
-      largestPay: largestPayers,
-      numPayers: numberOfPayers,
-    });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
-
-app.post("/send-pdf", async (req, res) => {
-  console.log("Received request to send PDF");
-
-  const { email, htmlContent, userID } = req.body;
-  console.log("Email:", email);
-  console.log("HTML Content:", htmlContent);
-  console.log("UserID:", userID);
-
-  try {
-    const postavkeQuery = `
-      SELECT * FROM postavke WHERE id_korisnik = $1;
-    `;
-
-    const result = await db.query(postavkeQuery, [userID]);
-    const postavkeData = result.rows[0];
-
-    if (!postavkeData) {
-      throw new Error(
-        "No data found in the 'postavke' table for the logged-in user"
-      );
-    }
-
-    const {
-      subject,
-      message,
-      gmail_key: gmailKey,
-      e_mail: eMail,
-      filename,
-    } = postavkeData;
-
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: eMail,
-        pass: gmailKey,
-      },
-    });
-
-    // Generate PDF using html-pdf
-    pdf.create(htmlContent).toBuffer(async (err, pdfBuffer) => {
-      if (err) {
-        console.error("Error generating PDF:", err);
-        return res.status(500).send("Error generating PDF.");
-      }
-
-      const mailOptions = {
-        from: eMail,
-        to: email,
-        subject: subject,
-        text: message,
-        attachments: [
-          {
-            filename: `${filename}.pdf`,
-            content: pdfBuffer,
-          },
-        ],
-      };
-
-      console.log("Sending email...");
-      try {
-        await transporter.sendMail(mailOptions);
-        console.log("Email sent");
-        res.status(200).send("Email sent successfully.");
-      } catch (emailError) {
-        console.error("Error sending email:", emailError);
-        res.status(500).send("Error sending email.");
-      }
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).send("Internal Server Error.");
-  }
-});
-
-app.get("/postavke", async (req, res) => {
-  try {
-    const { userID } = req.query; // Get userID from query parameters
-    console.log("Received userID:", userID);
-
-    const postavkeQuery = `
-      SELECT * FROM postavke WHERE id_korisnik = $1;
-    `;
-
-    const result = await db.query(postavkeQuery, [userID]);
-
-    res.json({ data: result.rows });
-  } catch (error) {
-    console.error("Error fetching data from postavke:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-//----------------------------------------------------------------------------ONLY THIS
-app.put("/postavke", async (req, res) => {
-  try {
-    const {
-      userID,
-      subject,
-      message,
-      e_mail_template,
-      gmail_key,
-      e_mail,
-      filename,
-    } = req.body;
-
-    console.log("Received update request with data:", req.body);
-
-    const updateQuery = `
-      UPDATE postavke
-      SET subject = $1, message = $2, e_mail_template = $3, gmail_key = $4, e_mail = $5, filename = $6
-      WHERE id_korisnik = $7;
-    `;
-
-    await db.query(updateQuery, [
-      subject,
-      message,
-      e_mail_template,
-      gmail_key,
-      e_mail,
-      filename,
-      userID,
-    ]);
-
-    res.json({ success: true, message: "Settings updated successfully" });
-  } catch (error) {
-    console.error("Error updating postavke data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//       console.log("Sending email...");
+//       try {
+//         await transporter.sendMail(mailOptions);
+//         console.log("Email sent");
+//         res.status(200).send("Email sent successfully.");
+//       } catch (emailError) {
+//         console.error("Error sending email:", emailError);
+//         res.status(500).send("Error sending email.");
+//       }
+//     });
+//   } catch (error) {
+//     console.error("Error:", error);
+//     res.status(500).send("Internal Server Error.");
+//   }
+// });
 
 app.listen(process.env.PORT || 8081);
