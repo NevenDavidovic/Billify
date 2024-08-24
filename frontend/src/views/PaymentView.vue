@@ -36,6 +36,7 @@
           @click="sendAllEmails"
           class="btn-gold send-all-btn"
           v-if="primateljiData.length"
+          style="display: none"
         >
           Pošalji sve Uplatnice
         </button>
