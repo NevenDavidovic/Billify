@@ -196,6 +196,13 @@ aside {
   background: transparent;
   border-radius: 20px;
   margin-top: 15px;
+  @media (max-width: 1340px) {
+    height: unset;
+    margin-bottom: 50px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: unset;
+  }
 }
 
 aside a {
@@ -282,13 +289,5 @@ body {
   border-radius: 50%;
   top: 5px;
   right: 5px;
-}
-aside {
-  @media (max-width: 800px) {
-    height: unset;
-    margin-bottom: 50px;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
 }
 </style>

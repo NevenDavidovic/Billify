@@ -156,6 +156,8 @@ export default {
 <style scoped lang="less">
 .payment-slips-container {
   width: 100%;
+  background: white;
+  padding: 50px 0;
 }
 .title-payment-view {
   background: white;

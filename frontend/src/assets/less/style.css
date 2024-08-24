@@ -16,6 +16,11 @@ body {
   margin: auto;
   padding: 0 32px;
 }
+@media (max-width: 600px) {
+  .container {
+    padding: 0 10px;
+  }
+}
 .container-1140 {
   max-width: 1140px;
   margin: auto;
@@ -183,18 +188,4 @@ body {
 }
 ul {
   list-style: none;
-}
-@media (max-width: 800px) {
-  aside {
-    height: unset;
-    margin-bottom: 50px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: unset;
-  }
-}
-@media (max-width: 1440px) {
-  .generiraj-barkod {
-    overflow: scroll;
-  }
 }

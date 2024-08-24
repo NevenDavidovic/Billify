@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tableNalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<rowNalog>
+		<mainPartNalog>
+			<platiteljNaziv>Matej Matko</platiteljNaziv>
+			<platiteljAdresa>Zagrebački prilaz 56</platiteljAdresa>
+			<platiteljMjesto>10345 Grad jabuka</platiteljMjesto>
+			<iznos>123.56</iznos>
+			<pozivNaBrojPrimatelja>123456789-987456</pozivNaBrojPrimatelja>
+			<opisPlacanja>Opis dopis popis potpis spis otpis prijepis krasopis 12345.</opisPlacanja>
+			<emailAdresa>neven4380@live.com</emailAdresa>
+		</mainPartNalog>
+	</rowNalog>
+	<rowNalog>
+		<mainPartNalog>
+			<platiteljNaziv>Robert Dobrila</platiteljNaziv>
+			<platiteljAdresa>Dubrovački put 34</platiteljAdresa>
+			<platiteljMjesto>10001 Grad borovnica</platiteljMjesto>
+			<iznos>123.5</iznos>
+			<pozivNaBrojPrimatelja>369852-14785</pozivNaBrojPrimatelja>
+			<opisPlacanja>Opis dopis popis potpis spis otpis prijepis krasopis 23456.</opisPlacanja>
+			<emailAdresa>neven4380@live.com</emailAdresa>
+		</mainPartNalog>
+	</rowNalog>
+	<rowNalog>
+		<mainPartNalog>
+			<platiteljNaziv>Elizabeta Martinović</platiteljNaziv>
+			<platiteljAdresa>Avenija domovinske zahvalnosti 78</platiteljAdresa>
+			<platiteljMjesto>10321 Grad neoznačenih ulica</platiteljMjesto>
+			<iznos>123.06</iznos>
+			<pozivNaBrojPrimatelja>231446-985412</pozivNaBrojPrimatelja>
+			<opisPlacanja>Opis dopis popis potpis spis otpis prijepis krasopis 34567.</opisPlacanja>
+			<emailAdresa>neven4380@live.com</emailAdresa>
+		</mainPartNalog>
+	</rowNalog>
+	<rowNalog>
+		<mainPartNalog>
+			<platiteljNaziv>Krunoslava Horvat</platiteljNaziv>
+			<platiteljAdresa>Ulica budućnosti 789</platiteljAdresa>
+			<platiteljMjesto>10987 Grad skalina</platiteljMjesto>
+			<iznos>123</iznos>
+			<pozivNaBrojPrimatelja>365214789-365214</pozivNaBrojPrimatelja>
+			<opisPlacanja>Opis dopis popis potpis spis otpis prijepis krasopis 45678.</opisPlacanja>
+			<emailAdresa>neven4380@live.com</emailAdresa>
+		</mainPartNalog>
+	</rowNalog>
+</tableNalog>

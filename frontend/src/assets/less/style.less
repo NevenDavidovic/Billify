@@ -21,6 +21,9 @@ body {
   max-width: 1440px;
   margin: auto;
   padding: 0 32px;
+  @media (max-width: 600px) {
+    padding: 0 10px;
+  }
 }
 
 .container-1140 {
@@ -208,20 +211,4 @@ body {
 
 ul {
   list-style: none;
-}
-
-aside {
-  @media (max-width: 800px) {
-    height: unset;
-    margin-bottom: 50px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: unset;
-  }
-}
-
-.generiraj-barkod {
-  @media (max-width: 1440px) {
-    overflow: scroll;
-  }
 }

@@ -139,6 +139,174 @@
         </defs>
       </svg>
     </div>
+
+    <div class="tutorial-desc">
+      <h2>Bilify: Vaš Brz i Jednostavan Put do Personaliziranih Uplatnica</h2>
+      <p>
+        Pojednostavite proces izdavanja uplatnica uz Bilify – idealno rješenje
+        za male poduzetnike, udruge i sve koji trebaju profesionalne uplatnice s
+        minimalnim trudom. Pratite naš vodič i saznajte kako u nekoliko koraka
+        generirati uplatnice prilagođene vašim potrebama.
+      </p>
+    </div>
+
+    <div class="step-1">
+      <h3>Skinite Excell ili XML file koji možete uređivati</h3>
+
+      <div class="files">
+        <a
+          class="btn-black"
+          href="../assets/files/template.xml"
+          download="template.xml"
+          >Preuzmi XML</a
+        >
+        <br />
+        <a
+          class="btn-black"
+          href="../assets/files/template.xlsx"
+          download="template.xlsx"
+          >Preuzmi Excel</a
+        >
+      </div>
+      <div>
+        <h1>
+          Upute: Kako izvesti podatke iz Excela u XML ili mijenjati XML datoteku
+        </h1>
+        <br />
+        <section>
+          <h2>Izvoz podataka iz Excela u XML</h2>
+          <ol>
+            <li>
+              Otvorite Excel datoteku koja sadrži podatke koje želite izvesti.
+            </li>
+            <li>
+              Desnim klikom na tablicu u Excelu otvorite kontekstni izbornik.
+            </li>
+            <li>
+              Odaberite opciju <strong>Izvoz</strong> ili
+              <strong>Spremi kao XML</strong>.
+            </li>
+            <li>
+              Odaberite lokaciju na svom računalu gdje želite spremiti XML
+              datoteku i kliknite na <strong>Spremi</strong>.
+            </li>
+          </ol>
+          <img
+            src="../assets/images/example-1.jpg"
+            alt="Excel Export"
+            class="image"
+          />
+        </section>
+        <br />
+        <section>
+          <h2>Ručna izmjena XML datoteke</h2>
+          <br />
+          <ol>
+            <li>Pronađite XML datoteku koju želite promijeniti.</li>
+            <li>
+              Desnim klikom na datoteku odaberite <strong>Otvori s</strong> i
+              odaberite <strong>Notepad</strong> ili neki drugi tekstualni
+              editor.
+            </li>
+            <li>
+              Nakon otvaranja datoteke, izmijenite željene podatke unutar XML
+              oznaka.
+            </li>
+            <li>
+              Spremite promjene klikom na <strong>File &gt; Save</strong> ili
+              pritisnite <strong>Ctrl + S</strong>.
+            </li>
+          </ol>
+        </section>
+      </div>
+    </div>
+    <br />
+    <br />
+    <div class="step-2">
+      <h2>Postavljanje Gmail Lozinke za Aplikaciju</h2>
+      <p>
+        Slijedite korake u nastavku kako biste omogućili dvofaktorsku
+        autentifikaciju (2FA) i generirali lozinku za aplikaciju.
+      </p>
+
+      <h3>Korak 1: Omogućite dvofaktorsku autentifikaciju (2FA)</h3>
+      <ol>
+        <li>
+          <strong>Prijavite se na svoj Google račun:</strong>
+          <a
+            class="btn-black"
+            href="https://myaccount.google.com"
+            target="_blank"
+            >GOOGLE</a
+          >
+          i prijavite se.
+        </li>
+        <li>
+          <strong>Otvorite postavke sigurnosti:</strong> Kliknite na
+          <em>"Security" (Sigurnost)</em> u lijevom izborniku.
+        </li>
+        <li>
+          <strong>Omogućite dvofaktorsku autentifikaciju:</strong> Pronađite
+          sekciju <em>"Signing in to Google" (Prijava na Google)</em> i kliknite
+          na <em>"2-Step Verification" (Dvofaktorska autentifikacija)</em>.
+          Slijedite upute za postavljanje 2FA. Možete koristiti SMS,
+          autentifikacijsku aplikaciju ili sigurnosni ključ.
+        </li>
+      </ol>
+
+      <h3>Korak 2: Generirajte lozinku za aplikaciju</h3>
+      <ol>
+        <li>
+          <strong>Idite na postavke sigurnosti:</strong> Ponovno otvorite
+          <a
+            class="btn-black"
+            href="https://myaccount.google.com"
+            target="_blank"
+            >GOOGLE</a
+          >
+          i idite na <em>"Security" (Sigurnost)</em>.
+        </li>
+        <li>
+          <strong>Pronađite "App passwords" (Lozinke za aplikacije):</strong> U
+          sekciji <em>"Signing in to Google" (Prijava na Google)</em>, nakon što
+          ste omogućili 2FA, pojavit će se opcija <em>"App passwords"</em>.
+        </li>
+        <li>
+          <strong>Generirajte lozinku za aplikaciju:</strong>
+          <ul>
+            <li>Kliknite na <em>"App passwords"</em>.</li>
+            <li>Možda ćete morati ponovno unijeti lozinku svog računa.</li>
+            <li>
+              Na stranici
+              <em>"Select app and device" (Odaberite aplikaciju i uređaj)</em>,
+              odaberite aplikaciju (npr. <em>"Mail"</em>) i uređaj (npr.
+              <em>"Windows Computer"</em>).
+            </li>
+            <li>Kliknite na <em>"Generate" (Generiraj)</em>.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Dohvatite lozinku:</strong> Google će generirati lozinku od 16
+          znakova. Zapišite ili kopirajte ovu lozinku — trebat će vam za
+          konfiguraciju vašeg e-mail klijenta.
+        </li>
+      </ol>
+    </div>
+
+    <div class="video">
+      <h2>Podledajte video na koji način koristiti Bilify</h2>
+
+      <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/peFxjsStzwg?si=oVUKerrXgzg5ndAH"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
+    </div>
   </div>
 </template>
 
@@ -149,6 +317,68 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.video {
+  display: flex;
+  flex-direction: column;
+  padding: 50px 10px;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  gap: 50px;
+  h2 {
+    color: white;
+  }
+}
+
+.step-1,
+.step-2 {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px;
+  background: white;
+  max-width: 1100px;
+  width: 98%;
+  margin: 50px auto;
+  border-radius: 20px;
+  h3 {
+    color: #525a5b;
+    font-size: 32px;
+  }
+  li {
+    text-align: left;
+  }
+  ol {
+    margin: 20px auto;
+    max-width: 75%;
+    @media (max-width: 1340px) {
+      max-width: 90%;
+    }
+  }
+  a {
+    color: white;
+    display: flex;
+    width: 550px;
+    flex: 1;
+    padding: 5px 20px;
+    margin: 20px 0;
+  }
+  img {
+    width: 100%;
+    margin: 50px 0;
+    max-width: 500px;
+  }
+  .files {
+    display: flex;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 25px;
+    width: 100%;
+  }
+}
+
 .slider-thumb {
   height: 100vh;
   background: linear-gradient(90deg, #000000, #ff8a00);
@@ -290,7 +520,6 @@ a:nth-child(5):hover ~ .animation {
 }
 
 p {
-  position: absolute;
   bottom: 20px;
   width: 100%;
   text-align: center;
@@ -301,5 +530,25 @@ p {
 
 span {
   color: #2bd6b4;
+}
+
+.tutorial-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  max-width: 1100px;
+  margin: 0 auto;
+
+  h2 {
+    margin-top: 50px;
+    color: #db9f58;
+    font-size: 40px;
+    font-weight: 500;
+  }
+  p {
+    color: white;
+    font-size: 18px;
+    font-weight: 400;
+  }
 }
 </style>

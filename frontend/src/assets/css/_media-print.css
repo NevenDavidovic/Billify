@@ -2,6 +2,7 @@
   .generiraj-barkod,
   .uplatnica-form-img {
     page-break-after: always;
+    overflow: unset;
   }
   .generiraj-barkod,
   .uplatnica-form-img {
@@ -44,5 +45,12 @@
   .btn-container {
     visibility: hidden;
     display: none;
+  }
+  .title-payment-view {
+    visibility: hidden;
+  }
+  .btn-container {
+    display: none;
+    visibility: hidden;
   }
 }

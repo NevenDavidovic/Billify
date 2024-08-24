@@ -492,6 +492,9 @@ export default {
       border: 2px solid #3d4c4d;
       border-radius: 13px;
       max-height: 400px;
+      @media (max-width: 1024px) {
+        flex-direction: column;
+      }
     }
     .right-item {
       display: flex;
@@ -516,10 +519,16 @@ export default {
       background-color: white;
       border-radius: 10px 0 0 10px;
       border: 2px solid #3d4c4d;
+      @media (max-width: 1024px) {
+        border-radius: 0;
+      }
       img {
         width: 100%;
         max-height: 400px;
         border-radius: 8px 0 0 8px;
+        @media (max-width: 1024px) {
+          border-radius: 0;
+        }
       }
     }
   }
