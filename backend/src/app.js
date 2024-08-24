@@ -514,6 +514,7 @@ app.post("/send-pdf", async (req, res) => {
   console.log("HTML Content:", htmlContent);
   console.log("UserID:", userID);
 
+  let browser;
   try {
     const postavkeQuery = `
       SELECT * FROM postavke WHERE id_korisnik = $1;
@@ -528,23 +529,27 @@ app.post("/send-pdf", async (req, res) => {
       );
     }
 
-    const subject = postavkeData.subject;
-    const message = postavkeData.message;
-    const gmailKey = postavkeData.gmail_key;
-    const e_mail = postavkeData.e_mail;
-    const filename = postavkeData.filename;
+    const {
+      subject,
+      message,
+      gmail_key: gmailKey,
+      e_mail: eMail,
+      filename,
+    } = postavkeData;
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
       secure: true,
       auth: {
-        user: e_mail,
+        user: eMail,
         pass: gmailKey,
       },
     });
 
-    const browser = await puppeteer.launch();
+    // Use puppeteer-core with a specific executable path if needed
+    // const browser = await puppeteer.launch({ executablePath: '/path/to/chrome' });
+    browser = await puppeteer.launch({ headless: true });
     console.log("Browser launched");
 
     const page = await browser.newPage();
@@ -557,34 +562,35 @@ app.post("/send-pdf", async (req, res) => {
     console.log("PDF generated");
 
     const mailOptions = {
-      from: e_mail,
+      from: eMail,
       to: email,
       subject: subject,
       text: message,
       attachments: [
         {
-          filename: filename + ".pdf",
+          filename: `${filename}.pdf`,
           content: pdfBuffer,
         },
       ],
     };
 
     console.log("Sending email...");
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log("Error sending email:", error);
-        res.status(500).send("Error sending email.");
-      } else {
-        console.log("Email sent: ", info.response);
-        res.status(200).send("Email sent successfully.");
-      }
-    });
+    await transporter.sendMail(mailOptions);
+    console.log("Email sent");
 
-    await browser.close();
-    console.log("Browser closed");
+    res.status(200).send("Email sent successfully.");
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Internal Server Error.");
+  } finally {
+    if (browser) {
+      try {
+        await browser.close();
+        console.log("Browser closed");
+      } catch (closeError) {
+        console.error("Error closing browser:", closeError);
+      }
+    }
   }
 });
 
