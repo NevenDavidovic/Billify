@@ -84,18 +84,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // Check if the route requires authentication
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    // Check if the user is logged in
     if (!store.getters.isLoggedIn) {
-      // If the user is not logged in, redirect to the login page
       next({ name: "login" });
     } else {
-      // If the user is logged in, allow navigation to proceed
       next();
     }
   } else {
-    // If the route does not require authentication, allow navigation to proceed
     next();
   }
 });

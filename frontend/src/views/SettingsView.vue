@@ -121,7 +121,7 @@ export default {
       try {
         const userID = this.$store.state.userID; // Get the userID from Vuex store
 
-        const response = await api.put("/postavke", {
+        const response = await api.put("postavke/postavke", {
           userID: userID,
           ...updatedSettings,
         });
@@ -136,7 +136,7 @@ export default {
     fetchPostavkeData() {
       const userID = this.$store.state.userID; // Get the userID from Vuex store
       api
-        .get("/postavke", {
+        .get("postavke/postavke", {
           params: {
             userID: userID,
           },

@@ -114,7 +114,7 @@ export default {
       try {
         const userID = this.$store.state.userID; // Get the userID from Vuex store
 
-        const response1 = await api.get("/receiver", {
+        const response1 = await api.get("receivers/receiver", {
           params: {
             userID: userID,
           },

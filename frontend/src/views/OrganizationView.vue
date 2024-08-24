@@ -315,10 +315,8 @@ export default {
     fetchData() {
       const userID = this.$store.state.userID; // Get the userID from Vuex store
 
-      console.log("Fetching data for userID:", userID); // Debugging line
-
       api
-        .get("/", {
+        .get("organizations/", {
           params: {
             userID: userID,
           },
@@ -336,9 +334,6 @@ export default {
 
           this.activeOrganization = status1Rows;
           this.inactiveOrganization = status0Rows;
-
-          console.log("Status 0 Data:", this.inactiveOrganization);
-          console.log("Status 1 Data:", this.activeOrganization);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -359,17 +354,15 @@ export default {
         status: this.editableItem.status,
         slika: this.editableItem.slika,
       };
-      console.log("Editd Data", this.editedData);
-      console.log("Id", id);
 
       api
-        .put(`/update-organization/${id}`, editedData)
+        .put(`organizations/update-organization/${id}`, editedData)
         .then((response) => {
-          console.log("Data updated:", response.data);
+          alert("Izmjena napravljena:", response.data);
           this.fetchData();
         })
         .catch((error) => {
-          console.error("Error updating data:", error);
+          console.error("Greška u promjeni podataka:", error);
           alert("ERROR!!", error);
           return;
         });
@@ -379,14 +372,13 @@ export default {
 
     setActiveOrganization(id) {
       api
-        .put(`/update-organization-status/${id}`)
+        .put(`organizations/update-organization-status/${id}`)
         .then((response) => {
-          console.log("Organization status updated:", response.data);
+          alert("Status organizacije promijenjen:", response.data);
           this.fetchData();
         })
         .catch((error) => {
-          console.error("Error updating organization status:", error);
-          alert("You have error: ", error);
+          alert("Greška: ", error);
         });
     },
     closeModal() {
@@ -424,9 +416,9 @@ export default {
       }
 
       api
-        .delete(`/delete-organization/${id}`)
+        .delete(`organizations/delete-organization/${id}`)
         .then((response) => {
-          console.log("Organization deleted:", response.data);
+          alert("Organizacija obrisana:", response.data);
 
           this.fetchData();
         })
@@ -450,19 +442,16 @@ export default {
         userID: userID, // Include userID in the formData
       };
 
-      console.log("Form Data:", formData); // Debugging line
-
       api
-        .post("/save-organization", formData)
+        .post("organizations/save-organization", formData)
         .then((response) => {
-          console.log("Data saved:", response.data);
+          alert("Data saved:", response.data);
           this.closeModal();
           this.resetFormData();
           this.fetchData();
         })
         .catch((error) => {
           console.error("Error saving data:", error);
-          console.log(formData);
         });
     },
   },
@@ -473,8 +462,7 @@ export default {
 .generiraj-barkod {
   display: flex;
   height: 100vh;
-  .aside {
-  }
+
   .about {
     background-color: white;
     width: 100%;

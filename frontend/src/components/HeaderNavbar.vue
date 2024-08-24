@@ -196,7 +196,7 @@ export default {
         .then(() => {
           // If logout action succeeds, make a request to the server to reset the variable
           api
-            .post("/logout")
+            .post("auth/logout")
             .then((response) => {
               // Optionally, handle response from the server
               console.log(response.data);

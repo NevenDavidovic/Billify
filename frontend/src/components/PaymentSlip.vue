@@ -694,7 +694,7 @@ export default {
       };
 
       try {
-        const response = await api.post("/send-pdf", emailData);
+        const response = await api.post("emailUtility/send-pdf", emailData);
         if (response.status === 200) {
           alert("Email poslan uspješno!");
         } else {
@@ -727,7 +727,7 @@ export default {
     fetchPostavkeData() {
       const userID = this.$store.state.userID; // Get the userID from Vuex store
       api
-        .get(`/postavke`, {
+        .get(`postavke/postavke`, {
           params: {
             userID: userID,
           },
@@ -756,7 +756,7 @@ export default {
       console.log("Fetching data for userID:", userID); // Debugging line
 
       api
-        .get("/", {
+        .get("organizations/", {
           params: {
             userID: userID,
           },

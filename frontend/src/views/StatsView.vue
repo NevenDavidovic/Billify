@@ -83,7 +83,9 @@ export default {
       try {
         const userID = this.$store.state.userID;
 
-        const response = await api.get("/statistics", { params: { userID } });
+        const response = await api.get("statistics/statistics", {
+          params: { userID },
+        });
         this.statistics = response.data;
         this.statisticsLoaded = true;
       } catch (error) {

@@ -466,7 +466,7 @@ export default {
       };
 
       api
-        .put(`/update-receiver/${id}`, editedReceiverData)
+        .put(`receivers/update-receiver/${id}`, editedReceiverData)
         .then((response) => {
           console.log("Receiver data updated:", response.data);
           this.fetchDataPrimatelji();
@@ -498,7 +498,7 @@ export default {
       try {
         const userID = this.$store.state.userID;
 
-        const response = await api.delete("/delete-all-receivers", {
+        const response = await api.delete("receivers/delete-all-receivers", {
           data: { userID },
         });
         console.log("Svi primatelji obrisani:", response.data);
@@ -592,7 +592,7 @@ export default {
     },
     async sendDataToBackend(data) {
       try {
-        const response = await api.post("/save-receivers", data);
+        const response = await api.post("receivers/save-receivers", data);
 
         alert("Podaci poslani poslužitelju.");
         if (response.data.message) {
@@ -611,7 +611,7 @@ export default {
     deleteReceiver(id) {
       if (confirm("Jeste li sigurni da želite obrisati primatelja?")) {
         api
-          .delete(`/delete-receiver/${id}`)
+          .delete(`receivers/delete-receiver/${id}`)
           .then((response) => {
             console.log("Receiver deleted:", response.data);
             alert("Receiver deleted");
@@ -638,7 +638,7 @@ export default {
       try {
         const userID = this.$store.state.userID; // Get the userID from Vuex store
 
-        const response1 = await api.get("/receiver", {
+        const response1 = await api.get("receivers/receiver", {
           params: {
             userID: userID,
           },
@@ -655,7 +655,10 @@ export default {
     async saveReceiverData() {
       this.setUserID();
       try {
-        const response = await api.post("/save-receiver", this.formData);
+        const response = await api.post(
+          "receivers/save-receiver",
+          this.formData
+        );
         console.log("Data saved:", response.data);
         this.closeModal();
         this.resetFormData();

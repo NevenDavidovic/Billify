@@ -33,7 +33,7 @@ export default createStore({
     setLoggedInUser(state, user) {
       state.loggedInUser = user;
       state.isLoggedIn = true;
-      state.userID = user.id; // Update the userID state
+      state.userID = user.id;
       console.log("userID set to:", state.userID);
     },
     logout(state) {
@@ -50,7 +50,7 @@ export default createStore({
 
     saveUsers({ commit }, users) {
       commit("resetUsers");
-      commit("setUsers", users); // Set the users array to the provided array
+      commit("setUsers", users);
     },
 
     resetUserData({ commit }) {
@@ -58,7 +58,7 @@ export default createStore({
     },
     async login({ commit }, { email, password }) {
       try {
-        const response = await api.post("/login", {
+        const response = await api.post("auth/login", {
           email: email,
           password: password,
         });
@@ -67,8 +67,7 @@ export default createStore({
         return "/about";
       } catch (error) {
         alert("Error during login: " + error.response.data.error);
-        console.error("Error during login:", error.response.data);
-        throw error; // Re-throw the error to handle it in the component
+        console.error;
       }
     },
     logout({ commit }) {

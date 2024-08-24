@@ -668,7 +668,7 @@ export default {
       };
 
       try {
-        const response = await api.post("/send-pdf", emailData);
+        const response = await api.post("emailUtility/send-pdf", emailData);
         if (response.status === 200) {
           alert("Email poslan uspješno!");
         } else {
@@ -763,7 +763,7 @@ export default {
       console.log("Fetching data for userID:", userID); // Debugging line
 
       api
-        .get("/", {
+        .get("organizations/", {
           params: {
             userID: userID,
           },

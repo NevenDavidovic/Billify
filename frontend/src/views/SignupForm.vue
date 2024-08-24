@@ -56,7 +56,7 @@ export default {
 
     async register() {
       try {
-        const response = await api.post("/register", {
+        const response = await api.post("auth/register", {
           email: this.emailInput,
           password: this.passwordInput,
         });
