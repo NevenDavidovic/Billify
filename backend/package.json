@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "npx nodemon src/app.js",
-    "lint": "./node_modules/.bin/eslint src/**/*.js"
+    "lint": "./node_modules/.bin/eslint src/**/*.js",
+    "postinstall": "npx puppeteer install"
   },
   "keywords": [],
   "author": "",
