@@ -10,6 +10,7 @@ const fs = require("fs");
 const upload = multer({
   storage: multer.memoryStorage(),
 });
+const pdf = require("html-pdf");
 
 const app = express();
 app.use(morgan("combined"));
@@ -514,7 +515,6 @@ app.post("/send-pdf", async (req, res) => {
   console.log("HTML Content:", htmlContent);
   console.log("UserID:", userID);
 
-  let browser;
   try {
     const postavkeQuery = `
       SELECT * FROM postavke WHERE id_korisnik = $1;
@@ -547,50 +547,39 @@ app.post("/send-pdf", async (req, res) => {
       },
     });
 
-    // Use puppeteer-core with a specific executable path if needed
-    // const browser = await puppeteer.launch({ executablePath: '/path/to/chrome' });
-    browser = await puppeteer.launch({ headless: true });
-    console.log("Browser launched");
+    // Generate PDF using html-pdf
+    pdf.create(htmlContent).toBuffer(async (err, pdfBuffer) => {
+      if (err) {
+        console.error("Error generating PDF:", err);
+        return res.status(500).send("Error generating PDF.");
+      }
 
-    const page = await browser.newPage();
-    console.log("New page created");
+      const mailOptions = {
+        from: eMail,
+        to: email,
+        subject: subject,
+        text: message,
+        attachments: [
+          {
+            filename: `${filename}.pdf`,
+            content: pdfBuffer,
+          },
+        ],
+      };
 
-    await page.setContent(htmlContent);
-    console.log("HTML content set on page");
-
-    const pdfBuffer = await page.pdf();
-    console.log("PDF generated");
-
-    const mailOptions = {
-      from: eMail,
-      to: email,
-      subject: subject,
-      text: message,
-      attachments: [
-        {
-          filename: `${filename}.pdf`,
-          content: pdfBuffer,
-        },
-      ],
-    };
-
-    console.log("Sending email...");
-    await transporter.sendMail(mailOptions);
-    console.log("Email sent");
-
-    res.status(200).send("Email sent successfully.");
+      console.log("Sending email...");
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log("Email sent");
+        res.status(200).send("Email sent successfully.");
+      } catch (emailError) {
+        console.error("Error sending email:", emailError);
+        res.status(500).send("Error sending email.");
+      }
+    });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Internal Server Error.");
-  } finally {
-    if (browser) {
-      try {
-        await browser.close();
-        console.log("Browser closed");
-      } catch (closeError) {
-        console.error("Error closing browser:", closeError);
-      }
-    }
   }
 });
 
