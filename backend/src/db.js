@@ -3,7 +3,6 @@ require("dotenv").config(); // This should be the very first line
 const { Pool } = require("pg");
 
 // Debugging environment variables
-console.log("PGPASSWORD:", process.env.PGPASSWORD);
 const pool = new Pool({
   user: process.env.PGUSER,
   host: process.env.PGHOST,

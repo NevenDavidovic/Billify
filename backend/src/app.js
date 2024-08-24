@@ -122,7 +122,6 @@ app.post("/register", async (req, res) => {
       user: { id: userId, email: email },
     });
   } catch (error) {
-    c;
     res.status(500).json({ error: "Unutrašnji server error" });
   }
 });
