@@ -8,7 +8,7 @@ Aplikacija omogućava unos podataka korisnika ili učitavanje iz Excel datoteke 
 -- Mogućnosti:
 
 - spremanje podataka u bazu podataka
-- dodavanje, brisanje, uređivanje i brisanje organizacija i primatelja
+- dodavanje, uređivanje i brisanje organizacija i primatelja
 - slanje uplatnica elektroničkom poštom pojedinačno ili svih
 - bulk unos podataka uvoženjem XML-a izvezenog iz Excella
 - personaliziranje E-maila
